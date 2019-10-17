@@ -63,7 +63,7 @@ class ConvolutionalAutoencoder():
                 ACC += accuracy
             LOSS /= n
             ACC /= n
-            if epoch % 100 == 0:
+            if epoch % 10 == 0:
                 self.visualize()
                 print(f'epoch {epoch} loss: {LOSS} accuracy: {ACC}')
 
