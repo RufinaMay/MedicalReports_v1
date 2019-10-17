@@ -27,7 +27,7 @@ class ConvolutionalAutoencoder():
         l3 = Conv2D(filters=128, kernel_size=2, strides=(2, 2), activation='tanh')(l2)
         l4 = Conv2D(filters=256, kernel_size=2, strides=(2, 2), activation='tanh')(l3)
 
-        encoding = Conv2D(filters=32, kernel_size=2, strides=(2, 2))(l4)
+        encoding = Conv2D(filters=128, kernel_size=2, strides=(2, 2))(l4)
 
         l5 = Conv2DTranspose(filters=512, kernel_size=2, strides=(2, 2), activation='tanh')(encoding)
         l6 = Conv2DTranspose(filters=256, kernel_size=2, strides=(2, 2), activation='tanh')(l5)
