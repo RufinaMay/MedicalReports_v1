@@ -56,7 +56,7 @@ class ConvolutionalAutoencoder():
         for epoch in range(EPOCHS):
             n = 0
             LOSS, ACC = 0., 0.
-            for data in batch_from_dir(IMG_DIR):
+            for data in generate_batch_from_dir(IMG_DIR):
                 loss, accuracy = self.autoencoder.train_on_batch(data, data)
                 n += 1
                 LOSS += loss
