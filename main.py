@@ -4,8 +4,7 @@ import numpy as np
 from models.autoencoder.cnn_autoencoder import ConvolutionalAutoencoder
 from utils.utils import read_and_resize, batch_from_dir
 from preprocessing.chest_xray_extractor import unzip
-import time
-import pickle
+from utils.utils import batch_from_dir
 #
 # # download the data
 # from IPython.display import clear_output
@@ -27,4 +26,5 @@ import pickle
 # cautoenc.train()
 
 
-# generate_batch_from_dir('data\chest_images')
+for i in batch_from_dir('data\chest_images'):
+    print(type(i))
