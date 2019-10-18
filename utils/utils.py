@@ -1,6 +1,7 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
+import os
 from utils.constants import BATCH_SIZE, IMG_SHAPE
 
 """
@@ -33,6 +34,22 @@ def batch_no_labels(IMAGES):
     batch_IMGS = []
     b = 0
     for im in IMAGES:
+        batch_IMGS.append(im)
+        b += 1
+        if b > BATCH_SIZE:
+            yield np.array(batch_IMGS)
+            b = 0
+            batch_IMGS = []
+    yield np.array(batch_IMGS)
+
+def batch_from_dir(images_dir):
+    """
+    images_dir: e.g. data/chest_images
+    """
+    batch_IMGS = []
+    b = 0
+    for im_path in os.listdir(images_dir):
+        im = read_and_resize(f'{images_dir}/{im_path}')
         batch_IMGS.append(im)
         b += 1
         if b > BATCH_SIZE:

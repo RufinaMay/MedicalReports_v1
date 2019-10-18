@@ -5,8 +5,8 @@ from keras.optimizers import Adam
 import pickle
 
 from preprocessing.preprocessing import image_normalization_mapping
-from utils.constants import LR, IMG_SHAPE, EPOCHS
-from utils.utils import batch_no_labels, showInRow, read_and_resize
+from utils.constants import LR, IMG_SHAPE, EPOCHS, IMG_DIR
+from utils.utils import batch_from_dir, showInRow
 
 """
 TO TRAIN AUTOENCODER RUN:
@@ -56,7 +56,7 @@ class ConvolutionalAutoencoder():
         for epoch in range(EPOCHS):
             n = 0
             LOSS, ACC = 0., 0.
-            for data in batch_no_labels(self.X_train):
+            for data in batch_from_dir(IMG_DIR):
                 loss, accuracy = self.autoencoder.train_on_batch(data, data)
                 n += 1
                 LOSS += loss
