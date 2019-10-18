@@ -49,6 +49,8 @@ def batch_from_dir(images_dir):
     batch_IMGS = []
     b = 0
     for im_path in os.listdir(images_dir):
+        if 'png' not in im_path:
+            continue
         im = read_and_resize(f'{images_dir}/{im_path}')
         batch_IMGS.append(im)
         b += 1
