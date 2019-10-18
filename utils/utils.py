@@ -58,7 +58,8 @@ def batch_from_dir(images_dir):
             yield np.array(batch_IMGS)
             b = 0
             batch_IMGS = []
-    yield np.array(batch_IMGS)
+    if len(batch_IMGS)>0:
+        yield np.array(batch_IMGS)
 
 def read_and_resize(filename):
     imgbgr = cv2.imread(filename, cv2.IMREAD_COLOR)
