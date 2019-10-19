@@ -6,7 +6,9 @@ from utils.utils import batch_from_dir
 # # RUN AUTOENCODER
 # cautoenc = ConvolutionalAutoencoder()
 # cautoenc.train()
-
-for i, j in batch_from_dir(IMG_DIR, VALID_IMAGES_PATHS):
+c = 0
+for i, j in batch_from_dir(IMG_DIR, TRAIN_IMAGES_PATHS):
+    c += 1
     print(i.shape)
 
+print(c)

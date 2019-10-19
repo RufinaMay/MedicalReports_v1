@@ -56,7 +56,7 @@ def batch_from_dir(images_dir, images_paths):
         im = read_and_resize(f'{images_dir}/{im_path}')
         batch_imgs.append(im)
         b += 1
-        if b > BATCH_SIZE:
+        if b >= BATCH_SIZE:
             out = (np.array(batch_imgs) - 127.5) / 127.5
             yield (out, out)
             b = 0
