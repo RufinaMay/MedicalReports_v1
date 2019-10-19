@@ -65,10 +65,10 @@ def batch_from_dir(images_dir):
 
 def read_and_resize(filename):
     imgbgr = cv2.imread(filename, cv2.IMREAD_COLOR)
-    # img_result = cv2.cvtColor(imgbgr, cv2.COLOR_BGR2RGB)
-    # img_result = cv2.resize(img_result, dsize = IMG_SHAPE[:2], interpolation = cv2.INTER_AREA)
+    img_result = cv2.cvtColor(imgbgr, cv2.COLOR_BGR2RGB)
+    img_result = cv2.resize(img_result, dsize = IMG_SHAPE[:2], interpolation = cv2.INTER_AREA)
     # img_result = image_normalization_mapping(imgbgr, 0, 255, -1,1)
-    return imgbgr
+    return img_result
 
 
 def showInRow(list_of_images, titles=None, disable_ticks=True):

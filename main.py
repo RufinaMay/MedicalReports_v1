@@ -1,9 +1,9 @@
 # file to run on colab
-import os
-import numpy as np
-from models.autoencoder.cnn_autoencoder import ConvolutionalAutoencoder
-from utils.utils import read_and_resize, batch_from_dir
-from preprocessing.chest_xray_extractor import unzip
+# import os
+# import numpy as np
+# from models.autoencoder.cnn_autoencoder import ConvolutionalAutoencoder
+# from utils.utils import read_and_resize, batch_from_dir
+# from preprocessing.chest_xray_extractor import unzip
 from utils.utils import batch_from_dir
 #
 # # download the data
