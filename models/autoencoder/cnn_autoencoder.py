@@ -5,7 +5,8 @@ from keras.optimizers import Adam
 import pickle
 
 from preprocessing.preprocessing import image_normalization_mapping
-from utils.constants import LR, IMG_SHAPE, EPOCHS, IMG_DIR, TRAIN_IMAGES_PATHS, TEST_IMAGES_PATHS, VALID_IMAGES_PATHS
+from utils.constants import LR, IMG_SHAPE, EPOCHS, IMG_DIR, TRAIN_IMAGES_PATHS, TEST_IMAGES_PATHS, VALID_IMAGES_PATHS, \
+    STEPS_PER_EPOCH, VALIDATION_STEPS
 from utils.utils import batch_from_dir, showInRow
 
 """
@@ -64,9 +65,11 @@ class ConvolutionalAutoencoder():
     def train(self):
         for e in range(EPOCHS):
             self.autoencoder.fit_generator(generator=self.train_batch,
+                                           steps_per_epoch=STEPS_PER_EPOCH,
                                            epochs=2,
                                            verbose=1,
-                                           validation_data=self.valid_batch)
+                                           validation_data=self.valid_batch,
+                                           validation_steps=VALIDATION_STEPS)
 
             self.visualize()
 
