@@ -67,7 +67,7 @@ def batch_from_dir(images_dir, images_paths):
 
 
 def read_and_resize(filename):
-    print(filename)
+    # print(filename)
     imgbgr = cv2.imread(filename, cv2.IMREAD_COLOR)
     img_result = cv2.cvtColor(imgbgr, cv2.COLOR_BGR2RGB)
     img_result = cv2.resize(img_result, dsize=IMG_SHAPE[:2], interpolation=cv2.INTER_AREA)
