@@ -3,14 +3,14 @@ from matplotlib import pyplot as plt
 import numpy as np
 import os
 from utils.constants import BATCH_SIZE, IMG_SHAPE
-from preprocessing.preprocessing import image_normalization_mapping
-import time
+from utils.constants import TRAIN_IMAGES_PATHS, TEST_IMAGES_PATHS, VALID_IMAGES_PATHS
 
 """
 TO ITERATE OVER BATCHES DO:
 for X, y in batch(IMAGES, one_hot_tags):
   ...
 """
+
 
 def batch(IMAGES, one_hot_tags):
     """
@@ -29,6 +29,7 @@ def batch(IMAGES, one_hot_tags):
             batch_IMGS, batch_TAGS = [], []
     yield np.array(batch_IMGS), np.array(batch_TAGS)
 
+
 def batch_no_labels(IMAGES):
     """
     IMAGES: mapping between image path and its tags
@@ -44,29 +45,31 @@ def batch_no_labels(IMAGES):
             batch_IMGS = []
     yield np.array(batch_IMGS)
 
-def batch_from_dir(images_dir):
+
+def batch_from_dir(images_dir, images_paths):
     """
     images_dir: e.g. data/chest_images
     """
-    batch_IMGS = []
+    batch_imgs= []
     b = 0
-    for im_path in os.listdir(images_dir):
-        if 'png' not in im_path:
-            continue
+    for im_path in images_paths:
         im = read_and_resize(f'{images_dir}/{im_path}')
-        batch_IMGS.append(im)
+        batch_imgs.append(im)
         b += 1
         if b > BATCH_SIZE:
-            yield (np.array(batch_IMGS)-127.5)/127.5
+            out = (np.array(batch_imgs) - 127.5) / 127.5
+            yield (out, out)
             b = 0
-            batch_IMGS = []
-    if len(batch_IMGS)>0:
-        yield (np.array(batch_IMGS)-127.5)/127.5 # np.array(batch_IMGS)
+            batch_imgs = []
+    if len(batch_imgs) > 0:
+        out = (np.array(batch_imgs) - 127.5) / 127.5
+        yield (out, out)
+
 
 def read_and_resize(filename):
     imgbgr = cv2.imread(filename, cv2.IMREAD_COLOR)
     img_result = cv2.cvtColor(imgbgr, cv2.COLOR_BGR2RGB)
-    img_result = cv2.resize(img_result, dsize = IMG_SHAPE[:2], interpolation = cv2.INTER_AREA)
+    img_result = cv2.resize(img_result, dsize=IMG_SHAPE[:2], interpolation=cv2.INTER_AREA)
     # img_result = image_normalization_mapping(imgbgr, 0, 255, -1,1)
     return img_result
 

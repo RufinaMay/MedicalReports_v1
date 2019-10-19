@@ -5,7 +5,7 @@ from keras.optimizers import Adam
 import pickle
 
 from preprocessing.preprocessing import image_normalization_mapping
-from utils.constants import LR, IMG_SHAPE, EPOCHS, IMG_DIR
+from utils.constants import LR, IMG_SHAPE, EPOCHS, IMG_DIR, TRAIN_IMAGES_PATHS, TEST_IMAGES_PATHS, VALID_IMAGES_PATHS
 from utils.utils import batch_from_dir, showInRow
 
 """
@@ -13,26 +13,29 @@ TO TRAIN AUTOENCODER RUN:
 
 """
 
+
 class ConvolutionalAutoencoder():
     def __init__(self, IMAGES):
-        self.X_train = IMAGES
-        self.X_train_norm = image_normalization_mapping(IMAGES, 0,255,-1,1)
+        self.IMAGES = IMAGES
         self.autoencoder, self.dim_reducer = self.CreateAutoencoder(LR)
+        self.train_batch = batch_from_dir(IMG_DIR, TRAIN_IMAGES_PATHS)
+        self.valid_batch = batch_from_dir(IMG_DIR, VALID_IMAGES_PATHS)
+        self.test_batch = batch_from_dir(IMG_DIR, TEST_IMAGES_PATHS)
 
     def CreateAutoencoder(self, lr=0.001):
         input_img = Input(shape=IMG_SHAPE)
-        l1 = Conv2D(filters=16, kernel_size=2, strides=(2, 2),
+        l1 = Conv2D(filters=512, kernel_size=2, strides=(2, 2),
                     input_shape=IMG_SHAPE, activation='tanh')(input_img)
-        l2 = Conv2D(filters=64, kernel_size=2, strides=(2, 2), activation='tanh')(l1)
-        l3 = Conv2D(filters=128, kernel_size=2, strides=(2, 2), activation='tanh')(l2)
-        l4 = Conv2D(filters=256, kernel_size=2, strides=(2, 2), activation='tanh')(l3)
+        l2 = Conv2D(filters=256, kernel_size=2, strides=(2, 2), activation='tanh')(l1)
+        l3 = Conv2D(filters=256, kernel_size=2, strides=(2, 2), activation='tanh')(l2)
+        l4 = Conv2D(filters=128, kernel_size=2, strides=(2, 2), activation='tanh')(l3)
 
         encoding = Conv2D(filters=128, kernel_size=2, strides=(2, 2))(l4)
 
-        l5 = Conv2DTranspose(filters=512, kernel_size=2, strides=(2, 2), activation='tanh')(encoding)
+        l5 = Conv2DTranspose(filters=128, kernel_size=2, strides=(2, 2), activation='tanh')(encoding)
         l6 = Conv2DTranspose(filters=256, kernel_size=2, strides=(2, 2), activation='tanh')(l5)
-        l7 = Conv2DTranspose(filters=128, kernel_size=2, strides=(2, 2), activation='tanh')(l6)
-        l8 = Conv2DTranspose(filters=128, kernel_size=2, strides=(2, 2), activation='tanh')(l7)
+        l7 = Conv2DTranspose(filters=256, kernel_size=2, strides=(2, 2), activation='tanh')(l6)
+        l8 = Conv2DTranspose(filters=512, kernel_size=2, strides=(2, 2), activation='tanh')(l7)
 
         decoded = Conv2DTranspose(filters=3, kernel_size=2, strides=(2, 2), activation='tanh')(l8)
 
@@ -42,50 +45,30 @@ class ConvolutionalAutoencoder():
 
         dim_reducer = Model(inputs=input_img, outputs=encoding)
 
+        autoencoder.summary()
+
         return autoencoder, dim_reducer
 
     def visualize(self):
-        idx = np.random.randint(low=0, high=self.X_train.shape[0], size = 5)
-        images = self.X_train_norm[idx]
-        decoded_imgs = self.autoencoder.predict(images)
-        img = image_normalization_mapping(decoded_imgs, -1, 1, 0, 255).astype('uint8')
+        idx = np.random.randint(low=0, high=self.IMAGES.shape[0], size=5)
+        images = self.IMAGES[idx]
+        images_norm = (np.array(images) - 127.5) / 127.5
+
+        decoded_imgs = self.autoencoder.predict(images_norm)
+        img = (np.array(decoded_imgs) * 127.5) + 127.5
+
         showInRow(images)
-        showInRow(img)
+        showInRow(img.astype('uint8'))
+        showInRow(decoded_imgs.astype('uint8'))
 
     def train(self):
-        for epoch in range(EPOCHS):
-            n = 0
-            LOSS, ACC = 0., 0.
-            for data in batch_from_dir(IMG_DIR):
-                loss, accuracy = self.autoencoder.train_on_batch(data, data)
-                n += 1
-                LOSS += loss
-                ACC += accuracy
-            LOSS /= n
-            ACC /= n
-            if epoch % 10 == 0:
-                self.visualize()
-                print(f'epoch {epoch} loss: {LOSS} accuracy: {ACC}')
+        for e in range(EPOCHS):
+            self.autoencoder.fit_generator(generator=self.train_batch,
+                                           epochs=2,
+                                           verbose=1,
+                                           validation_data=self.valid_batch)
 
-    # def save_models(self):
-    #     with open(f'dim_reducer.pickle', 'wb') as f:
-    #         pickle.dump(self.dim_reducer, f)
-    #     with open(f'autoencoder_{self.NORMAL_CLASS}.pickle', 'wb') as f:
-    #         pickle.dump(self.autoencoder, f)
-    #
-    # def reduce_dim_and_save(self):
-    #     # REDUCE DIMENTION FOR EACH IMAGE
-    #     reduced_train_normal = self.dim_reducer.predict(self.train_normal)
-    #     reduced_test_normal = self.dim_reducer.predict(self.test_normal)
-    #     test_mixed = np.concatenate((reduced_test_normal, reduced_anomal))
-    #     labels = np.concatenate((np.ones(reduced_test_normal.shape[0]), np.zeros(reduced_anomal.shape[0])))
-    #
-    #     # SAVE IMAGES WITH REDUCED DIMENTIONS
-    #     with open(f'train_normal_{self.NORMAL_CLASS}.pickle', 'wb') as f:
-    #         pickle.dump(reduced_train_normal, f)
-    #
-    #     with open(f'test_mixed_{self.NORMAL_CLASS}.pickle', 'wb') as f:
-    #         pickle.dump(test_mixed, f)
-    #
-    #     with open(f'labels_{self.NORMAL_CLASS}.pickle', 'wb') as f:
-    #         pickle.dump(labels, f)
+            self.visualize()
+
+    def test(self):
+        pass
