@@ -27,4 +27,4 @@ from utils.utils import batch_from_dir
 
 
 for i in batch_from_dir('data\chest_images'):
-    print(type(i))
+    print(i.shape)

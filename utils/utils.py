@@ -57,11 +57,11 @@ def batch_from_dir(images_dir):
         batch_IMGS.append(im)
         b += 1
         if b > BATCH_SIZE:
-            yield cv2.dnn.blobFromImages(batch_IMGS, 1 / 127.5, IMG_SHAPE[:2], mean=(127.5, 127.5, 127.5), swapRB=True, crop=False) # np.array(batch_IMGS)
+            yield (np.array(batch_IMGS)-127.5)/127.5
             b = 0
             batch_IMGS = []
     if len(batch_IMGS)>0:
-        yield cv2.dnn.blobFromImages(batch_IMGS, 1 / 127.5, IMG_SHAPE[:2], mean=(127.5, 127.5, 127.5), swapRB=True, crop=False) # np.array(batch_IMGS)
+        yield (np.array(batch_IMGS)-127.5)/127.5 # np.array(batch_IMGS)
 
 def read_and_resize(filename):
     imgbgr = cv2.imread(filename, cv2.IMREAD_COLOR)
