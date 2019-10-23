@@ -90,9 +90,9 @@ def showInRow(list_of_images, titles=None, disable_ticks=True):
             plt.xticks([]), plt.yticks([])
     plt.show()
 
-def get_TSNE(dim_reducer, images):
+def get_TSNE(dim_reducer, images, labels):
     n = images.shape[0]
     reduced = dim_reducer.predict(images)
     embedded = TSNE(n_components=2).fit_transform(reduced.reshape(n,-1))
 
-    plt.scatter(embedded[:,0], embedded[:,1])
+    plt.scatter(embedded[:,0], embedded[:,1], c = labels)
