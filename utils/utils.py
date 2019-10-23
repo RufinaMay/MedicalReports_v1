@@ -1,7 +1,8 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-import os
+from sklearn.manifold import TSNE
+
 from utils.constants import BATCH_SIZE, IMG_SHAPE
 from utils.constants import TRAIN_IMAGES_PATHS, TEST_IMAGES_PATHS, VALID_IMAGES_PATHS
 
@@ -88,3 +89,10 @@ def showInRow(list_of_images, titles=None, disable_ticks=True):
         if disable_ticks:
             plt.xticks([]), plt.yticks([])
     plt.show()
+
+def get_TSNE(dim_reducer, images):
+    n = images.shape[0]
+    reduced = dim_reducer.predict(images)
+    embedded = TSNE(n_components=2).fit_transform(reduced.reshape(n,-1))
+
+    plt.scatter(embedded[:,0], embedded[:,1])

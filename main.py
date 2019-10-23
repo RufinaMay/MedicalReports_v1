@@ -8,7 +8,7 @@ from utils.utils import batch_from_dir
 # cautoenc.train()
 c = 0
 for i, j in batch_from_dir(IMG_DIR, TRAIN_IMAGES_PATHS):
-    c += 1
-    print(i.shape)
+    c+=1
+
 
 print(c)

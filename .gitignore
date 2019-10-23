@@ -2,3 +2,4 @@ Pipfile
 Pipfile.lock
 data/
 .idea
+models/autoencoder/autoencoder.pickle
