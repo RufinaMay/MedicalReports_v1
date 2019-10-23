@@ -35,10 +35,13 @@ def remove_extra_charachters(report, tags):
     convert to lower case and remove non-alpha characters
     """
     tags = [t.lower() for t in tags]
-    reg = re.compile('[a-zA-Z ]')
-    report = reg.sub('', report)
+    reg = re.compile('[^a-zA-Z.? ]')
+    report = reg.sub(' ', report)
     report = report.lower()
-
+    report = re.sub('xx+', '', report)
+    report = re.sub('  +', ' ', report)
+    report.replace('?', '.')
+    report = report.lower()
     return report, tags
 
 
@@ -75,8 +78,17 @@ def process_report(xml_report_path):
     images_id = [img.attributes['id'].value for img in xml_report.getElementsByTagName('parentImage')]
     tags = set(tags)
     report, tags = remove_extra_charachters(report, tags)
-
-    return report, tags, images_id
+    report = report.split('.')
+    report_copy = []
+    for i in range(len(report)):
+        s = report[i].split(' ')
+        l = []
+        for w in s:
+            if len(w)>0:
+                l.append(w)
+        if len(l)>0:
+            report_copy.append(l)
+    return report_copy, tags, images_id
 
 
 def process_all_reports(reports_dir):
@@ -89,6 +101,7 @@ def process_all_reports(reports_dir):
     IMG_REPORT, IMG_TAG = {}, {}
     TAG_VOCAB, WORD_VOCAB = set(), set()
     IMG_NORMAL_ABNORMAL = {}
+
 
     TAGS_DISTRIBUTION = []
 
@@ -104,8 +117,9 @@ def process_all_reports(reports_dir):
         for t in tags:
             TAG_VOCAB.add(t)
             TAGS_DISTRIBUTION.append(t)
-        for w in report.split(' '):
-            WORD_VOCAB.add(w)
+        for s in report:
+            for w in s:
+                WORD_VOCAB.add(w)
 
     with open('IMG_NORMAL_ABNORMAL.pickle', 'wb') as f:
         pickle.dump(IMG_NORMAL_ABNORMAL, f)
