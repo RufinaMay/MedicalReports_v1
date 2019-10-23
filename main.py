@@ -1,14 +1,10 @@
 # file to run on colab
 from utils.constants import IMG_DIR, TRAIN_IMAGES_PATHS, VALID_IMAGES_PATHS
 from utils.utils import batch_from_dir
+from preprocessing.chest_xray_extractor import process_all_reports
 
 #
 # # RUN AUTOENCODER
 # cautoenc = ConvolutionalAutoencoder()
 # cautoenc.train()
-c = 0
-for i, j in batch_from_dir(IMG_DIR, TRAIN_IMAGES_PATHS):
-    c+=1
-
-
-print(c)
+process_all_reports('data/chest_reports/ecgen-radiology')

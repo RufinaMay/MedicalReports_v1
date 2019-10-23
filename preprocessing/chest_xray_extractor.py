@@ -79,31 +79,36 @@ def process_report(xml_report_path):
     return report, tags, images_id
 
 
-def process_all_reports(imgs_dir, reports_dir):
+def process_all_reports(reports_dir):
     """
     imgs_path: path to directory containing images
     reports_path: path to directory containing reports in xml format
     """
-    imgs_paths = os.listdir(imgs_dir)
     reports_paths = os.listdir(reports_dir)
 
     IMG_REPORT, IMG_TAG = {}, {}
     TAG_VOCAB, WORD_VOCAB = set(), set()
+    IMG_NORMAL_ABNORMAL = {}
 
     TAGS_DISTRIBUTION = []
-    FINDINGS = []
 
     for r_path in reports_paths:
         report, tags, images_id = process_report(f'{reports_dir}/{r_path}')
         for img in images_id:
             IMG_REPORT[img] = report
             IMG_TAG[img] = tags
+            if len(tags)==1 and tags[0] =='normal':
+                IMG_NORMAL_ABNORMAL[img] = 1
+            else: IMG_NORMAL_ABNORMAL[img] = 0
 
         for t in tags:
             TAG_VOCAB.add(t)
             TAGS_DISTRIBUTION.append(t)
         for w in report.split(' '):
             WORD_VOCAB.add(w)
+
+    with open('IMG_NORMAL_ABNORMAL.pickle', 'wb') as f:
+        pickle.dump(IMG_NORMAL_ABNORMAL, f)
 
     with open('IMG_REPORT.pickle', 'wb') as f:
         pickle.dump(IMG_REPORT, f)
