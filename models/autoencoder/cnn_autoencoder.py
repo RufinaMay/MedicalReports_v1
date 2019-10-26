@@ -6,27 +6,42 @@ import pickle
 
 from utils.constants import LR, IMG_SHAPE, EPOCHS, IMG_DIR, TRAIN_IMAGES_PATHS, TEST_IMAGES_PATHS, VALID_IMAGES_PATHS, \
     STEPS_PER_EPOCH, VALIDATION_STEPS
-from utils.utils import batch_from_dir, showInRow
+from utils.utils import batch_nolabels_from_dir, showInRow
 
 """
 TO TRAIN AUTOENCODER RUN:
 
+cautoenc = ConvolutionalAutoencoder(IMAGES, None, None)
+cautoenc.train()
+cautoenc.test()
+cautoenc.save()
 """
 
 
 class ConvolutionalAutoencoder():
-    def __init__(self, IMAGES, autoencoder, dim_reducer):
+    def __init__(self, IMAGES, autoencoder=None, dim_reducer=None):
+        """
+        :param IMAGES: numpy array of Images for showing intermediate results of training with shape (?,448,448,3)
+        :param autoencoder: if there is already trained autoencoder model it can be load, if it is None autoencoder
+                model will be created
+        :param dim_reducer: if there is already trained dim_reducer model it can be load, if it is None dim_reducer
+                will be created
+        The autoencoder model and dim_reducer will be created if not passed.
+        Also batch loaders for train, validation and test sets are identified
+        """
         self.IMAGES = IMAGES
         if autoencoder is not None and dim_reducer is not None:
             self.autoencoder = autoencoder
             self.dim_reducer = dim_reducer
         else:
             self.autoencoder, self.dim_reducer = self.CreateAutoencoder(LR)
-        self.train_batch = batch_from_dir(IMG_DIR, TRAIN_IMAGES_PATHS)
-        self.valid_batch = batch_from_dir(IMG_DIR, VALID_IMAGES_PATHS)
-        self.test_batch = batch_from_dir(IMG_DIR, TEST_IMAGES_PATHS)
 
     def CreateAutoencoder(self, lr=0.001):
+        """
+        Creates autoencoder and dim_reducer models
+        :param lr: learning rate for training the model
+        :return: assembled autoencoder, dim_reducer
+        """
         input_img = Input(shape=IMG_SHAPE)
         l1 = Conv2D(filters=512, kernel_size=4, strides=(2, 2), input_shape=IMG_SHAPE, activation='tanh',
                     padding='same')(input_img)
@@ -56,6 +71,11 @@ class ConvolutionalAutoencoder():
         return autoencoder, dim_reducer
 
     def visualize(self):
+        """
+        Visualize results of encoding decoding 5 random images from self.IMAGES
+        In shows first original images, then decoded images
+        :return:
+        """
         idx = np.random.randint(low=0, high=self.IMAGES.shape[0], size=5)
         images = self.IMAGES[idx]
         images_norm = (np.array(images) - 127.5) / 127.5
@@ -65,23 +85,31 @@ class ConvolutionalAutoencoder():
 
         showInRow(images)
         showInRow(img.astype('uint8'))
-        showInRow(decoded_imgs.astype('uint8'))
 
     def train(self):
-        for e in range(5):
-            self.autoencoder.fit_generator(generator=self.train_batch,
+        """
+        Perform training of autoencoder
+        :return: trained autoencoder
+        """
+        for e in range(EPOCHS):
+            train_batch = batch_nolabels_from_dir(IMG_DIR, TRAIN_IMAGES_PATHS)
+            valid_batch = batch_nolabels_from_dir(IMG_DIR, VALID_IMAGES_PATHS)
+            self.autoencoder.fit_generator(generator=train_batch,
                                            steps_per_epoch=STEPS_PER_EPOCH,
                                            epochs=1,
                                            verbose=1,
-                                           validation_data=self.valid_batch,
+                                           validation_data=valid_batch,
                                            validation_steps=VALIDATION_STEPS)
 
             self.visualize()
-            self.train_batch = batch_from_dir(IMG_DIR, TRAIN_IMAGES_PATHS)
-            self.valid_batch = batch_from_dir(IMG_DIR, VALID_IMAGES_PATHS)
 
     def test(self):
-        for test_img, _ in self.test_batch:
+        """
+        Assesing the autoencoder performance on test set
+        :return: visualize the original images and decoded images
+        """
+        test_batch = batch_nolabels_from_dir(IMG_DIR, TEST_IMAGES_PATHS)
+        for test_img, _ in test_batch:
             decoded = self.autoencoder.predict(test_img)
             # calculate mse between true and predicted
             test_imgss = test_img * 127.5 + 127.5
@@ -89,7 +117,11 @@ class ConvolutionalAutoencoder():
             showInRow(test_imgss.astype('uint8'))
             showInRow(decoded.astype('uint8'))
 
-    def save_trained(self):
+    def save(self):
+        """
+        Save autoencoder and dim_reducer to file
+        :return:
+        """
         with open('autoencoder.pickle', 'wb') as f:
             pickle.dump(self.autoencoder, f)
 
