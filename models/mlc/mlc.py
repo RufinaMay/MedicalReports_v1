@@ -56,27 +56,25 @@ class MultilabelClassification():
             batch_TAGS.append(one_hot_tags)
             b += 1
 
-            if b > BATCH_SIZE:
+            if b >= BATCH_SIZE:
                 yield normalize(batch_IMGS), np.array(batch_TAGS)
                 b = 0
                 batch_IMGS, batch_TAGS = [], []
         yield normalize(batch_IMGS), np.array(batch_TAGS)
 
     def eval(self):
-        train_batch = self.batch_tags(self.x_train, self.y_train)
-        valid_batch = self.batch_tags(self.x_valid, self.y_valid)
+        train_batch = self.batch_tags(self.train_set)
+        # valid_batch = self.batch_tags(self.x_valid, self.y_valid)
         # make prediction on train set
         for x_train, y_train in train_batch:
             train_pred = self.model.predict_on_batch(x_train)
             break
-        for x_valid, y_valid in valid_batch:
-            valid_pred = self.model.predict_on_batch(x_valid)
-            break
 
+        print(x_train.shape)
+        print(train_pred.shape)
         train_pre_rec = precision_recall(y_train, train_pred)
-        valid_pre_rec = precision_recall(y_valid, valid_pred)
 
-        return train_pre_rec, valid_pre_rec
+        return train_pre_rec
 
     def train(self, img_tag_mapping):
         # self.train, self.valid, self.test = self.prepare_data(img_tag_mapping)
