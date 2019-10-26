@@ -84,7 +84,7 @@ def process_report(xml_report_path):
     report, tags = remove_extra_charachters(report, tags)
     report = report.split('.')
     report_processed = []
-    for r in range(len(report)):
+    for r in report:
         sentence = [word for word in r.split(' ') if len(word) > 0]
         if len(sentence) > 0:
             report_processed.append(sentence)
@@ -122,6 +122,13 @@ def process_all_reports(reports_dir):
         [TAG_VOCAB.add(t) for t in tags]
         [WORD_VOCAB.add(w) for sentence in report for w in sentence]
 
+    TAG_TO_INDEX = {}
+    i = 0
+    for t in TAG_VOCAB:
+        TAG_TO_INDEX[t] = i
+        i += 1
+
+
     with open('IMG_NORMAL_ABNORMAL.pickle', 'wb') as f:
         pickle.dump(IMG_NORMAL_ABNORMAL, f)
 
@@ -130,5 +137,8 @@ def process_all_reports(reports_dir):
 
     with open('IMG_TAG.pickle', 'wb') as f:
         pickle.dump(IMG_TAG, f)
+
+    with open('TAG_TO_INDEX.pickle', 'wb') as f:
+        pickle.dump(TAG_TO_INDEX, f)
 
     return IMG_REPORT, IMG_TAG, TAG_VOCAB, WORD_VOCAB
