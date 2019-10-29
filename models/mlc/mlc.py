@@ -2,7 +2,7 @@ import pickle
 import numpy as np
 from keras.layers import Input, Flatten, Dense, Activation
 from keras.models import Sequential
-from keras.losses import categorical_crossentropy
+from keras.losses import binary_crossentropy
 from keras.optimizers import Adam
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
@@ -29,11 +29,11 @@ class MultilabelClassification():
             Dense(4096, activation='relu'),
             Dense(4096, activation='relu'),
             Dense(UNIQUE_TAGS),
-            Activation('softmax')
+            Activation('sigmoid')
         ], name='mlc_layers')
 
         model = Sequential([self.dim_reducer, mlc_layers], name='MLC')
-        model.compile(optimizer=Adam(lr=LR), loss=categorical_crossentropy)
+        model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
         return model
 
     @staticmethod
@@ -70,8 +70,6 @@ class MultilabelClassification():
             train_pred = self.model.predict_on_batch(x_train)
             break
 
-        print(x_train.shape)
-        print(train_pred.shape)
         train_pre_rec = precision_recall(y_train, train_pred)
 
         return train_pre_rec
@@ -87,8 +85,8 @@ class MultilabelClassification():
             # valid_batch = self.batch_tags(self.valid)
 
             self.model.fit_generator(generator=train_batch,
-                                     steps_per_epoch=steps_per_epoch,
+                                     steps_per_epoch=1,
                                      epochs=1)
 
-            # # calculate evaluation metrics
-            # self.eval()
+            # calculate evaluation metrics
+            self.eval()

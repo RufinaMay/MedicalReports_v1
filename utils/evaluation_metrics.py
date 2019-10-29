@@ -4,6 +4,8 @@ def precision_recall(true_tags, predicted_tags):
     n_tags = true_tags.shape[1]
     N_c, N_g, N_p = np.zeros(n_tags), np.zeros(n_tags), np.zeros(n_tags)
     for t, p in zip(true_tags, predicted_tags):
+        print(t)
+        print(p)
         for i in range(len(t)):
             N_g[t[i]] += 1
             N_p[p[i]] += 1
