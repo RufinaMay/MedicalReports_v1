@@ -26,8 +26,7 @@ class MultilabelClassification():
     def create_model(self):
         mlc_layers = Sequential([
             Flatten(input_shape=(7, 7, 128)),
-            Dense(4096, activation='relu'),
-            Dense(4096, activation='relu'),
+            Dense(4096),
             Dense(UNIQUE_TAGS),
             Activation('sigmoid')
         ], name='mlc_layers')
@@ -68,9 +67,12 @@ class MultilabelClassification():
         # make prediction on train set
         for x_train, y_train in train_batch:
             train_pred = self.model.predict_on_batch(x_train)
-        train_pre_rec = precision_recall(y_train, train_pred)
+            break
+            print(f'true: {y_train}')
+            print(f'predicted {train_pred}')
+        # train_pre_rec = precision_recall(y_train, train_pred)
 
-        return train_pre_rec
+        # return train_pre_rec
 
     def train(self, img_tag_mapping):
         # self.train, self.valid, self.test = self.prepare_data(img_tag_mapping)
@@ -87,4 +89,4 @@ class MultilabelClassification():
                                      epochs=1)
 
             # calculate evaluation metrics
-            # self.eval()
+            self.eval()
