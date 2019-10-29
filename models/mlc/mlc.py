@@ -1,11 +1,9 @@
 import pickle
 import numpy as np
-from keras.layers import Input, Flatten, Dense, Activation
+from keras.layers import Flatten, Dense, Activation
 from keras.models import Sequential
 from keras.losses import binary_crossentropy
 from keras.optimizers import Adam
-from sklearn.preprocessing import MultiLabelBinarizer
-from sklearn.model_selection import train_test_split
 
 from utils.constants import PATH_DIM_REDUCER, UNIQUE_TAGS, LR, MLC_EPOCHS, BATCH_SIZE, IMG_DIR
 from utils.utils import normalize, read_and_resize
@@ -34,11 +32,26 @@ class MultilabelClassification():
         model = Sequential([self.dim_reducer, mlc_layers], name='MLC')
         model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
         return model
-
     @staticmethod
-    def prepare_data(img_tag_mapping):
-        train, test = train_test_split(img_tag_mapping, test_size=0.2, random_state=42)
-        train, valid = train_test_split(train, test_size=0.2, random_state=42)
+    def train_test_split(img_tag_mapping, test_size = 0.2):
+        n = len(img_tag_mapping)
+        idxs = np.arange(n)
+        np.random.shuffle(idxs)
+        train_size = np.ceil((1 - test_size)*n).astype('int32')
+        train_idxs, test_idxs = idxs[:train_size], idxs[train_size:]
+        train, test = {}, {}
+        i = 0
+        for k in img_tag_mapping:
+            if i in train_idxs:
+                train[k] = img_tag_mapping[k]
+            else:
+                test[k] = img_tag_mapping[k]
+            i+=1
+        return train, test
+
+    def prepare_data(self, img_tag_mapping):
+        train, test = self.train_test_split(img_tag_mapping, test_size=0.2)
+        train, valid = self.train_test_split(train, test_size=0.2)
 
         return train, valid, test
 
@@ -77,18 +90,20 @@ class MultilabelClassification():
         # return train_pre_rec
 
     def train(self, img_tag_mapping):
-        # self.train, self.valid, self.test = self.prepare_data(img_tag_mapping)
-        self.train_set = img_tag_mapping
+        self.train_set, self.valid_set, self.test_set = self.prepare_data(img_tag_mapping)
+
         steps_per_epoch = np.ceil(len(self.train_set) / BATCH_SIZE)
-        # validation_steps = np.ceil(len(self.valid) / BATCH_SIZE)
+        validation_steps = np.ceil(len(self.valid_set) / BATCH_SIZE)
 
         for e in range(MLC_EPOCHS):
             train_batch = self.batch_tags(self.train_set)
-            # valid_batch = self.batch_tags(self.valid)
+            valid_batch = self.batch_tags(self.valid_set)
 
             self.model.fit_generator(generator=train_batch,
                                      steps_per_epoch=steps_per_epoch,
-                                     epochs=1)
+                                     epochs=1,
+                                     validation_data=valid_batch,
+                                     validation_steps=validation_steps)
 
             # calculate evaluation metrics
             self.eval()
