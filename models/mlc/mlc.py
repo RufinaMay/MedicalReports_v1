@@ -32,12 +32,13 @@ class MultilabelClassification():
         model = Sequential([self.dim_reducer, mlc_layers], name='MLC')
         model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
         return model
+
     @staticmethod
-    def train_test_split(img_tag_mapping, test_size = 0.2):
+    def train_test_split(img_tag_mapping, test_size=0.2):
         n = len(img_tag_mapping)
         idxs = np.arange(n)
         np.random.shuffle(idxs)
-        train_size = np.ceil((1 - test_size)*n).astype('int32')
+        train_size = np.ceil((1 - test_size) * n).astype('int32')
         train_idxs, test_idxs = idxs[:train_size], idxs[train_size:]
         train, test = {}, {}
         i = 0
@@ -46,7 +47,7 @@ class MultilabelClassification():
                 train[k] = img_tag_mapping[k]
             else:
                 test[k] = img_tag_mapping[k]
-            i+=1
+            i += 1
         return train, test
 
     def prepare_data(self, img_tag_mapping):
@@ -74,17 +75,37 @@ class MultilabelClassification():
                 batch_IMGS, batch_TAGS = [], []
         yield normalize(batch_IMGS), np.array(batch_TAGS)
 
+    @staticmethod
+    def batch_accuracy(true, predicted):
+        guessed, total = 0, 0
+        for t, p in zip(true, predicted):
+            t_idxs = np.where(t==1)[0]
+            n = len(t_idxs)
+            p_idxs = np.argsort(p)[:n]
+            for p_id in p_idxs:
+                if p_id in t_idxs:
+                    guessed += 1
+            total += n
+        return guessed, total
+
     def eval(self):
+        # calculate accuracy
         train_batch = self.batch_tags(self.train_set)
-        # valid_batch = self.batch_tags(self.x_valid, self.y_valid)
-        # make prediction on train set
+        valid_batch = self.batch_tags(self.valid_set)
+
+        guessed, total = 0, 0
         for x_train, y_train in train_batch:
             train_pred = self.model.predict_on_batch(x_train)
-            # print(f'true: {y_train}')
-            # print(f'predicted {train_pred}')
-            print(f'true: {np.argsort(y_train[0])[:10]}')
-            print(f'predicted {np.argsort(train_pred[0])[:10]}')
-            break
+            b_true, b_total = self.batch_accuracy(y_train, train_pred)
+            guessed += b_true
+            total += b_total
+
+        train_acc = guessed/total
+
+        return train_acc
+
+        # valid_batch = self.batch_tags(self.x_valid, self.y_valid)
+        # make prediction on train set
         # train_pre_rec = precision_recall(y_train, train_pred)
 
         # return train_pre_rec
@@ -100,10 +121,11 @@ class MultilabelClassification():
             valid_batch = self.batch_tags(self.valid_set)
 
             self.model.fit_generator(generator=train_batch,
-                                     steps_per_epoch=steps_per_epoch,
-                                     epochs=1,
-                                     validation_data=valid_batch,
-                                     validation_steps=validation_steps)
+                                     steps_per_epoch=1, # steps_per_epoch
+                                     epochs=1)
+                                     # validation_data=valid_batch,
+                                     # validation_steps=validation_steps)
 
             # calculate evaluation metrics
-            self.eval()
+            acc = self.eval()
+            print(acc)
