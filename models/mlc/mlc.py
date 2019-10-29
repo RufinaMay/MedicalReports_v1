@@ -68,8 +68,6 @@ class MultilabelClassification():
         # make prediction on train set
         for x_train, y_train in train_batch:
             train_pred = self.model.predict_on_batch(x_train)
-            break
-
         train_pre_rec = precision_recall(y_train, train_pred)
 
         return train_pre_rec
@@ -85,8 +83,8 @@ class MultilabelClassification():
             # valid_batch = self.batch_tags(self.valid)
 
             self.model.fit_generator(generator=train_batch,
-                                     steps_per_epoch=1,
+                                     steps_per_epoch=steps_per_epoch,
                                      epochs=1)
 
             # calculate evaluation metrics
-            self.eval()
+            # self.eval()
