@@ -67,9 +67,11 @@ class MultilabelClassification():
         # make prediction on train set
         for x_train, y_train in train_batch:
             train_pred = self.model.predict_on_batch(x_train)
+            # print(f'true: {y_train}')
+            # print(f'predicted {train_pred}')
+            print(f'true: {np.argsort(y_train[0])[:10]}')
+            print(f'predicted {np.argsort(train_pred[0])[:10]}')
             break
-            print(f'true: {y_train}')
-            print(f'predicted {train_pred}')
         # train_pre_rec = precision_recall(y_train, train_pred)
 
         # return train_pre_rec

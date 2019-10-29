@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 BATCH_SIZE = 8
-LR = 0.001
+LR = 0.0001
 EPOCHS = 10
 IMG_SHAPE = (448, 448, 3)
 TEST_SIZE = 0.2
