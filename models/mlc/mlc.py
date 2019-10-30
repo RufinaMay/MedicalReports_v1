@@ -1,6 +1,6 @@
 import pickle
 import numpy as np
-from keras.layers import Flatten, Dense, Activation
+from keras.layers import Flatten, Dense, Activation, Conv2D, MaxPooling2D, Dropout
 from keras.models import Sequential
 from keras.losses import binary_crossentropy
 from keras.optimizers import Adam
@@ -22,16 +22,42 @@ class MultilabelClassification():
         self.model = self.create_model()
 
     def create_model(self):
-        mlc_layers = Sequential([
-            Flatten(input_shape=(7, 7, 128)),
-            Dense(4096),
-            Dense(UNIQUE_TAGS),
-            Activation('sigmoid')
-        ], name='mlc_layers')
+        # mlc_layers = Sequential([
+        #     Flatten(input_shape=(7, 7, 128)),
+        #     Dense(4096),
+        #     Dense(UNIQUE_TAGS),
+        #     Activation('sigmoid')
+        # ], name='mlc_layers')
+        #
+        # model = Sequential([self.dim_reducer, mlc_layers], name='MLC')
+        # model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
+        # return model
 
-        model = Sequential([self.dim_reducer, mlc_layers], name='MLC')
+        model = Sequential([
+        Conv2D(filters=16, kernel_size=(5, 5), activation="relu", input_shape=(448, 448, 3)),
+        MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
+        Conv2D(filters=32, kernel_size=(5, 5), activation='relu'),
+        MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
+        Conv2D(filters=64, kernel_size=(5, 5), activation="relu"),
+        MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
+        Conv2D(filters=64, kernel_size=(5, 5), activation='relu'),
+        MaxPooling2D(pool_size=(2, 2)),
+        Dropout(0.25),
+        Flatten(),
+        Dense(128, activation='relu'),
+        Dropout(0.5),
+        Dense(64, activation='relu'),
+        Dropout(0.5),
+        Dense(UNIQUE_TAGS, activation='sigmoid')
+        ])
+
         model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
+
         return model
+
 
     @staticmethod
     def train_test_split(img_tag_mapping, test_size=0.2):
