@@ -51,7 +51,6 @@ def remove_extra_charachters(report, tags):
     report = re.sub('xx+', '', report)
     report = re.sub('  +', ' ', report)
     report.replace('?', '.')
-    report = report.lower()
     return report, tags
 
 
