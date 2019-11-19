@@ -34,20 +34,20 @@ class MultilabelClassification():
         # return model
 
         model = Sequential([
-            Conv2D(filters=32, kernel_size=(5, 5), activation="relu", input_shape=(448, 448, 3)),
+            Conv2D(filters=16, kernel_size=(5, 5), activation="relu", input_shape=(448, 448, 3)),
+            MaxPooling2D(pool_size=(2, 2)),
+            Dropout(0.25),
+            Conv2D(filters=32, kernel_size=(5, 5), activation='relu'),
+            MaxPooling2D(pool_size=(2, 2)),
+            Dropout(0.25),
+            Conv2D(filters=64, kernel_size=(5, 5), activation="relu"),
             MaxPooling2D(pool_size=(2, 2)),
             Dropout(0.25),
             Conv2D(filters=64, kernel_size=(5, 5), activation='relu'),
             MaxPooling2D(pool_size=(2, 2)),
             Dropout(0.25),
-            Conv2D(filters=128, kernel_size=(5, 5), activation="relu"),
-            MaxPooling2D(pool_size=(2, 2)),
-            Dropout(0.25),
-            Conv2D(filters=128, kernel_size=(5, 5), activation='relu'),
-            MaxPooling2D(pool_size=(2, 2)),
-            Dropout(0.25),
             Flatten(),
-            Dense(256, activation='relu'),
+            Dense(128, activation='relu'),
             Dropout(0.5),
             Dense(64, activation='relu'),
             Dropout(0.5),
@@ -147,8 +147,10 @@ class MultilabelClassification():
             valid_batch = self.batch_tags(self.valid_set)
 
             self.model.fit_generator(generator=train_batch,
-                                     steps_per_epoch=1,  # steps_per_epoch
-                                     epochs=1)
+                                     steps_per_epoch=steps_per_epoch,  # steps_per_epoch
+                                     epochs=1,
+                                     validation_data=valid_batch,
+                                     validation_steps=validation_steps)
             # validation_data=valid_batch,
             # validation_steps=validation_steps)
 
