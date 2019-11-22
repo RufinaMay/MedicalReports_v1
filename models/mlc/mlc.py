@@ -128,9 +128,18 @@ class MultilabelClassification():
 
         train_acc = guessed / total
 
-        return train_acc
 
-        # valid_batch = self.batch_tags(self.x_valid, self.y_valid)
+        guessed, total = 0, 0
+        for x_valid, y_valid in valid_batch:
+            valid_pred = self.model.predict_on_batch(x_valid)
+            b_true, b_total = self.batch_accuracy(y_valid, valid_pred)
+            guessed += b_true
+            total += b_total
+
+        valid_acc = guessed / total
+
+        return train_acc, valid_acc
+
         # make prediction on train set
         # train_pre_rec = precision_recall(y_train, train_pred)
 
@@ -151,8 +160,6 @@ class MultilabelClassification():
                                      epochs=1,
                                      validation_data=valid_batch,
                                      validation_steps=validation_steps)
-            # validation_data=valid_batch,
-            # validation_steps=validation_steps)
 
             # calculate evaluation metrics
             acc = self.eval()
