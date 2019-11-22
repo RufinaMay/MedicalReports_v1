@@ -36,21 +36,21 @@ class MultilabelClassification():
         model = Sequential([
             Conv2D(filters=16, kernel_size=(5, 5), activation="relu", input_shape=(448, 448, 3)),
             MaxPooling2D(pool_size=(2, 2)),
-            Dropout(0.25),
+            # Dropout(0.25),
             Conv2D(filters=32, kernel_size=(5, 5), activation='relu'),
             MaxPooling2D(pool_size=(2, 2)),
-            Dropout(0.25),
+            # Dropout(0.25),
             Conv2D(filters=64, kernel_size=(5, 5), activation="relu"),
             MaxPooling2D(pool_size=(2, 2)),
-            Dropout(0.25),
+            # Dropout(0.25),
             Conv2D(filters=64, kernel_size=(5, 5), activation='relu'),
             MaxPooling2D(pool_size=(2, 2)),
-            Dropout(0.25),
+            # Dropout(0.25),
             Flatten(),
             Dense(128, activation='relu'),
-            Dropout(0.5),
+            # Dropout(0.5),
             Dense(64, activation='relu'),
-            Dropout(0.5),
+            # Dropout(0.5),
             Dense(UNIQUE_TAGS, activation='sigmoid')
         ])
 
