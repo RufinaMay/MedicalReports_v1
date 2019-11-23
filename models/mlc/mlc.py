@@ -2,7 +2,7 @@ import pickle
 import numpy as np
 from keras.layers import Flatten, Dense, Activation, Conv2D, MaxPooling2D, Dropout
 from keras.models import Sequential
-from keras.losses import binary_crossentropy
+from keras.losses import binary_crossentropy, mean_squared_error
 from keras.optimizers import Adam
 
 from utils.constants import PATH_DIM_REDUCER, UNIQUE_TAGS, LR, MLC_EPOCHS, BATCH_SIZE, IMG_DIR
@@ -62,7 +62,7 @@ class MultilabelClassification():
             Dense(UNIQUE_TAGS, activation='sigmoid')
         ])
 
-        model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
+        model.compile(optimizer=Adam(lr=LR), loss=mean_squared_error)
 
         return model
 
