@@ -62,7 +62,7 @@ class MultilabelClassification():
             Dense(UNIQUE_TAGS, activation='sigmoid')
         ])
 
-        model.compile(optimizer=Adam(lr=LR), loss=mean_squared_error)
+        model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
 
         return model
 
