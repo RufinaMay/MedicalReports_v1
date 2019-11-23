@@ -9,7 +9,7 @@ from utils.constants import PATH_DIM_REDUCER, UNIQUE_TAGS, LR, MLC_EPOCHS, BATCH
 from utils.utils import normalize, read_and_resize
 from utils.evaluation_metrics import precision_recall
 
-from sre_constants import IMG_SHAPE
+from utils.constants import IMG_SHAPE
 
 
 class MultilabelClassification():
