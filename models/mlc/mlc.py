@@ -9,6 +9,8 @@ from utils.constants import PATH_DIM_REDUCER, UNIQUE_TAGS, LR, MLC_EPOCHS, BATCH
 from utils.utils import normalize, read_and_resize
 from utils.evaluation_metrics import precision_recall
 
+from sre_constants import IMG_SHAPE
+
 
 class MultilabelClassification():
     def __init__(self):
@@ -34,7 +36,7 @@ class MultilabelClassification():
         # return model
 
         model = Sequential([
-            Conv2D(filters=64, kernel_size=(3, 3), activation="relu", input_shape=(448, 448, 3)),
+            Conv2D(filters=64, kernel_size=(3, 3), activation="relu", input_shape=IMG_SHAPE),
             Conv2D(filters=64, kernel_size=(3, 3), activation='relu'),
             MaxPooling2D(pool_size=(2, 2)),
             # Dropout(0.25),
