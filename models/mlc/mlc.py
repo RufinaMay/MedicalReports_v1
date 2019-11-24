@@ -101,10 +101,10 @@ class MultilabelClassification():
             b += 1
 
             if b >= BATCH_SIZE:
-                yield normalize(batch_IMGS), np.array(batch_TAGS)
+                yield normalize(batch_IMGS)[np.newaxis,:], np.array(batch_TAGS)
                 b = 0
                 batch_IMGS, batch_TAGS = [], []
-        yield normalize(batch_IMGS), np.array(batch_TAGS)
+        yield normalize(batch_IMGS)[np.newaxis,:], np.array(batch_TAGS)
 
     @staticmethod
     def batch_accuracy(true, predicted):
