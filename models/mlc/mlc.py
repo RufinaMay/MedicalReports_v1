@@ -1,16 +1,12 @@
 import pickle
 import numpy as np
-from keras.layers import Flatten, Dense, Activation, Conv2D, MaxPooling2D, Dropout
+from keras.layers import Flatten, Dense, Activation, Conv2D, MaxPooling2D, Dropout, LSTM, TimeDistributed
 from keras.models import Sequential
 from keras.losses import binary_crossentropy, mean_squared_error
 from keras.optimizers import Adam
 
-from utils.constants import PATH_DIM_REDUCER, UNIQUE_TAGS, LR, MLC_EPOCHS, BATCH_SIZE, IMG_DIR
+from utils.constants import PATH_DIM_REDUCER, UNIQUE_TAGS, LR, MLC_EPOCHS, BATCH_SIZE, IMG_DIR, IMG_SHAPE
 from utils.utils import normalize, read_and_resize
-from utils.evaluation_metrics import precision_recall
-
-from utils.constants import IMG_SHAPE
-
 
 class MultilabelClassification():
     def __init__(self):
@@ -35,7 +31,7 @@ class MultilabelClassification():
         # model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
         # return model
 
-        model = Sequential([
+        cnn = Sequential([
             Conv2D(filters=64, kernel_size=(3, 3), activation="relu", input_shape=IMG_SHAPE),
             Conv2D(filters=64, kernel_size=(3, 3), activation='relu'),
             MaxPooling2D(pool_size=(2, 2)),
@@ -58,14 +54,15 @@ class MultilabelClassification():
             Conv2D(filters=512, kernel_size=(3, 3), activation="relu"),
             Conv2D(filters=512, kernel_size=(1, 1), activation="relu"),
             MaxPooling2D(pool_size=(2, 2)),
-            Flatten(),
-            Dense(4096, activation='relu'),
-            Dense(4096, activation='relu'),
-            Dense(UNIQUE_TAGS, activation='sigmoid')
+            Flatten()
         ])
+        model = Sequential([
+             TimeDistributed(cnn),
+             LSTM(100, return_sequences=False),
+             Dense(UNIQUE_TAGS, activation='sigmoid')
+         ])
 
         model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
-
         return model
 
     @staticmethod
@@ -150,17 +147,12 @@ class MultilabelClassification():
 
         return train_acc, valid_acc
 
-        # make prediction on train set
-        # train_pre_rec = precision_recall(y_train, train_pred)
-
-        # return train_pre_rec
-
     def train(self, img_tag_mapping):
-        for e in range(MLC_EPOCHS):
-            self.train_set, self.valid_set, self.test_set = self.prepare_data(img_tag_mapping)
-            steps_per_epoch = np.ceil(len(self.train_set) / BATCH_SIZE)
-            validation_steps = np.ceil(len(self.valid_set) / BATCH_SIZE)
+        self.train_set, self.valid_set, self.test_set = self.prepare_data(img_tag_mapping)
+        steps_per_epoch = np.ceil(len(self.train_set) / BATCH_SIZE)
+        validation_steps = np.ceil(len(self.valid_set) / BATCH_SIZE)
 
+        for e in range(MLC_EPOCHS):
             train_batch = self.batch_tags(self.train_set)
             valid_batch = self.batch_tags(self.valid_set)
 

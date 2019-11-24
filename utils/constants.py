@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 BATCH_SIZE = 8
 LR = 0.001
 EPOCHS = 10
-IMG_SHAPE = (224, 224, 3)
+IMG_SHAPE = (448, 448, 3)
 TEST_SIZE = 0.2
 VALIDATION_SIZE = 0.2
 IMG_DIR = 'data/chest_images'

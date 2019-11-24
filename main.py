@@ -14,4 +14,4 @@ with open(PATH_IMG_TAG_MAPPING, 'rb') as f:
 
 # MLC
 MLC = MultilabelClassification()
-MLC.train(IMG_TAG_MAPPING)
+# MLC.train(IMG_TAG_MAPPING)
