@@ -60,7 +60,6 @@ class MultilabelClassification():
          ])
 
         model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
-        model.summary()
         return model
 
     @staticmethod
