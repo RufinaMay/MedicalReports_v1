@@ -97,7 +97,7 @@ class MultilabelClassification():
                 one_hot_tags[self.tag_to_index[tag]] = 1
             # one_hot_tags= one_hot_tags / sum(one_hot_tags)
 
-            batch_TAGS.append(one_hot_tags)
+            batch_TAGS.append(one_hot_tags[np.newaxis,:])
             b += 1
 
             if b >= BATCH_SIZE:
