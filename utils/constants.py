@@ -21,6 +21,6 @@ VALIDATION_STEPS = np.ceil(len(VALID_IMAGES_PATHS) / BATCH_SIZE)
 PATH_DIM_REDUCER = 'models/autoencoder/dim_reducer.pickle'
 PATH_AUTOENCODER = 'models/autoencoder/autoencoder.pickle'
 
-UNIQUE_TAGS = 677
+UNIQUE_TAGS = 574 # 677
 MLC_EPOCHS = 100
 PATH_IMG_TAG_MAPPING = 'IMG_TAG.pickle'
