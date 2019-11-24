@@ -31,38 +31,36 @@ class MultilabelClassification():
         # model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
         # return model
 
-        cnn = Sequential([
-            Conv2D(filters=64, kernel_size=(3, 3), activation="relu", input_shape=IMG_SHAPE),
-            Conv2D(filters=64, kernel_size=(3, 3), activation='relu'),
-            MaxPooling2D(pool_size=(2, 2)),
-            # Dropout(0.25),
-            Conv2D(filters=128, kernel_size=(3, 3), activation='relu'),
-            Conv2D(filters=128, kernel_size=(3, 3), activation='relu'),
-            MaxPooling2D(pool_size=(2, 2)),
-            # Dropout(0.25),
-            Conv2D(filters=256, kernel_size=(3, 3), activation="relu"),
-            Conv2D(filters=256, kernel_size=(3, 3), activation="relu"),
-            Conv2D(filters=256, kernel_size=(1, 1), activation="relu"),
-            MaxPooling2D(pool_size=(2, 2)),
-            # Dropout(0.25),
-            Conv2D(filters=512, kernel_size=(3, 3), activation="relu"),
-            Conv2D(filters=512, kernel_size=(3, 3), activation="relu"),
-            Conv2D(filters=512, kernel_size=(1, 1), activation="relu"),
-            MaxPooling2D(pool_size=(2, 2)),
-            # Dropout(0.25),
-            Conv2D(filters=512, kernel_size=(3, 3), activation="relu"),
-            Conv2D(filters=512, kernel_size=(3, 3), activation="relu"),
-            Conv2D(filters=512, kernel_size=(1, 1), activation="relu"),
-            MaxPooling2D(pool_size=(2, 2)),
-            Flatten()
-        ])
         model = Sequential([
-             TimeDistributed(cnn),
-             LSTM(100, return_sequences=False),
-             Dense(UNIQUE_TAGS, activation='sigmoid')
+            TimeDistributed(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", input_shape=IMG_SHAPE)),
+            TimeDistributed(Conv2D(filters=64, kernel_size=(3, 3), activation='relu')),
+            TimeDistributed(MaxPooling2D(pool_size=(2, 2))),
+            # Dropout(0.25),
+            TimeDistributed(Conv2D(filters=128, kernel_size=(3, 3), activation='relu')),
+            TimeDistributed(Conv2D(filters=128, kernel_size=(3, 3), activation='relu')),
+            TimeDistributed(MaxPooling2D(pool_size=(2, 2))),
+            # Dropout(0.25),
+            TimeDistributed(Conv2D(filters=256, kernel_size=(3, 3), activation="relu")),
+            TimeDistributed(Conv2D(filters=256, kernel_size=(3, 3), activation="relu")),
+            TimeDistributed(Conv2D(filters=256, kernel_size=(1, 1), activation="relu")),
+            TimeDistributed(MaxPooling2D(pool_size=(2, 2))),
+            # Dropout(0.25),
+            TimeDistributed(Conv2D(filters=512, kernel_size=(3, 3), activation="relu")),
+            TimeDistributed(Conv2D(filters=512, kernel_size=(3, 3), activation="relu")),
+            TimeDistributed(Conv2D(filters=512, kernel_size=(1, 1), activation="relu")),
+            TimeDistributed(MaxPooling2D(pool_size=(2, 2))),
+            # Dropout(0.25),
+            TimeDistributed(Conv2D(filters=512, kernel_size=(3, 3), activation="relu")),
+            TimeDistributed(Conv2D(filters=512, kernel_size=(3, 3), activation="relu")),
+            TimeDistributed(Conv2D(filters=512, kernel_size=(1, 1), activation="relu")),
+            TimeDistributed(MaxPooling2D(pool_size=(2, 2))),
+            TimeDistributed(Flatten()),
+            LSTM(100, return_sequences=False),
+            Dense(UNIQUE_TAGS, activation='sigmoid')
          ])
 
         model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
+        model.summary()
         return model
 
     @staticmethod
