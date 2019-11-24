@@ -32,7 +32,7 @@ class MultilabelClassification():
         # return model
 
         model = Sequential([
-            TimeDistributed(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", input_shape=IMG_SHAPE)),
+            TimeDistributed(Conv2D(filters=64, kernel_size=(3, 3), activation="relu"), input_shape=(10, 448, 448, 3)),
             TimeDistributed(Conv2D(filters=64, kernel_size=(3, 3), activation='relu')),
             TimeDistributed(MaxPooling2D(pool_size=(2, 2))),
             # Dropout(0.25),
@@ -60,6 +60,7 @@ class MultilabelClassification():
          ])
 
         model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
+        model.summary()
         return model
 
     @staticmethod
