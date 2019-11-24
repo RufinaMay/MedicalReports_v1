@@ -91,7 +91,7 @@ class MultilabelClassification():
         b = 0
         for im_path in img_tag_mapping:
             im = read_and_resize(f'{IMG_DIR}/{im_path}.png')
-            batch_IMGS.append(im)
+            batch_IMGS.append(im[np.newaxis,:])
             one_hot_tags = np.zeros(UNIQUE_TAGS)
             for tag in img_tag_mapping[im_path]:
                 one_hot_tags[self.tag_to_index[tag]] = 1
@@ -101,10 +101,10 @@ class MultilabelClassification():
             b += 1
 
             if b >= BATCH_SIZE:
-                yield normalize(batch_IMGS)[np.newaxis,:], np.array(batch_TAGS)
+                yield normalize(batch_IMGS), np.array(batch_TAGS)
                 b = 0
                 batch_IMGS, batch_TAGS = [], []
-        yield normalize(batch_IMGS)[np.newaxis,:], np.array(batch_TAGS)
+        yield normalize(batch_IMGS), np.array(batch_TAGS)
 
     @staticmethod
     def batch_accuracy(true, predicted):
