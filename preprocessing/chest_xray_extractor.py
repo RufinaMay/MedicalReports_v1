@@ -44,7 +44,15 @@ def remove_extra_charachters(report, tags):
     :return: report in lower case with only letters and dots, each sentence is separated buy dot.
     :return: tags converted to lowercase
     """
-    tags = [t.lower() for t in tags]
+    # tags = [t.lower() for t in tags]
+    tagsnew = []
+    for t in tags:
+        if t.endswith('sis'):
+            tagsnew.append(t[:-3].lower()+'ses')
+        else:
+            tagsnew.append(t.lower())
+    tags = tagsnew
+
     reg = re.compile('[^a-zA-Z.? ]')
     report = reg.sub(' ', report)
     report = report.lower()
@@ -74,10 +82,12 @@ def process_report(xml_report_path):
 
     MIT = xml_report.getElementsByTagName('automatic')
     tags = set([m.firstChild.data for m in MIT])
-    MeSH = xml_report.getElementsByTagName('major')
-    for m in MeSH:
-        tag_data = m.firstChild.data.split('/')
-        [tags.add(td) for td in tag_data]
+    if len(tags) == 0:
+        return None, None, None
+    # MeSH = xml_report.getElementsByTagName('major')
+    # for m in MeSH:
+    #     tag_data = m.firstChild.data.split('/')
+    #     [tags.add(td) for td in tag_data]
 
     images_id = [img.attributes['id'].value for img in xml_report.getElementsByTagName('parentImage')]
     report, tags = remove_extra_charachters(report, tags)
@@ -110,6 +120,8 @@ def process_all_reports(reports_dir):
 
     for r_path in reports_paths:
         report, tags, images_id = process_report(f'{reports_dir}/{r_path}')
+        if report == None:
+            continue
         for img in images_id:
             IMG_REPORT[img] = report
             IMG_TAG[img] = tags
