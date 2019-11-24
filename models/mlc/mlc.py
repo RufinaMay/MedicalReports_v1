@@ -50,10 +50,6 @@ class MultilabelClassification():
             TimeDistributed(Conv2D(filters=512, kernel_size=(1, 1), activation="relu")),
             TimeDistributed(MaxPooling2D(pool_size=(2, 2))),
             # Dropout(0.25),
-            TimeDistributed(Conv2D(filters=512, kernel_size=(3, 3), activation="relu")),
-            TimeDistributed(Conv2D(filters=512, kernel_size=(3, 3), activation="relu")),
-            TimeDistributed(Conv2D(filters=512, kernel_size=(1, 1), activation="relu")),
-            TimeDistributed(MaxPooling2D(pool_size=(2, 2))),
             TimeDistributed(Flatten()),
             LSTM(100, return_sequences=True),
             Dense(UNIQUE_TAGS, activation='sigmoid')
