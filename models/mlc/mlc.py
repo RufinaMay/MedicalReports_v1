@@ -156,12 +156,11 @@ class MultilabelClassification():
         # return train_pre_rec
 
     def train(self, img_tag_mapping):
-        self.train_set, self.valid_set, self.test_set = self.prepare_data(img_tag_mapping)
-
-        steps_per_epoch = np.ceil(len(self.train_set) / BATCH_SIZE)
-        validation_steps = np.ceil(len(self.valid_set) / BATCH_SIZE)
-
         for e in range(MLC_EPOCHS):
+            self.train_set, self.valid_set, self.test_set = self.prepare_data(img_tag_mapping)
+            steps_per_epoch = np.ceil(len(self.train_set) / BATCH_SIZE)
+            validation_steps = np.ceil(len(self.valid_set) / BATCH_SIZE)
+
             train_batch = self.batch_tags(self.train_set)
             valid_batch = self.batch_tags(self.valid_set)
 
