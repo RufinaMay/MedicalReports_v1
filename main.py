@@ -4,25 +4,18 @@ from matplotlib import pyplot as plt
 import pickle
 from utils.constants import IMG_DIR, PATH_IMG_TAG_MAPPING
 from utils.utils import read_and_resize
-from models.mlc.mlc import MultilabelClassification
-from collections import Counter
+from models.mlc.CheXpert_mlc import MultilabelClassification
 from preprocessing.chest_xray_extractor import process_all_reports
 
-# plt.rcParams["figure.figsize"] = (16, 10) # (w, h)
-#
-# with open(PATH_IMG_TAG_MAPPING, 'rb') as f:
-#   IMG_TAG_MAPPING = pickle.load(f)
-#
-# # MLC
-# MLC = MultilabelClassification()
-# # MLC.train(IMG_TAG_MAPPING)
+plt.rcParams["figure.figsize"] = (16, 10) # (w, h)
 
-IMG_REPORT, IMG_TAG, TAG_VOCAB, WORD_VOCAB = process_all_reports('data/chest_reports/ecgen-radiology')
-print(len(TAG_VOCAB))
-print(len(IMG_TAG))
-# TAG_FREQ = Counter()
-#
-# for im in IMG_TAG:
-#     print(IMG_TAG[im])
+with open(PATH_IMG_TAG_MAPPING, 'rb') as f:
+  IMG_TAG_MAPPING = pickle.load(f)
 
-# construct new set of tags
+# MLC
+MLC = MultilabelClassification()
+MLC.train()
+
+# IMG_REPORT, IMG_TAG, TAG_VOCAB, WORD_VOCAB = process_all_reports('data/chest_reports/ecgen-radiology')
+# print(len(TAG_VOCAB))
+# print(len(IMG_TAG))

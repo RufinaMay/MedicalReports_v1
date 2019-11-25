@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 BATCH_SIZE = 8
 LR = 0.001
 EPOCHS = 10
-IMG_SHAPE = (448, 448, 3)
+IMG_SHAPE = (224, 224, 3)
 TEST_SIZE = 0.2
 VALIDATION_SIZE = 0.2
 IMG_DIR = 'data/chest_images'
@@ -24,3 +24,5 @@ PATH_AUTOENCODER = 'models/autoencoder/autoencoder.pickle'
 UNIQUE_TAGS = 574 # 677
 MLC_EPOCHS = 100
 PATH_IMG_TAG_MAPPING = 'IMG_TAG.pickle'
+
+PATH_CHEXPERT = 'data/CheXpert-v1.0-small'

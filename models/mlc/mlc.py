@@ -146,6 +146,8 @@ class MultilabelClassification():
         steps_per_epoch = np.ceil(len(self.train_set) / BATCH_SIZE)-1
         validation_steps = np.ceil(len(self.valid_set) / BATCH_SIZE)-1
 
+        print(len(self.valid_set))
+
         for e in range(MLC_EPOCHS):
             train_batch = self.batch_tags(self.train_set)
             valid_batch = self.batch_tags(self.valid_set)
