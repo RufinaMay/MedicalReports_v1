@@ -26,12 +26,12 @@ total = 0
 part = 0
 for tag in TAG_IMAGESNUMB:
     total += TAG_IMAGESNUMB[tag]
-    if TAG_IMAGESNUMB[tag] >8:
+    if TAG_IMAGESNUMB[tag] > 15:
         new_tag_vocab.add(tag)
         part += TAG_IMAGESNUMB[tag]
 print(part, ' ', total)
 print(part/total)
 print(len(new_tag_vocab))
 
-with open('tag_vocab_171.pickle', 'wb') as f:
-    pickle.dump(new_tag_vocab, f)
+# with open('tag_vocab_124.pickle', 'wb') as f:
+#     pickle.dump(new_tag_vocab, f)

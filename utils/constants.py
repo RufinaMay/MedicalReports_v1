@@ -21,7 +21,7 @@ IMG_DIR = 'data/chest_images'
 PATH_DIM_REDUCER = 'models/autoencoder/dim_reducer.pickle'
 PATH_AUTOENCODER = 'models/autoencoder/autoencoder.pickle'
 
-UNIQUE_TAGS = 574 # 677
+UNIQUE_TAGS = 124 # 171 # 574 # 677
 MLC_EPOCHS = 100
 PATH_IMG_TAG_MAPPING = 'IMG_TAG.pickle'
 
