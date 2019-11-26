@@ -3,6 +3,7 @@ import tarfile
 from xml.dom import minidom
 import pickle
 import re
+from collections import Counter
 
 """
 TO DOWNLOAD DATASET RUN: 
@@ -114,6 +115,8 @@ def process_all_reports(reports_dir):
     """
     reports_paths = os.listdir(reports_dir)
 
+    TAG_IMAGESNUMB = Counter()
+
     IMG_REPORT, IMG_TAG = {}, {}
     TAG_VOCAB, WORD_VOCAB = set(), set()
     IMG_NORMAL_ABNORMAL = {}
@@ -130,6 +133,9 @@ def process_all_reports(reports_dir):
             else:
                 IMG_NORMAL_ABNORMAL[img] = 0
 
+        for t in tags:
+            TAG_IMAGESNUMB[t] += len(images_id)
+
         [TAG_VOCAB.add(t) for t in tags]
         [WORD_VOCAB.add(w) for sentence in report for w in sentence]
 
@@ -140,8 +146,23 @@ def process_all_reports(reports_dir):
         i += 1
 
 
-    with open('IMG_NORMAL_ABNORMAL.pickle', 'wb') as f:
-        pickle.dump(IMG_NORMAL_ABNORMAL, f)
+    with open('tag_vocab_171.pickle', 'rb') as f:
+        tag_vocab_171 = pickle.load(f)
+
+    # delete pics that have no labels, delete tags that do not accore in tag_vocab_171
+    TAG_TO_INDEX = {}
+    for i, tag in enumerate(tag_vocab_171):
+        TAG_TO_INDEX[tag] = i
+
+    new_IMG_TAG = {}
+    for img in IMG_TAG:
+        new_tags = []
+        for tag in IMG_TAG[img]:
+            if tag in tag_vocab_171:
+                new_tags.append(tag)
+        if len(new_tags) >0:
+            new_IMG_TAG[img] = new_tags
+    IMG_TAG = new_IMG_TAG
 
     with open('IMG_REPORT.pickle', 'wb') as f:
         pickle.dump(IMG_REPORT, f)
@@ -152,4 +173,4 @@ def process_all_reports(reports_dir):
     with open('TAG_TO_INDEX.pickle', 'wb') as f:
         pickle.dump(TAG_TO_INDEX, f)
 
-    return IMG_REPORT, IMG_TAG, TAG_VOCAB, WORD_VOCAB
+    return IMG_REPORT, IMG_TAG, TAG_VOCAB, WORD_VOCAB, TAG_IMAGESNUMB

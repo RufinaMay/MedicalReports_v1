@@ -66,9 +66,9 @@ def read_and_resize(filename):
     :param filename: path to image
     :return: RGB image with shape (448,448,3)
     """
-    imgbgr = cv2.imread(filename, cv2.IMREAD_COLOR)
+    imgbgr = cv2.imread(filename)
     img_result = cv2.cvtColor(imgbgr, cv2.COLOR_BGR2RGB)
-    img_result = cv2.resize(img_result, dsize=IMG_SHAPE[:2])
+    img_result = cv2.resize(imgbgr, dsize=IMG_SHAPE[:2])
     return img_result
 
 

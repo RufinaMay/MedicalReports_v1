@@ -26,6 +26,7 @@ for row in train_set.values:
         # img = cv2.imread(f'../data/{row[0]}')
         # img = cv2.resize(img, (224,224))
         new_img_path = f'{patient_numb}_{row[0][39:45]}_{row[0][46:]}'
+        new_img_path.replace('/', '')
         # cv2.imwrite(f'../data/CheXpert-v1.0-small/train_small/{new_img_path}', img)
         IMAGES.append(f'train_small/{new_img_path}')
         TAGS.append(tag)
@@ -34,6 +35,7 @@ data = {'img_path': IMAGES, 'tag': TAGS}
 CHEXPERT_IMG_TAG = pd.DataFrame.from_dict(data)
 
 print(CHEXPERT_IMG_TAG.shape)
+print(CHEXPERT_IMG_TAG.head())
 
 with open('CHEXPERT_IMG_TAG.pickle', 'wb') as f:
     pickle.dump(CHEXPERT_IMG_TAG, f)

@@ -1,19 +1,19 @@
 import pickle
 import numpy as np
+import pandas as pd
 from keras.layers import Flatten, Dense, Conv2D, MaxPooling2D, LSTM, TimeDistributed
 from keras.models import Sequential
 from keras.losses import binary_crossentropy, mean_squared_error
 from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 
-from utils.constants import PATH_DIM_REDUCER, UNIQUE_TAGS, LR, MLC_EPOCHS, BATCH_SIZE, IMG_DIR, IMG_SHAPE
+from utils.constants import LR, MLC_EPOCHS, BATCH_SIZE, IMG_SHAPE
 from utils.utils import normalize, read_and_resize
 
 class MultilabelClassification():
     def __init__(self):
-        PATH_IMG_TAG_MAPPING = 'preprocessing/CHEXPERT_IMG_TAG.pickle'
-        with open(PATH_IMG_TAG_MAPPING, 'rb') as f:
-            self.IMG_TAG = pickle.load(f)
+        PATH_IMG_TAG_MAPPING = 'preprocessing/CHEXPERT_IMG_TAG.csv'
+        self.IMG_TAG = pd.read_csv(PATH_IMG_TAG_MAPPING)
 
         self.model = self.create_model()
 
@@ -28,18 +28,15 @@ class MultilabelClassification():
             MaxPooling2D(pool_size=(2, 2)),
             # Dropout(0.25),
             Conv2D(filters=256, kernel_size=(3, 3), activation="relu"),
-            Conv2D(filters=256, kernel_size=(3, 3), activation="relu"),
             Conv2D(filters=256, kernel_size=(1, 1), activation="relu"),
             MaxPooling2D(pool_size=(2, 2)),
             # Dropout(0.25),
-            Conv2D(filters=512, kernel_size=(3, 3), activation="relu"),
             Conv2D(filters=512, kernel_size=(3, 3), activation="relu"),
             Conv2D(filters=512, kernel_size=(1, 1), activation="relu"),
             MaxPooling2D(pool_size=(2, 2)),
             # Dropout(0.25),
             Flatten(),
-            Dense(4096, activation='relu'),
-            Dense(4096, activation='relu'),
+            Dense(1024, activation='relu'),
             Dense(12, activation='sigmoid')
          ])
 
@@ -57,7 +54,8 @@ class MultilabelClassification():
         batch_IMGS, batch_TAGS = [], []
         b = 0
         for im_path, tag in img_tag_mapping.values:
-            im = read_and_resize(f'{im_path}')# ???????????????????????????????????
+            print(im_path)
+            im = read_and_resize(f'../train_small/patient00001_study1_view1_frontal.jpg')# ???????????????????????????????????
             batch_IMGS.append(im)
             batch_TAGS.append(tag)
             b += 1
