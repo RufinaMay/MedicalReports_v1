@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec8f7b5d-fc42-44c9-b655-4593120c429a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/IMG_TAG.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/IMG_TAG.pickle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TAG_TO_INDEX.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/TAG_TO_INDEX.pickle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -11449,8 +11450,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preprocessing/chest_xray_extractor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="168" lean-forward="true" selection-start-line="168" selection-end-line="168" />
+            <state relative-caret-position="25">
+              <caret line="148" column="28" selection-start-line="148" selection-start-column="28" selection-end-line="148" selection-end-column="28" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -11473,8 +11474,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="185">
-              <caret line="33" column="25" lean-forward="true" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
+            <state relative-caret-position="153">
+              <caret line="31" column="23" selection-start-line="31" selection-start-column="23" selection-end-line="31" selection-end-column="23" />
               <folding>
                 <element signature="e#72#85#0" expanded="true" />
               </folding>
@@ -11712,13 +11713,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571315160113</updated>
-    </task>
-    <task id="LOCAL-00019" summary="batch generation">
-      <created>1571493042836</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1571493042836</updated>
     </task>
     <task id="LOCAL-00020" summary="t-SNE">
       <created>1571813305273</created>
@@ -12056,7 +12050,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575028071135</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="cutting in labels for indiana chest x ray to 23">
+      <created>1575030624343</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1575030624343</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -12068,7 +12069,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.28496504" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49920508" visible="true" weight="0.33566433" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49920508" visible="true" weight="0.41958043" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3986014" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -12165,9 +12166,9 @@
     <MESSAGE value="change in labels extraction" />
     <MESSAGE value="cutting in labels for indiana chest x ray" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 124" />
-    <MESSAGE value="cutting in labels for indiana chest x ray to 23" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 6" />
-    <option name="LAST_COMMIT_MESSAGE" value="cutting in labels for indiana chest x ray to 6" />
+    <MESSAGE value="cutting in labels for indiana chest x ray to 23" />
+    <option name="LAST_COMMIT_MESSAGE" value="cutting in labels for indiana chest x ray to 23" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/preprocessing/data_extractor.py" />
@@ -12309,8 +12310,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/preprocessing/chest_xray_extractor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="168" lean-forward="true" selection-start-line="168" selection-end-line="168" />
+        <state relative-caret-position="25">
+          <caret line="148" column="28" selection-start-line="148" selection-start-column="28" selection-end-line="148" selection-end-column="28" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -12319,8 +12320,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="33" column="25" lean-forward="true" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
+        <state relative-caret-position="153">
+          <caret line="31" column="23" selection-start-line="31" selection-start-column="23" selection-end-line="31" selection-end-column="23" />
           <folding>
             <element signature="e#72#85#0" expanded="true" />
           </folding>
