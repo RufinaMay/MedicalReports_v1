@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec8f7b5d-fc42-44c9-b655-4593120c429a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/IMG_TAG.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/IMG_TAG.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TAG_TO_INDEX.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/TAG_TO_INDEX.pickle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tag_vocab_171.pickle" beforeDir="false" />
-    </list>
+    <list default="true" id="ec8f7b5d-fc42-44c9-b655-4593120c429a" name="Default Changelist" comment="" />
     <list id="97ba779b-8c83-4922-88ea-27ebb914b45e" name="t-SNE" comment="t-SNE" />
     <list id="09521dff-dd25-45c3-afbf-57bec23048b4" name="t_SNE" comment="">
       <change afterPath="$PROJECT_DIR$/models/autoencoder/autoencoder.pickle" afterDir="false" />
@@ -11450,8 +11444,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preprocessing/chest_xray_extractor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-371">
-              <caret line="136" column="46" selection-start-line="136" selection-start-column="37" selection-end-line="136" selection-end-column="46" />
+            <state relative-caret-position="141">
+              <caret line="150" selection-start-line="150" selection-end-line="150" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -11474,8 +11468,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="31" column="23" lean-forward="true" selection-start-line="31" selection-start-column="23" selection-end-line="31" selection-end-column="23" />
+            <state relative-caret-position="232">
+              <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
               <folding>
                 <element signature="e#12#30#0" expanded="true" />
               </folding>
@@ -11713,13 +11707,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571315160113</updated>
-    </task>
-    <task id="LOCAL-00021" summary="t-SNE">
-      <created>1571813522660</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1571813522660</updated>
     </task>
     <task id="LOCAL-00022" summary="t_SNE">
       <created>1571814588591</created>
@@ -12057,7 +12044,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575034291482</updated>
     </task>
-    <option name="localTasksCounter" value="70" />
+    <task id="LOCAL-00070" summary="cutting in labels for indiana chest x ray to 559">
+      <created>1575040198238</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1575040198238</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -12143,7 +12137,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="chest x-ray data labeled" />
     <MESSAGE value="chest x-ray report preprocessing" />
     <MESSAGE value="multilabel classification added" />
     <MESSAGE value="multilabel classification" />
@@ -12168,7 +12161,8 @@
     <MESSAGE value="cutting in labels for indiana chest x ray to 6" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 23" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 124" />
-    <option name="LAST_COMMIT_MESSAGE" value="cutting in labels for indiana chest x ray to 124" />
+    <MESSAGE value="cutting in labels for indiana chest x ray to 559" />
+    <option name="LAST_COMMIT_MESSAGE" value="cutting in labels for indiana chest x ray to 559" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/preprocessing/data_extractor.py" />
@@ -12310,8 +12304,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/preprocessing/chest_xray_extractor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-371">
-          <caret line="136" column="46" selection-start-line="136" selection-start-column="37" selection-end-line="136" selection-end-column="46" />
+        <state relative-caret-position="141">
+          <caret line="150" selection-start-line="150" selection-end-line="150" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -12320,8 +12314,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="31" column="23" lean-forward="true" selection-start-line="31" selection-start-column="23" selection-end-line="31" selection-end-column="23" />
+        <state relative-caret-position="232">
+          <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
           <folding>
             <element signature="e#12#30#0" expanded="true" />
           </folding>
