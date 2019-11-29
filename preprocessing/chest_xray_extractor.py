@@ -146,7 +146,7 @@ def process_all_reports(reports_dir):
         i += 1
 
 
-    with open('tag_vocab_6.pickle', 'rb') as f:
+    with open('tag_vocab_23.pickle', 'rb') as f:
         tag_vocab_171 = pickle.load(f)
 
     # delete pics that have no labels, delete tags that do not accore in tag_vocab_171
