@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec8f7b5d-fc42-44c9-b655-4593120c429a" name="Default Changelist" comment="" />
+    <list default="true" id="ec8f7b5d-fc42-44c9-b655-4593120c429a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/IMG_TAG.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/IMG_TAG.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TAG_TO_INDEX.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/TAG_TO_INDEX.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing/chest_xray_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/chest_xray_extractor.py" afterDir="false" />
+    </list>
     <list id="97ba779b-8c83-4922-88ea-27ebb914b45e" name="t-SNE" comment="t-SNE" />
     <list id="09521dff-dd25-45c3-afbf-57bec23048b4" name="t_SNE" comment="">
       <change afterPath="$PROJECT_DIR$/models/autoencoder/autoencoder.pickle" afterDir="false" />
@@ -11444,8 +11450,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/preprocessing/chest_xray_extractor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="150" selection-start-line="150" selection-end-line="150" />
+            <state relative-caret-position="174">
+              <caret line="157" column="22" selection-start-line="157" selection-start-column="22" selection-end-line="157" selection-end-column="22" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -11468,8 +11474,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+            <state relative-caret-position="116">
+              <caret line="28" column="33" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="33" />
               <folding>
                 <element signature="e#12#30#0" expanded="true" />
               </folding>
@@ -11512,8 +11518,8 @@
         <option value="$PROJECT_DIR$/preprocessing/CheXpert_extractor.py" />
         <option value="$PROJECT_DIR$/utils/utils.py" />
         <option value="$PROJECT_DIR$/utils/constants.py" />
-        <option value="$PROJECT_DIR$/preprocessing/chest_xray_extractor.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/preprocessing/chest_xray_extractor.py" />
       </list>
     </option>
   </component>
@@ -11707,13 +11713,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571315160113</updated>
-    </task>
-    <task id="LOCAL-00022" summary="t_SNE">
-      <created>1571814588591</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1571814588591</updated>
     </task>
     <task id="LOCAL-00023" summary="chest x-ray data labeled">
       <created>1571817844560</created>
@@ -12051,7 +12050,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575040198238</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="cutting in labels for indiana chest x ray to 6">
+      <created>1575046650272</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1575046650272</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -12063,7 +12069,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.28496504" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49920508" visible="true" weight="0.34965035" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49920508" visible="true" weight="0.41083917" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3986014" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -12158,11 +12164,11 @@
     <MESSAGE value="RNN for MLC" />
     <MESSAGE value="change in labels extraction" />
     <MESSAGE value="cutting in labels for indiana chest x ray" />
-    <MESSAGE value="cutting in labels for indiana chest x ray to 6" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 23" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 124" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 559" />
-    <option name="LAST_COMMIT_MESSAGE" value="cutting in labels for indiana chest x ray to 559" />
+    <MESSAGE value="cutting in labels for indiana chest x ray to 6" />
+    <option name="LAST_COMMIT_MESSAGE" value="cutting in labels for indiana chest x ray to 6" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/preprocessing/data_extractor.py" />
@@ -12304,8 +12310,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/preprocessing/chest_xray_extractor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="150" selection-start-line="150" selection-end-line="150" />
+        <state relative-caret-position="174">
+          <caret line="157" column="22" selection-start-line="157" selection-start-column="22" selection-end-line="157" selection-end-column="22" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -12314,8 +12320,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+        <state relative-caret-position="116">
+          <caret line="28" column="33" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="33" />
           <folding>
             <element signature="e#12#30#0" expanded="true" />
           </folding>

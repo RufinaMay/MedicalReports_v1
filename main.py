@@ -26,7 +26,7 @@ total = 0
 part = 0
 for tag in TAG_IMAGESNUMB:
     total += TAG_IMAGESNUMB[tag]
-    if TAG_IMAGESNUMB[tag] >= 400:
+    if TAG_IMAGESNUMB[tag] >= 16:
         new_tag_vocab.add(tag)
         part += TAG_IMAGESNUMB[tag]
 print(part, ' ', total)
