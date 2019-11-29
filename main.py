@@ -1,10 +1,10 @@
-import os
-import numpy as np
-from matplotlib import pyplot as plt
+# import os
+# import numpy as np
+# from matplotlib import pyplot as plt
 import pickle
-from utils.constants import IMG_DIR, PATH_IMG_TAG_MAPPING
-from utils.utils import read_and_resize
-from models.mlc.CheXpert_mlc import MultilabelClassification
+# from utils.constants import IMG_DIR, PATH_IMG_TAG_MAPPING
+# from utils.utils import read_and_resize
+# from models.mlc.CheXpert_mlc import MultilabelClassification
 from preprocessing.chest_xray_extractor import process_all_reports
 
 # plt.rcParams["figure.figsize"] = (16, 10) # (w, h)
@@ -26,7 +26,7 @@ total = 0
 part = 0
 for tag in TAG_IMAGESNUMB:
     total += TAG_IMAGESNUMB[tag]
-    if TAG_IMAGESNUMB[tag] >= 100:
+    if TAG_IMAGESNUMB[tag] >= 400:
         new_tag_vocab.add(tag)
         part += TAG_IMAGESNUMB[tag]
 print(part, ' ', total)
