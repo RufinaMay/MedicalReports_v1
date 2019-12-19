@@ -321,24 +321,24 @@ class AttentionLSTM:
 
         return macroF1 / n, microF1, instanceF1 / n
 
-    def batch(self, batch_size=8):
+    def batch(self, data, batch_size=8):
         """
-
+        :param data:
         :param img_tag_mapping: dictionary of img-tags pairs
         :return: numpy array of images,indexed captions, caption lengths
         """
         batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
         b = 0
-        for im_path in self.img_tag_mapping:
+        for im_path in data:
             im = read_and_resize(f'{self.img_dir}/{im_path}.png')
             caps = [self.tag_to_index['start']]
-            for tag in self.img_tag_mapping[im_path]:
+            for tag in data[im_path]:
                 caps.append(self.tag_to_index[tag])
             caps.append(self.tag_to_index['end'])
             while len(caps) < self.unique_tags:
                 caps.append(self.tag_to_index['pad'])
 
-            batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(self.img_tag_mapping[im_path]) + 2)
+            batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(data[im_path]) + 2)
             b += 1
             if b >= batch_size:
                 yield normalize(batch_IMGS).reshape((-1, 3, 256, 256)), np.array(batch_CAPS), np.array(

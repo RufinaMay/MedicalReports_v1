@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec8f7b5d-fc42-44c9-b655-4593120c429a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/mlc/attention_LSTM.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/mlc/mlc.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/mlc/mlc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing/CHEXPERT_IMG_TAG.pickle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/mlc/attention_LSTM.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/mlc/attention_LSTM.py" afterDir="false" />
     </list>
     <list id="97ba779b-8c83-4922-88ea-27ebb914b45e" name="t-SNE" comment="t-SNE" />
     <list id="09521dff-dd25-45c3-afbf-57bec23048b4" name="t_SNE" comment="">
@@ -11462,10 +11459,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/mlc/attention_LSTM.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="191">
-              <caret line="439" column="48" lean-forward="true" selection-start-line="439" selection-start-column="48" selection-end-line="439" selection-end-column="48" />
+            <state relative-caret-position="159">
+              <caret line="340" column="89" selection-start-line="340" selection-start-column="89" selection-end-line="340" selection-end-column="89" />
               <folding>
                 <element signature="e#0#12#0" expanded="true" />
+                <element signature="e#523#2157#0" />
+                <element signature="e#2290#3854#0" />
+                <element signature="e#3900#9750#0" />
               </folding>
             </state>
           </provider>
@@ -11768,20 +11768,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571315160113</updated>
-    </task>
-    <task id="LOCAL-00025" summary="chest x-ray report preprocessing">
-      <created>1571831388752</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1571831388752</updated>
-    </task>
-    <task id="LOCAL-00026" summary="multilabel classification added">
-      <created>1572095847067</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1572095847068</updated>
     </task>
     <task id="LOCAL-00027" summary="multilabel classification">
       <created>1572098326885</created>
@@ -12112,13 +12098,28 @@
       <option name="project" value="LOCAL" />
       <updated>1575054532596</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="Attention LSTM for multilabeling">
+      <created>1576750466903</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1576750466904</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Attention LSTM for multilabeling">
+      <created>1576751860823</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1576751860823</updated>
+    </task>
+    <option name="localTasksCounter" value="76" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="704" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22337043" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22337043" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -12128,7 +12129,7 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.13286713" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.07867133" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5007949" side_tool="true" weight="0.32867134" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.3216783" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.36013985" />
@@ -12197,7 +12198,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="chest x-ray report preprocessing" />
     <MESSAGE value="multilabel classification added" />
     <MESSAGE value="multilabel classification" />
     <MESSAGE value="multilabel classification change in loss and activation" />
@@ -12222,7 +12222,8 @@
     <MESSAGE value="cutting in labels for indiana chest x ray to 6" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 124" />
     <MESSAGE value="cutting in labels for indiana chest x ray to 559" />
-    <option name="LAST_COMMIT_MESSAGE" value="cutting in labels for indiana chest x ray to 559" />
+    <MESSAGE value="Attention LSTM for multilabeling" />
+    <option name="LAST_COMMIT_MESSAGE" value="Attention LSTM for multilabeling" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/preprocessing/data_extractor.py" />
@@ -12372,10 +12373,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/mlc/attention_LSTM.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="439" column="48" lean-forward="true" selection-start-line="439" selection-start-column="48" selection-end-line="439" selection-end-column="48" />
+        <state relative-caret-position="159">
+          <caret line="340" column="89" selection-start-line="340" selection-start-column="89" selection-end-line="340" selection-end-column="89" />
           <folding>
             <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#523#2157#0" />
+            <element signature="e#2290#3854#0" />
+            <element signature="e#3900#9750#0" />
           </folding>
         </state>
       </provider>
