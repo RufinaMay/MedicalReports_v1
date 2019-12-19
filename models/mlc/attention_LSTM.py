@@ -445,5 +445,5 @@ class AttentionLSTM:
     def train(self, eposhs):
         self.train_metrics, self.valid_metrics = [], []
         train_set, valid_set, test_set = prepare_data(self.img_tag_mapping)
-        for epoch in range(self.epochs):
+        for epoch in range(eposhs):
             self.train_epoch(epoch, train_set, valid_set)
