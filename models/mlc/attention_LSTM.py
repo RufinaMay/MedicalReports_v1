@@ -8,8 +8,6 @@ import torchvision
 
 from utils.utils import prepare_data, read_and_resize, normalize
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 class Encoder(nn.Module):
     """
     CNN Encoder.
