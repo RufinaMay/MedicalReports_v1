@@ -8,6 +8,8 @@ import torchvision
 
 from utils.utils import prepare_data, read_and_resize, normalize
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 class Encoder(nn.Module):
     """
     CNN Encoder.
@@ -147,6 +149,7 @@ class DecoderWithAttention(nn.Module):
         return h, c
 
     def forward(self, encoder_out, encoded_captions, caption_lengths):
+        global device
         """
         Forward propagation.
         :param encoder_out: encoded images, a tensor of dimension (batch_size, enc_image_size, enc_image_size, encoder_dim)
@@ -213,6 +216,7 @@ class AttentionLSTM:
         :param encoder_lr: learning rate for encoder if fine-tuning
         :param decoder_lr: learning rate for decoder
         """
+        global device
         with open(img_tag_mapping_path, 'rb') as f:
             self.img_tag_mapping = pickle.load(f)
         with open(tag_to_index_path, 'rb') as f:
@@ -360,6 +364,7 @@ class AttentionLSTM:
         :param training:
         :return:
         """
+        global device
         if training:
             self.encoder.train()
             self.decoder.train()
