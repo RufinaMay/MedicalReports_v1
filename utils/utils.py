@@ -13,6 +13,7 @@ def normalize(images):
     """
     return (np.array(images) - 127.5) / 127.5
 
+
 def batch_tags(images, one_hot_tags):
     """
     Creates batch from images and corresponding one hot encoded tags
@@ -44,7 +45,7 @@ def batch_nolabels_from_dir(images_dir, image_names):
     :param image_names: name of image files in the images_dir
     :return: (image, image) pairs normalize to -1 1
     """
-    batch_imgs= []
+    batch_imgs = []
     b = 0
     for im_path in image_names:
         im = read_and_resize(f'{images_dir}/{im_path}')
@@ -86,9 +87,9 @@ def showInRow(list_of_images):
         subplot.imshow(img, cmap=cmap)
     plt.show()
 
-def get_TSNE(dim_reducer, images, labels = None):
-    """
 
+def get_TSNE(dim_reducer, images, labels=None):
+    """
     :param dim_reducer: model that reduces dimension
     :param images: np.array of images to be visualized with shape (None, 448,448,3)
     :param labels: labels of data points if needed
@@ -96,6 +97,43 @@ def get_TSNE(dim_reducer, images, labels = None):
     """
     n = images.shape[0]
     reduced = dim_reducer.predict(images)
-    embedded = TSNE(n_components=2).fit_transform(reduced.reshape(n,-1))
-    if labels: plt.scatter(embedded[:,0], embedded[:,1], c = labels)
-    else: plt.scatter(embedded[:,0], embedded[:,1])
+    embedded = TSNE(n_components=2).fit_transform(reduced.reshape(n, -1))
+    if labels:
+        plt.scatter(embedded[:, 0], embedded[:, 1], c=labels)
+    else:
+        plt.scatter(embedded[:, 0], embedded[:, 1])
+
+
+def train_test_split(img_tag_mapping, test_size=0.2):
+    """
+    custom train test split for Indiana Chest Xray dataset
+    :param img_tag_mapping: dictionary of img-tags pairs
+    :param test_size: size of test set
+    :return: train and test sets
+    """
+    n = len(img_tag_mapping)
+    idxs = np.arange(n)
+    np.random.shuffle(idxs)
+    train_size = np.ceil((1 - test_size) * n).astype('int32')
+    train_idxs, test_idxs = idxs[:train_size], idxs[train_size:]
+    train, test = {}, {}
+    i = 0
+    for k in img_tag_mapping:
+        if i in train_idxs:
+            train[k] = img_tag_mapping[k]
+        else:
+            test[k] = img_tag_mapping[k]
+        i += 1
+    return train, test
+
+
+def prepare_data(img_tag_mapping):
+    """
+    split data on train, validation and test sets
+    :param img_tag_mapping: dictionary of img-tags pairs
+    :return: train, validation and test sets
+    """
+    train, test = train_test_split(img_tag_mapping, test_size=0.2)
+    train, valid = train_test_split(train, test_size=0.2)
+
+    return train, valid, test

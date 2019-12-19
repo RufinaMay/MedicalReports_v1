@@ -8,7 +8,8 @@ from keras.optimizers import Adam
 from utils.constants import PATH_DIM_REDUCER, UNIQUE_TAGS, LR, MLC_EPOCHS, BATCH_SIZE, IMG_DIR, IMG_SHAPE
 from utils.utils import normalize, read_and_resize
 
-class MultilabelClassification():
+
+class MultilabelClassification:
     def __init__(self):
         with open(PATH_DIM_REDUCER, 'rb') as f:
             self.dim_reducer = pickle.load(f)
@@ -20,17 +21,6 @@ class MultilabelClassification():
         self.model = self.create_model()
 
     def create_model(self):
-        # mlc_layers = Sequential([
-        #     Flatten(input_shape=(7, 7, 128)),
-        #     Dense(4096),
-        #     Dense(UNIQUE_TAGS),
-        #     Activation('sigmoid')
-        # ], name='mlc_layers')
-        #
-        # model = Sequential([self.dim_reducer, mlc_layers], name='MLC')
-        # model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
-        # return model
-
         model = Sequential([
             TimeDistributed(Conv2D(filters=64, kernel_size=(3, 3), activation="tanh"), input_shape=(1, 448, 448, 3)),
             TimeDistributed(Conv2D(filters=64, kernel_size=(3, 3), activation='relu')),
@@ -53,7 +43,7 @@ class MultilabelClassification():
             TimeDistributed(Flatten()),
             LSTM(8, return_sequences=True),
             Dense(UNIQUE_TAGS, activation='sigmoid')
-         ])
+        ])
 
         model.compile(optimizer=Adam(lr=LR), loss=binary_crossentropy)
         model.summary()
@@ -87,13 +77,13 @@ class MultilabelClassification():
         b = 0
         for im_path in img_tag_mapping:
             im = read_and_resize(f'{IMG_DIR}/{im_path}.png')
-            batch_IMGS.append(im[np.newaxis,:])
+            batch_IMGS.append(im[np.newaxis, :])
             one_hot_tags = np.zeros(UNIQUE_TAGS)
             for tag in img_tag_mapping[im_path]:
                 one_hot_tags[self.tag_to_index[tag]] = 1
             # one_hot_tags= one_hot_tags / sum(one_hot_tags)
 
-            batch_TAGS.append(one_hot_tags[np.newaxis,:])
+            batch_TAGS.append(one_hot_tags[np.newaxis, :])
             b += 1
 
             if b >= BATCH_SIZE:
@@ -129,7 +119,6 @@ class MultilabelClassification():
 
         train_acc = guessed / total
 
-
         guessed, total = 0, 0
         for x_valid, y_valid in valid_batch:
             valid_pred = self.model.predict_on_batch(x_valid)
@@ -143,8 +132,8 @@ class MultilabelClassification():
 
     def train(self, img_tag_mapping):
         self.train_set, self.valid_set, self.test_set = self.prepare_data(img_tag_mapping)
-        steps_per_epoch = np.ceil(len(self.train_set) / BATCH_SIZE)-1
-        validation_steps = np.ceil(len(self.valid_set) / BATCH_SIZE)-1
+        steps_per_epoch = np.ceil(len(self.train_set) / BATCH_SIZE) - 1
+        validation_steps = np.ceil(len(self.valid_set) / BATCH_SIZE) - 1
 
         print(len(self.valid_set))
 
