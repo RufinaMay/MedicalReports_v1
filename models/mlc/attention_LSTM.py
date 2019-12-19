@@ -8,6 +8,7 @@ import torchvision
 
 from utils.utils import prepare_data, read_and_resize, normalize
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Encoder(nn.Module):
     """
@@ -83,7 +84,7 @@ class Attention(nn.Module):
 
 
 class DecoderWithAttention(nn.Module):
-    def __init__(self, attention_dim, embed_dim, decoder_dim, vocab_size, encoder_dim=256, dropout=0.5):
+    def __init__(self, attention_dim, embed_dim, decoder_dim, vocab_size, encoder_dim=2048, dropout=0.5):
         """
         :param attention_dim: size of attention network
         :param embed_dim: embedding size
@@ -226,7 +227,6 @@ class AttentionLSTM:
         self.tag_to_index = tag_to_index
         self.alpha_c = alpha_c
         self.shape = (256, 256)  # shape of image
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         decoder = DecoderWithAttention(attention_dim=attention_dim,
                                        embed_dim=emb_dim,
                                        decoder_dim=decoder_dim,
@@ -238,9 +238,9 @@ class AttentionLSTM:
         self.encoder_optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, encoder.parameters()),
                                                   lr=encoder_lr)
 
-        self.decoder = decoder.to(self.device)
-        self.encoder = encoder.to(self.device)
-        self.criterion = nn.CrossEntropyLoss().to(self.device)
+        self.decoder = decoder.to(device)
+        self.encoder = encoder.to(device)
+        self.criterion = nn.CrossEntropyLoss().to(device)
 
     def process_predictions(self, pred, true):
         """
@@ -251,7 +251,7 @@ class AttentionLSTM:
         """
         predicted_overall, true_overall = [], []
         for prediction in pred.cpu().data.numpy():
-            predicted_tags = np.zeros(self.tag_to_index - 3)
+            predicted_tags = np.zeros(self.unique_tags - 3)
             predicted_idxs = np.argmax(prediction, axis=1)
             for idx in predicted_idxs:
                 if idx < self.tag_to_index['start']:
@@ -369,9 +369,9 @@ class AttentionLSTM:
             self.decoder.eval()
             self.encoder.eval()
 
-        imgs = torch.from_numpy(imgs).float().to(self.device)
-        caps = torch.from_numpy(caps).long().to(self.device)
-        caplens = torch.from_numpy(caplens).long().to(self.device)
+        imgs = torch.from_numpy(imgs).float().to(device)
+        caps = torch.from_numpy(caps).long().to(device)
+        caplens = torch.from_numpy(caplens).long().to(device)
         # Forward prop.
         imgs = self.encoder(imgs)
         scores, caps_sorted, decode_lengths, alphas, sort_ind = self.decoder(imgs, caps, caplens)
