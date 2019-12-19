@@ -6,7 +6,7 @@ import pickle
 import numpy as np
 import torchvision
 
-from utils.utils import train_test_split, prepare_data, read_and_resize, normalize
+from utils.utils import prepare_data, read_and_resize, normalize
 
 
 class Encoder(nn.Module):

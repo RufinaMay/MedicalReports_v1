@@ -2,7 +2,7 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.manifold import TSNE
-from utils.constants import BATCH_SIZE, IMG_SHAPE
+from utils.constants import BATCH_SIZE
 
 
 def normalize(images):
@@ -61,15 +61,16 @@ def batch_nolabels_from_dir(images_dir, image_names):
         yield (out, out)
 
 
-def read_and_resize(filename):
+def read_and_resize(filename, img_shape):
     """
     Load an image in memory
     :param filename: path to image
+    :param img_shape: tuple of (width, height)
     :return: RGB image with shape (448,448,3)
     """
     imgbgr = cv2.imread(filename)
     img_result = cv2.cvtColor(imgbgr, cv2.COLOR_BGR2RGB)
-    img_result = cv2.resize(imgbgr, dsize=IMG_SHAPE[:2])
+    img_result = cv2.resize(img_result, dsize=img_shape)
     return img_result
 
 
