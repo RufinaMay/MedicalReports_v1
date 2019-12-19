@@ -8,10 +8,12 @@ import torchvision
 
 from utils.utils import train_test_split, prepare_data, read_and_resize, normalize
 
+
 class Encoder(nn.Module):
     """
     CNN Encoder.
     """
+
     def __init__(self, encoded_image_size=14):
         super(Encoder, self).__init__()
         self.enc_image_size = encoded_image_size
@@ -49,6 +51,7 @@ class Encoder(nn.Module):
         for c in list(self.resnet.children())[5:]:
             for p in c.parameters():
                 p.requires_grad = fine_tune
+
 
 class Attention(nn.Module):
     def __init__(self, encoder_dim, decoder_dim, attention_dim):
@@ -222,6 +225,7 @@ class AttentionLSTM:
         self.img_dir = img_dir
         self.tag_to_index = tag_to_index
         self.alpha_c = alpha_c
+        self.shape = (256, 256)  # shape of image
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         decoder = DecoderWithAttention(attention_dim=attention_dim,
                                        embed_dim=emb_dim,
@@ -330,7 +334,7 @@ class AttentionLSTM:
         batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
         b = 0
         for im_path in data:
-            im = read_and_resize(f'{self.img_dir}/{im_path}.png')
+            im = read_and_resize(f'{self.img_dir}/{im_path}.png', self.shape)
             caps = [self.tag_to_index['start']]
             for tag in data[im_path]:
                 caps.append(self.tag_to_index[tag])
