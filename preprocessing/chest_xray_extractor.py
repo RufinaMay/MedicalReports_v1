@@ -83,12 +83,12 @@ def process_report(xml_report_path):
 
     MIT = xml_report.getElementsByTagName('automatic')
     tags = set([m.firstChild.data for m in MIT])
+    MeSH = xml_report.getElementsByTagName('major')
+    for m in MeSH:
+        tag_data = m.firstChild.data.split('/')
+        [tags.add(td) for td in tag_data]
     if len(tags) == 0:
         return None, None, None
-    # MeSH = xml_report.getElementsByTagName('major')
-    # for m in MeSH:
-    #     tag_data = m.firstChild.data.split('/')
-    #     [tags.add(td) for td in tag_data]
 
     images_id = [img.attributes['id'].value for img in xml_report.getElementsByTagName('parentImage')]
     report, tags = remove_extra_charachters(report, tags)
@@ -144,8 +144,9 @@ def process_all_reports(reports_dir):
     for t in TAG_VOCAB:
         TAG_TO_INDEX[t] = i
         i += 1
+    print('total img tag ', len(IMG_TAG))
 
-    with open('tag_vocab_162.pickle', 'rb') as f:
+    with open('tag_vocab_91.pickle', 'rb') as f:
         tag_vocab_171 = pickle.load(f)
 
     # delete pics that have no labels, delete tags that do not accore in tag_vocab_171

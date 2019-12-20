@@ -18,8 +18,8 @@ from preprocessing.chest_xray_extractor import process_all_reports
 
 IMG_REPORT, IMG_TAG, TAG_VOCAB, WORD_VOCAB, TAG_IMAGESNUMB = process_all_reports('data/chest_reports/ecgen-radiology')
 print(len(TAG_IMAGESNUMB))
-print(TAG_IMAGESNUMB.most_common(10))
-print(TAG_IMAGESNUMB.most_common()[:-15])
+# print(TAG_IMAGESNUMB.most_common(100))
+# print(TAG_IMAGESNUMB.most_common()[:-15])
 
 new_tag_vocab = set()
 total = 0
@@ -27,17 +27,19 @@ part = 0
 height = []
 for i, tag in enumerate(TAG_IMAGESNUMB):
     total += TAG_IMAGESNUMB[tag]
-    if TAG_IMAGESNUMB[tag] >= 10:
+    if TAG_IMAGESNUMB[tag] >= 100:
         height.append(TAG_IMAGESNUMB[tag])
         new_tag_vocab.add(tag)
         part += TAG_IMAGESNUMB[tag]
 print(part, ' ', total)
 print(part/total)
-print(len(new_tag_vocab))
-with open('tag_vocab_162.pickle', 'wb') as f:
+print('new tag vocab', len(new_tag_vocab))
+with open('tag_vocab_91.pickle', 'wb') as f:
     pickle.dump(new_tag_vocab, f)
 
+print('after IMG tag size ', len(IMG_TAG))
 
-# left = [2*i for i in range(len(height))]
-# plt.bar(left, height, width=1.2, color=['red', 'green'])
-# plt.show()
+
+left = [2*i for i in range(len(height))]
+plt.bar(left, height, width=1.2, color=['red', 'green'])
+plt.show()
