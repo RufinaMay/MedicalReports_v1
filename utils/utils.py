@@ -130,10 +130,13 @@ def train_test_split(img_tag_mapping, test_size=0.2):
 
 def prepare_data(img_tag_mapping):
     """
-    split data on train, validation and test sets
+    Custom split data on train, validation and test sets
     :param img_tag_mapping: dictionary of img-tags pairs
     :return: train, validation and test sets
     """
+
+
+
     train, test = train_test_split(img_tag_mapping, test_size=0.2)
     train, valid = train_test_split(train, test_size=0.2)
 

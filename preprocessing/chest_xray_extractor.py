@@ -49,7 +49,7 @@ def remove_extra_charachters(report, tags):
     tagsnew = []
     for t in tags:
         if t.endswith('sis'):
-            tagsnew.append(t[:-3].lower()+'ses')
+            tagsnew.append(t[:-3].lower() + 'ses')
         else:
             tagsnew.append(t.lower())
     tags = tagsnew
@@ -145,8 +145,7 @@ def process_all_reports(reports_dir):
         TAG_TO_INDEX[t] = i
         i += 1
 
-
-    with open('tag_vocab_559.pickle', 'rb') as f:
+    with open('tag_vocab_162.pickle', 'rb') as f:
         tag_vocab_171 = pickle.load(f)
 
     # delete pics that have no labels, delete tags that do not accore in tag_vocab_171
@@ -160,7 +159,7 @@ def process_all_reports(reports_dir):
         for tag in IMG_TAG[img]:
             if tag in tag_vocab_171:
                 new_tags.append(tag)
-        if len(new_tags) >0:
+        if len(new_tags) > 0:
             new_IMG_TAG[img] = new_tags
     IMG_TAG = new_IMG_TAG
 
