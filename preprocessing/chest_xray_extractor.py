@@ -146,10 +146,10 @@ def process_all_reports(reports_dir):
         i += 1
     print('total img tag ', len(IMG_TAG))
 
-    with open('tag_vocab_91.pickle', 'rb') as f:
+    with open('tag_vocab_all.pickle', 'rb') as f:
         tag_vocab_171 = pickle.load(f)
 
-    # delete pics that have no labels, delete tags that do not accore in tag_vocab_171
+    # delete pics that have no labels, delete tags that do not occur in tag_vocab_171
     TAG_TO_INDEX = {}
     for i, tag in enumerate(tag_vocab_171):
         TAG_TO_INDEX[tag] = i
@@ -160,8 +160,7 @@ def process_all_reports(reports_dir):
         for tag in IMG_TAG[img]:
             if tag in tag_vocab_171:
                 new_tags.append(tag)
-        if len(new_tags) > 0:
-            new_IMG_TAG[img] = new_tags
+        new_IMG_TAG[img] = new_tags
     IMG_TAG = new_IMG_TAG
 
     with open('IMG_REPORT.pickle', 'wb') as f:
