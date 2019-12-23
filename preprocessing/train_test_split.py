@@ -8,7 +8,7 @@ import scipy.sparse as sp
 from matplotlib import pyplot as plt
 
 
-def sparse_to_nornal(X_data, y_data, idx_to_img):
+def sparse_to_nornal(X_data, y_data, idx_to_img, idx_to_tag):
     """
     convert from sparse format back to img-tag mapping format
     :param X_data:
@@ -19,7 +19,8 @@ def sparse_to_nornal(X_data, y_data, idx_to_img):
     data = {}
     X_data, y_data = np.ravel(X_data.todense()), y_data.todense()
     for x, y in zip(X_data, y_data):
-        data[idx_to_img[x]] = np.where(np.ravel(y) == 1)[0]
+        vect = [idx_to_tag[i] for i in np.where(np.ravel(y) == 1)[0]]
+        data[idx_to_img[x]] = vect
     return data
 
 
@@ -73,7 +74,7 @@ def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickl
         TAG_TO_INDEX = pickle.load(f)
     UNIQ_TAGS = len(TAG_TO_INDEX)
     print(f'unique tags {UNIQ_TAGS}')
-
+    idx_to_tag = {TAG_TO_INDEX[t]: t for t in TAG_TO_INDEX}
     X, y = [], []
     img_to_idx = {img: i + 1 for i, img in enumerate(IMG_TAG_MAPPING)}
     idx_to_img = {i + 1: img for i, img in enumerate(IMG_TAG_MAPPING)}
@@ -95,25 +96,25 @@ def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickl
     print(f'valid samples {X_valid.shape[0]}')
     print(f'test samples {X_test.shape[0]}')
 
-    train, valid = sparse_to_nornal(X_train, y_train, idx_to_img), sparse_to_nornal(X_valid, y_valid, idx_to_img)
-    test = sparse_to_nornal(X_test, y_test, idx_to_img)
+    train, valid = sparse_to_nornal(X_train, y_train, idx_to_img, idx_to_tag), sparse_to_nornal(X_valid, y_valid,
+                                                                                                idx_to_img, idx_to_tag)
+    test = sparse_to_nornal(X_test, y_test, idx_to_img, idx_to_tag)
 
     if draw_distrib:
         draw_distribution(train, valid, test)
 
     if save:
         with open('train_set.pickle', 'wb') as f:
-          pickle.dump(train, f)
+            pickle.dump(train, f)
         with open('valid_set.pickle', 'wb') as f:
-          pickle.dump(valid, f)
+            pickle.dump(valid, f)
         with open('test_set.pickle', 'wb') as f:
-          pickle.dump(test, f)
-
+            pickle.dump(test, f)
 
 # dataframe = pd.DataFrame({
-    #     'original': Counter(str(combination) for row in get_combination_wise_output_matrix(y.A, order=2) for combination in row),
-    #     'train': Counter(str(combination) for row in get_combination_wise_output_matrix(y_train.A, order=2) for combination in row),
-    #     'test' : Counter(str(combination) for row in get_combination_wise_output_matrix(y_test.A, order=2) for combination in row)
-    # }).T.fillna(0.0)
+#     'original': Counter(str(combination) for row in get_combination_wise_output_matrix(y.A, order=2) for combination in row),
+#     'train': Counter(str(combination) for row in get_combination_wise_output_matrix(y_train.A, order=2) for combination in row),
+#     'test' : Counter(str(combination) for row in get_combination_wise_output_matrix(y_test.A, order=2) for combination in row)
+# }).T.fillna(0.0)
 
-    # print(dataframe)
+# print(dataframe)
