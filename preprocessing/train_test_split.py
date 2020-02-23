@@ -82,7 +82,8 @@ def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickl
         X.append(img_to_idx[img])
         vect = np.zeros(UNIQ_TAGS)
         for tag in IMG_TAG_MAPPING[img]:
-            vect[TAG_TO_INDEX[tag]] = 1
+            if tag in TAG_TO_INDEX:
+                vect[TAG_TO_INDEX[tag]] = 1
         y.append(vect)
 
     X = sp.csr_matrix(np.array(X).reshape(-1, 1))
