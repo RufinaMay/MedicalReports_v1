@@ -111,6 +111,8 @@ def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickl
         with open('test_set.pickle', 'wb') as f:
             pickle.dump(test, f)
 
+    return train, valid, test
+
 # dataframe = pd.DataFrame({
 #     'original': Counter(str(combination) for row in get_combination_wise_output_matrix(y.A, order=2) for combination in row),
 #     'train': Counter(str(combination) for row in get_combination_wise_output_matrix(y_train.A, order=2) for combination in row),
