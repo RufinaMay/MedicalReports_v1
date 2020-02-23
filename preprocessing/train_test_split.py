@@ -67,7 +67,7 @@ def draw_distribution(train, valid, test):
     plt.show()
 
 
-def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickle', draw_distrib=True, save=True):
+def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickle', draw_distrib=True, save=True, test_size=0.25, valid_size=0.15):
     with open(img_tag_path, 'rb') as f:
         IMG_TAG_MAPPING = pickle.load(f)
     with open(tag_to_idx_path, 'rb') as f:
@@ -88,8 +88,8 @@ def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickl
     X = sp.csr_matrix(np.array(X).reshape(-1, 1))
     y = sp.csr_matrix(np.array(y))
 
-    X_train, y_train, X_test, y_test = iterative_train_test_split(X, y, test_size=0.25)
-    X_train, y_train, X_valid, y_valid = iterative_train_test_split(X_train, y_train, test_size=0.15)
+    X_train, y_train, X_test, y_test = iterative_train_test_split(X, y, test_size=test_size)
+    X_train, y_train, X_valid, y_valid = iterative_train_test_split(X_train, y_train, test_size=valid_size)
 
     print(f'total samples {X.shape[0]}')
     print(f'train samples {X_train.shape[0]}')
