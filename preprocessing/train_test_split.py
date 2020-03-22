@@ -117,7 +117,6 @@ def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickl
 
     with open(PATH_TAG_TO_INDEX, 'wb') as f:
         pickle.dump(TAG_TO_INDEX, f)
-    print(f'Number of tags after filtering {len(TAG_TO_INDEX)}')
 
     if save:
         with open('train_set.pickle', 'wb') as f:
