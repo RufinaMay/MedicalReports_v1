@@ -2,6 +2,8 @@ import cv2
 from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.manifold import TSNE
+from collections import Counter
+
 from utils.constants import BATCH_SIZE
 
 
@@ -141,3 +143,33 @@ def prepare_data(img_tag_mapping):
     train, valid = train_test_split(train, test_size=0.2)
 
     return train, valid, test
+
+def apply_hierarchy(train_set, valid_set, test_set):
+    number_of_tags = Counter()
+    for img in train_set:
+        for label in train_set[img]:
+            number_of_tags[label] += 1
+
+    new_train_set, new_valid_set, new_test_set = {}, {}, {}
+    for img in train_set:
+        out = []
+        for tag in number_of_tags:
+            if tag in train_set[img]:
+                out.append(tag)
+        new_train_set[img] = out
+
+    for img in valid_set:
+        out = []
+        for tag in number_of_tags:
+            if tag in valid_set[img]:
+                out.append(tag)
+        new_valid_set[img] = out
+
+    for img in test_set:
+        out = []
+        for tag in number_of_tags:
+            if tag in test_set[img]:
+                out.append(tag)
+        new_test_set[img] = out
+
+    return new_train_set, new_valid_set, new_test_set

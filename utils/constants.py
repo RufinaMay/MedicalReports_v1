@@ -11,16 +11,16 @@ VALIDATION_SIZE = 0.2
 MIN_SAMPLES = 30 #  if less than MIN_SAMPLES examples in train set we do not include those tags
 IMG_DIR = 'data/chest_images'
 
-# TRAIN_IMAGES_PATHS = [path for path in os.listdir(IMG_DIR) if 'png' in path]
-#
-# TRAIN_IMAGES_PATHS, TEST_IMAGES_PATHS = train_test_split(TRAIN_IMAGES_PATHS, test_size=TEST_SIZE, shuffle=True)
-# TRAIN_IMAGES_PATHS, VALID_IMAGES_PATHS = train_test_split(TRAIN_IMAGES_PATHS, test_size=VALIDATION_SIZE, shuffle=True)
-#
-# STEPS_PER_EPOCH = np.ceil(len(TRAIN_IMAGES_PATHS) / BATCH_SIZE)
-# VALIDATION_STEPS = np.ceil(len(VALID_IMAGES_PATHS) / BATCH_SIZE)
-
-
 MLC_EPOCHS = 100
 PATH_IMG_TAG_MAPPING = 'IMG_TAG.pickle'
 PATH_TAG_TO_INDEX = 'TAG_TO_INDEX.pickle'
 PATH_ING_REPORT = 'IMG_REPORT.pickle'
+
+epochs = 120  # number of epochs to train for (if early stopping is not triggered)
+encoder_lr = 2e-4  # learning rate for encoder if fine-tuning
+decoder_lr = 4e-4  # learning rate for decoder
+alpha_c = 1.  # regularization parameter for 'doubly stochastic attention', as in the paper
+emb_dim = 32  # dimension of word embeddings
+attention_dim = 64  # dimension of attention linear layers
+decoder_dim = 32  # dimension of decoder RNN
+dropout = 0.5

@@ -5,16 +5,14 @@ from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence
 import torchvision.transforms as transforms
 import torch.nn.functional as F
-import pickle
 import cv2
 import numpy as np
 from sklearn.metrics import label_ranking_average_precision_score, precision_score, recall_score, classification_report, \
     roc_auc_score
 from sklearn.metrics import hamming_loss, roc_curve
-import warnings
 import torchvision
-from collections import Counter
-from matplotlib import pyplot as plt
+
+from utils.constants import alpha_c, IMG_DIR, BATCH_SIZE
 
 
 class Encoder(nn.Module):
@@ -165,7 +163,7 @@ class DecoderWithAttention(nn.Module):
         c = self.init_c(mean_encoder_out)
         return h, c
 
-    def forward(self, encoder_out, encoded_captions, caption_lengths):
+    def forward(self, encoder_out, encoded_captions, caption_lengths, device):
         """
         Forward propagation.
         :param encoder_out: encoded images, a tensor of dimension (batch_size, enc_image_size, enc_image_size, encoder_dim)
@@ -218,6 +216,7 @@ class DecoderWithAttention(nn.Module):
 
         return predictions, encoded_captions, decode_lengths, alphas, sort_ind
 
+
 def adjust_learning_rate(optimizer, shrink_factor):
     """
     Shrinks learning rate by a specified factor.
@@ -229,3 +228,282 @@ def adjust_learning_rate(optimizer, shrink_factor):
     for param_group in optimizer.param_groups:
         param_group['lr'] = param_group['lr'] * shrink_factor
     print("The new learning rate is %f\n" % (optimizer.param_groups[0]['lr'],))
+
+
+def process_predictions(train_pred, y_train, tag_to_index, UNIQUE_TAGS):
+    predicted_overall, true_overall, predicted_scores_overall = [], [], []
+    for prediction in train_pred.cpu().data.numpy():
+        # print(f'raw prediction {prediction}')
+        predicted_tags = np.zeros(UNIQUE_TAGS - 3)
+        predicted_scores = np.zeros(UNIQUE_TAGS - 3)
+        predicted_idxs = np.argmax(prediction, axis=1)
+        predicted_max = np.amax(prediction, axis=1)
+        for i, idx in enumerate(predicted_idxs):
+            if idx < tag_to_index['start']:
+                predicted_tags[idx] = 1
+                predicted_scores[idx] = predicted_max[i]
+        predicted_overall.append(predicted_tags)
+        predicted_scores_overall.append(predicted_scores)
+
+    for true in y_train.cpu().data.numpy():
+        true_tags = np.zeros(UNIQUE_TAGS - 3)
+        for idx in true:
+            if idx < tag_to_index['start']:
+                true_tags[idx] = 1
+        true_overall.append(true_tags)
+
+    return predicted_overall, true_overall, predicted_scores_overall
+
+
+def eval(predicted_overall, true_overall):
+    true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
+    precision, recall = 0, 0
+    precision_upper, recall_upper = 0, 0
+    overall_precision, overall_recall = [0, 0], [0, 0]
+    n = 0
+    for j in range(true_overall.shape[1] - 3):
+        if np.sum(true_overall[:, j]) > 0:
+            n += 1
+            recall += np.sum(true_overall[:, j] * predicted_overall[:, j]) / np.sum(true_overall[:, j])
+            if np.sum(predicted_overall[:, j]) > 0:
+                precision += np.sum(true_overall[:, j] * predicted_overall[:, j]) / np.sum(predicted_overall[:, j])
+            overall_recall[0] = overall_recall[0] + np.sum(true_overall[:, j] * predicted_overall[:, j])
+            overall_recall[1] = overall_recall[1] + np.sum(true_overall[:, j])
+            overall_precision[0] = overall_precision[0] + np.sum(true_overall[:, j] * predicted_overall[:, j])
+            overall_precision[1] = overall_precision[1] + np.sum(predicted_overall[:, j])
+
+    overall_precision = overall_precision[0] / overall_precision[1]
+    overall_recall = overall_recall[0] / overall_recall[1]
+
+    return precision / n, recall / n, overall_precision, overall_recall
+
+
+def f1_score(predicted_overall, true_overall):
+    true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
+    macroF1, microF1, instanceF1 = 0, 0, 0
+
+    # macro
+    n = 0
+    for j in range(true_overall.shape[1] - 3):
+        if np.sum(true_overall[:, j]) > 0:
+            n += 1
+            val = 2 * np.sum(predicted_overall[:, j] * true_overall[:, j])
+            d = np.sum(predicted_overall[:, j]) + np.sum(true_overall[:, j])
+            val /= d
+            macroF1 += val
+
+    # micro
+    val1 = 2 * np.sum(predicted_overall * true_overall)
+    val2 = np.sum(predicted_overall) + np.sum(true_overall)
+    microF1 = val1 / val2
+
+    # instance f1
+    n = 0
+    for i in range(true_overall.shape[0]):
+        if np.sum(true_overall[i]) != 0:
+            n += 1
+            val = 2 * np.sum(true_overall[i] * predicted_overall[i])
+            d = np.sum(true_overall[i]) + np.sum(predicted_overall[i])
+            instanceF1 += val / d
+
+    return macroF1 / n, microF1, instanceF1 / n
+
+
+def one_error(y_train, predicted_scores):
+    n = len(y_train)
+    one_error = 0
+    for true, predicted in zip(y_train, predicted_scores):
+        p_idx = np.argsort(predicted)[-1]  # np.where(predicted >= 0.5)[0] # np.argsort(predicted)[:n]
+        t_idxs = np.where(true == 1)[0]
+        one_error += (p_idx in t_idxs) * 1
+    return one_error / n
+
+
+def ranking_loss(y_train, predicted_scores):
+    n = len(y_train)
+    ranking_error = 0
+    for true, predicted in zip(y_train, predicted_scores):
+        score = 0
+        one_idxs = np.where(true == 1)[0]
+        zeros_idxs = np.where(true == 0)[0]
+
+        for one in one_idxs:
+            for zero in zeros_idxs:
+                if predicted[one] <= predicted[zero]:
+                    score += 1
+        ranking_error += score / (np.sum(true) * (len(true) - np.sum(true)))
+    return ranking_error / n
+
+
+def normalize(images):
+    # return np.array(images)/255.
+    return (np.array(images) - 127.5) / 127.5
+
+
+def read_and_resize(filename):
+    imgbgr = cv2.imread(filename)
+    imgbgr = cv2.cvtColor(imgbgr, cv2.COLOR_BGR2RGB)
+    imgbgr = torch.FloatTensor(imgbgr / 255.)
+    transform = transforms.Compose([
+        transforms.ToPILImage(),
+        transforms.Resize((256, 256)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
+    return transform(imgbgr)
+
+
+def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
+    batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
+    b = 0
+    for im_path in img_tag_mapping:
+        im = read_and_resize(f'{IMG_DIR}/{im_path}.png')
+        caps = [tag_to_index['start']]
+        for tag in img_tag_mapping[im_path]:
+            if tag in tag_to_index:
+                caps.append(tag_to_index[tag])
+        caps.append(tag_to_index['end'])
+        while len(caps) < UNIQUE_TAGS:
+            caps.append(tag_to_index['pad'])
+
+        batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(img_tag_mapping[im_path]) + 2)
+        b += 1
+        if b >= BATCH_SIZE:
+            yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
+            # yield normalize(batch_IMGS).reshape((-1,3,600,600)), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1,1))
+            b = 0
+            batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
+    if len(batch_IMGS) != 0:
+        yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
+        # yield normalize(batch_IMGS).reshape((-1,3,600,600)), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1,1))
+
+
+def train_step(imgs, caps, caplens, encoder, decoder, device, criterion, decoder_optimizer, encoder_optimizer,
+               training=True):
+    if training:
+        encoder.train()
+        decoder.train()
+    else:
+        decoder.eval()
+        encoder.eval()
+
+    imgs = imgs.to(device)  # torch.from_numpy(imgs).float().to(device)
+    caps = torch.from_numpy(caps).long().to(device)
+    caplens = torch.from_numpy(caplens).long().to(device)
+    # normalization transformations
+    # normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+    #                                    std=[0.229, 0.224, 0.225])
+    # transform=transforms.Compose([normalize])
+    # imgs = transform(torch.FloatTensor(imgs))
+
+    # Forward prop.
+    imgs = encoder(imgs)
+    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens)
+    # Since we decoded starting with <start>, the targets are all words after <start>, up to <end>
+    targets = caps_sorted[:, 1:]
+    targets_old = targets.clone()
+    scores_old = scores.clone()
+    # Remove timesteps that we didn't decode at, or are pads, pack_padded_sequence is an easy trick to do this
+    scores = pack_padded_sequence(scores, decode_lengths, batch_first=True)
+    targets = pack_padded_sequence(targets, decode_lengths, batch_first=True)
+
+    loss = criterion(scores.data, targets.data)
+    # Add doubly stochastic attention regularization
+    loss += alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
+
+    if training:
+        decoder_optimizer.zero_grad()
+        encoder_optimizer.zero_grad()
+        loss.backward()
+        decoder_optimizer.step()
+        encoder_optimizer.step()
+
+    # Keep track of metrics
+    # top5 = accuracy(scores.data, targets.data, 5)
+    # top1 = top1_accuracy(scores.data, targets.data)
+    predicted, true, predicted_scores = process_predictions(scores_old, targets_old)
+    return loss.item(), predicted, true, predicted_scores
+
+
+def train_epoch(e, train_set, valid_set, test_set):
+    global train_metrics, valid_metrics
+    global train_true_labels, train_pred_scores, valid_true_labels, valid_pred_scores, test_true_labesl, test_predicted_scores
+    T_loss, V_loss = [], []
+    T_predicted, T_true, T_pred_scores, V_predicted, V_true, V_pred_scores = [], [], [], [], [], []
+    # train step
+    for imgs, caps, caplens in batch(train_set):
+        train_out = train_step(imgs, caps, caplens, training=True)
+        T_loss.append(train_out[0])
+        for pred, true, pred_scores in zip(train_out[1], train_out[2], train_out[3]):
+            T_predicted.append(pred), T_true.append(true), T_pred_scores.append(pred_scores)
+
+    pre, rec, ovpre, ovrec = eval(T_predicted, T_true)
+    macroF1, microF1, instanceF1 = f1_score(T_predicted, T_true)
+    ham_loss = hamming_loss(np.array(T_true), np.array(T_predicted))
+    one_err = one_error(T_true, T_pred_scores)
+    rank_err = ranking_loss(T_true, T_pred_scores)
+    auc = roc_auc_score(T_true, T_pred_scores)
+    train_true_labels, train_pred_scores = T_true, T_pred_scores
+    train_metrics.append(
+        (np.mean(T_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
+    ro = round
+
+    print(f'============================= epoch {e} =========================================')
+    print(
+        f'Tr: l {ro(np.mean(T_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
+    macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} one err {one_err} rank err {rank_err} auc {auc}')
+
+    # valid step
+    for imgs, caps, caplens in batch(valid_set):
+        val_out = train_step(imgs, caps, caplens, training=False)
+        V_loss.append(val_out[0])
+        for pred, true, pred_scores in zip(val_out[1], val_out[2], val_out[3]):
+            V_predicted.append(pred), V_true.append(true), V_pred_scores.append(pred_scores)
+
+    pre, rec, ovpre, ovrec = eval(V_predicted, V_true)
+    macroF1, microF1, instanceF1 = f1_score(V_predicted, V_true)
+    ham_loss = hamming_loss(np.array(V_true), np.array(V_predicted))
+    one_err = one_error(V_true, V_pred_scores)
+    rank_err = ranking_loss(V_true, V_pred_scores)
+    auc = roc_auc_score(V_true, V_pred_scores)
+    valid_true_labels, valid_pred_scores = V_true, V_pred_scores
+    valid_metrics.append(
+        (np.mean(V_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
+    print(
+        f'Va: l {ro(np.mean(V_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
+    macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} one err {one_err} rank err {rank_err} auc {auc}')
+
+    # test set performance
+    Test_predicted, Test_true, Test_pred_scores = [], [], []
+    for imgs, caps, caplens in batch(test_set):
+        test_out = train_step(imgs, caps, caplens, training=False)
+        for pred, true, pred_scores in zip(test_out[1], test_out[2], test_out[3]):
+            Test_predicted.append(pred), Test_true.append(true), Test_pred_scores.append(pred_scores)
+    pre, rec, ovpre, ovrec = eval(Test_predicted, Test_true)
+    macroF1, microF1, instanceF1 = f1_score(Test_predicted, Test_true)
+    ham_loss = hamming_loss(np.array(Test_true), np.array(Test_predicted))
+    one_err = one_error(Test_true, Test_pred_scores)
+    rank_err = ranking_loss(Test_true, Test_pred_scores)
+    auc = roc_auc_score(Test_true, Test_pred_scores)
+    test_true_labesl, test_predicted_scores = Test_true, Test_pred_scores
+    test_metrics = [pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc]
+    return np.mean(V_loss), test_metrics
+
+
+def train(start_epoch, end_epoch, train_set, valid_set, test_set, decoder_optimizer, encoder_optimizer):
+    global epochs_since_improvement
+    best_loss = 100
+    for epoch in range(start_epoch, end_epoch):
+        recent_loss, test_metrics = train_epoch(epoch, train_set, valid_set, test_set)
+
+        if epochs_since_improvement == 20:
+            break
+        if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
+            adjust_learning_rate(decoder_optimizer, 0.8)
+            adjust_learning_rate(encoder_optimizer, 0.8)
+
+        if recent_loss < best_loss:
+            best_loss = recent_loss
+            epochs_since_improvement = 0
+        else:
+            epochs_since_improvement += 1
+    return test_metrics
