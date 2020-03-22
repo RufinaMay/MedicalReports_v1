@@ -8,6 +8,7 @@ EPOCHS = 10
 IMG_SHAPE = (224, 224, 3)
 TEST_SIZE = 0.2
 VALIDATION_SIZE = 0.2
+MIN_SAMPLES = 30 #  if less than MIN_SAMPLES examples in train set we do not include those tags
 IMG_DIR = 'data/chest_images'
 
 # TRAIN_IMAGES_PATHS = [path for path in os.listdir(IMG_DIR) if 'png' in path]
@@ -18,11 +19,8 @@ IMG_DIR = 'data/chest_images'
 # STEPS_PER_EPOCH = np.ceil(len(TRAIN_IMAGES_PATHS) / BATCH_SIZE)
 # VALIDATION_STEPS = np.ceil(len(VALID_IMAGES_PATHS) / BATCH_SIZE)
 
-PATH_DIM_REDUCER = 'models/autoencoder/dim_reducer.pickle'
-PATH_AUTOENCODER = 'models/autoencoder/autoencoder.pickle'
 
-UNIQUE_TAGS = 124 # 171 # 574 # 677
 MLC_EPOCHS = 100
 PATH_IMG_TAG_MAPPING = 'IMG_TAG.pickle'
-
-PATH_CHEXPERT = 'data/CheXpert-v1.0-small'
+PATH_TAG_TO_INDEX = 'TAG_TO_INDEX.pickle'
+PATH_ING_REPORT = 'IMG_REPORT.pickle'

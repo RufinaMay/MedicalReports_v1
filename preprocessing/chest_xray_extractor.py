@@ -5,6 +5,8 @@ import pickle
 import re
 from collections import Counter
 
+from utils.constants import PATH_IMG_TAG_MAPPING, PATH_ING_REPORT, PATH_TAG_TO_INDEX
+
 """
 TO DOWNLOAD DATASET RUN: 
 
@@ -102,10 +104,12 @@ def process_report(xml_report_path):
     return report_processed, tags, images_id
 
 
-def process_all_reports(reports_dir):
+def process_all_reports(reports_dir, minimum_samples=30):
     """
     Applies processing to each report in the reports directory.
     :param reports_dir: path to directory containing reports in xml format
+    :param minimum_samples: if paticular label has less than minimum_samples example in the training set, we remove those
+                            labels and kepp images as negative samples
     :return: IMG_REPORT: mapping between Image name (not path to image) and corresponding processed report, this is
             saved to IMG_REPORT.pickle file
     :return: IMG_TAG: mapping between Image name (not path to image) and corresponding list of tags, also saved into
@@ -114,9 +118,7 @@ def process_all_reports(reports_dir):
     :return: WORD_VOCAB: a set of all possible words occurring in the reports
     """
     reports_paths = os.listdir(reports_dir)
-
     TAG_IMAGESNUMB = Counter()
-
     IMG_REPORT, IMG_TAG = {}, {}
     TAG_VOCAB, WORD_VOCAB = set(), set()
     IMG_NORMAL_ABNORMAL = {}
@@ -139,37 +141,18 @@ def process_all_reports(reports_dir):
         [TAG_VOCAB.add(t) for t in tags]
         [WORD_VOCAB.add(w) for sentence in report for w in sentence]
 
+    print(f'total image tag pairs {len(IMG_TAG)}')
     TAG_TO_INDEX = {}
     i = 0
     for t in TAG_VOCAB:
         TAG_TO_INDEX[t] = i
         i += 1
-    print('total img tag ', len(IMG_TAG))
 
-    with open('tag_vocab_all.pickle', 'rb') as f:
-        tag_vocab_171 = pickle.load(f)
-
-    # delete pics that have no labels, delete tags that do not occur in tag_vocab_171
-    TAG_TO_INDEX = {}
-    for i, tag in enumerate(tag_vocab_171):
-        TAG_TO_INDEX[tag] = i
-
-    new_IMG_TAG = {}
-    for img in IMG_TAG:
-        new_tags = []
-        for tag in IMG_TAG[img]:
-            if tag in tag_vocab_171:
-                new_tags.append(tag)
-        new_IMG_TAG[img] = new_tags
-    IMG_TAG = new_IMG_TAG
-
-    with open('IMG_REPORT.pickle', 'wb') as f:
+    with open(PATH_ING_REPORT, 'wb') as f:
         pickle.dump(IMG_REPORT, f)
-
-    with open('IMG_TAG.pickle', 'wb') as f:
+    with open(PATH_IMG_TAG_MAPPING, 'wb') as f:
         pickle.dump(IMG_TAG, f)
-
-    with open('TAG_TO_INDEX.pickle', 'wb') as f:
+    with open(PATH_TAG_TO_INDEX, 'wb') as f:
         pickle.dump(TAG_TO_INDEX, f)
 
     return IMG_REPORT, IMG_TAG, TAG_VOCAB, WORD_VOCAB, TAG_IMAGESNUMB

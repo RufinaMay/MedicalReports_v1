@@ -1,33 +1,53 @@
+import pandas as pd
 import torch
 import torch.optim
 from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence
+import torchvision.transforms as transforms
+import torch.nn.functional as F
 import pickle
+import cv2
 import numpy as np
+from sklearn.metrics import label_ranking_average_precision_score, precision_score, recall_score, classification_report, \
+    roc_auc_score
+from sklearn.metrics import hamming_loss, roc_curve
+import warnings
 import torchvision
+from collections import Counter
+from matplotlib import pyplot as plt
 
-from utils.utils import prepare_data, read_and_resize, normalize
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Encoder(nn.Module):
     """
-    CNN Encoder.
+    Encoder.
     """
 
-    def __init__(self, encoded_image_size=14):
+    def __init__(self, encoded_image_size=14, encoder_name='densenet'):
         super(Encoder, self).__init__()
         self.enc_image_size = encoded_image_size
 
-        resnet = torchvision.models.resnet101(pretrained=True)  # pretrained ImageNet ResNet-101
-
-        # Remove linear and pool layers (since we're not doing classification)
-        modules = list(resnet.children())[:-2]
-        self.resnet = nn.Sequential(*modules)
+        if encoder_name == 'densenet':
+            densenet = torch.hub.load('pytorch/vision:v0.5.0', 'densenet121', pretrained=True)
+            self.cnn_encoder = densenet.features
+        if encoder_name == 'shufflenet':
+            shufflenet = torchvision.models.shufflenet_v2_x0_5(pretrained=True)
+            self.cnn_encoder = nn.Sequential(*list(shufflenet.children())[:-2])
+        if encoder_name == 'vgg':
+            vgg = torchvision.models.vgg16(pretrained=True)
+            self.cnn_encoder = vgg.features
+        if encoder_name == 'resnet':
+            resnet = torchvision.models.resnet101(pretrained=True)
+            modules = list(resnet.children())[:-2]
+            self.cnn_encoder = nn.Sequential(*modules)
+        if encoder_name == 'googlenet':
+            googlenet = torchvision.models.googlenet(pretrained=True)
+            self.cnn_encoder = nn.Sequential(*list(googlenet.children())[:-3])
+        if encoder_name == 'mnasnet':  # encoder_dim=1280
+            mnasnet = torchvision.models.mnasnet1_0(pretrained=True)
+            self.cnn_encoder = mnasnet.layers
 
         # Resize image to fixed size to allow input images of variable size
         self.adaptive_pool = nn.AdaptiveAvgPool2d((encoded_image_size, encoded_image_size))
-
         self.fine_tune()
 
     def forward(self, images):
@@ -36,9 +56,9 @@ class Encoder(nn.Module):
         :param images: images, a tensor of dimensions (batch_size, 3, image_size, image_size)
         :return: encoded images
         """
-        out = self.resnet(images)  # (batch_size, 2048, image_size/32, image_size/32)
-        out = self.adaptive_pool(out)  # (batch_size, 2048, encoded_image_size, encoded_image_size)
-        out = out.permute(0, 2, 3, 1)  # (batch_size, encoded_image_size, encoded_image_size, 2048)
+        out = self.cnn_encoder(images)
+        out = self.adaptive_pool(out)
+        out = out.permute(0, 2, 3, 1)
         return out
 
     def fine_tune(self, fine_tune=True):
@@ -47,11 +67,7 @@ class Encoder(nn.Module):
         :param fine_tune: Allow?
         """
         for p in self.resnet.parameters():
-            p.requires_grad = False
-        # If fine-tuning, only fine-tune convolutional blocks 2 through 4
-        for c in list(self.resnet.children())[5:]:
-            for p in c.parameters():
-                p.requires_grad = fine_tune
+            p.requires_grad = True
 
 
 class Attention(nn.Module):
@@ -70,6 +86,7 @@ class Attention(nn.Module):
 
     def forward(self, encoder_out, decoder_hidden):
         """
+        Forward propagation.
         :param encoder_out: encoded images, a tensor of dimension (batch_size, num_pixels, encoder_dim)
         :param decoder_hidden: previous decoder output, a tensor of dimension (batch_size, decoder_dim)
         :return: attention weighted encoding, weights
@@ -84,7 +101,7 @@ class Attention(nn.Module):
 
 
 class DecoderWithAttention(nn.Module):
-    def __init__(self, attention_dim, embed_dim, decoder_dim, vocab_size, encoder_dim=2048, dropout=0.5):
+    def __init__(self, attention_dim, embed_dim, decoder_dim, vocab_size, encoder_dim, dropout):
         """
         :param attention_dim: size of attention network
         :param embed_dim: embedding size
@@ -149,7 +166,6 @@ class DecoderWithAttention(nn.Module):
         return h, c
 
     def forward(self, encoder_out, encoded_captions, caption_lengths):
-        global device
         """
         Forward propagation.
         :param encoder_out: encoded images, a tensor of dimension (batch_size, enc_image_size, enc_image_size, encoder_dim)
@@ -161,6 +177,7 @@ class DecoderWithAttention(nn.Module):
         encoder_dim = encoder_out.size(-1)
         vocab_size = self.vocab_size
 
+        # Flatten image
         encoder_out = encoder_out.view(batch_size, -1, encoder_dim)  # (batch_size, num_pixels, encoder_dim)
         num_pixels = encoder_out.size(1)
 
@@ -169,8 +186,10 @@ class DecoderWithAttention(nn.Module):
         encoder_out = encoder_out[sort_ind]
         encoded_captions = encoded_captions[sort_ind]
 
+        # Embedding
         embeddings = self.embedding(encoded_captions)  # (batch_size, max_caption_length, embed_dim)
 
+        # Initialize LSTM state
         h, c = self.init_hidden_state(encoder_out)  # (batch_size, decoder_dim)
 
         # We won't decode at the <end> position, since we've finished generating as soon as we generate <end>
@@ -199,258 +218,14 @@ class DecoderWithAttention(nn.Module):
 
         return predictions, encoded_captions, decode_lengths, alphas, sort_ind
 
+def adjust_learning_rate(optimizer, shrink_factor):
+    """
+    Shrinks learning rate by a specified factor.
+    :param optimizer: optimizer whose learning rate must be shrunk.
+    :param shrink_factor: factor in interval (0, 1) to multiply learning rate with.
+    """
 
-class AttentionLSTM:
-    def __init__(self, img_tag_mapping_path='IMG_TAG.pickle', tag_to_index_path='TAG_TO_INDEX.pickle',
-                 img_dir='data/chest_images', emb_dim=512, attention_dim=512, decoder_dim=512, dropout=0.5,
-                 encoder_lr=1e-4, decoder_lr=4e-4, alpha_c=1.):
-        """
-        initialize models, optimizers and criterion to be used
-        :param img_tag_mapping_path: path to image-tags mapping
-        :param tag_to_index_path: path to tag-index dictionary
-        :param img_dir: path to directory containing chest x-ray images
-        :param emb_dim: dimension of word embeddings
-        :param attention_dim: dimension of attention linear layers
-        :param decoder_dim: dimension of decoder RNN
-        :param dropout: dropout probability
-        :param encoder_lr: learning rate for encoder if fine-tuning
-        :param decoder_lr: learning rate for decoder
-        """
-        global device
-        with open(img_tag_mapping_path, 'rb') as f:
-            self.img_tag_mapping = pickle.load(f)
-        with open(tag_to_index_path, 'rb') as f:
-            tag_to_index = pickle.load(f)
-        tag_to_index['start'] = len(tag_to_index)
-        tag_to_index['end'] = len(tag_to_index)
-        tag_to_index['pad'] = len(tag_to_index)
-        self.unique_tags = len(tag_to_index)
-        self.img_dir = img_dir
-        self.tag_to_index = tag_to_index
-        self.alpha_c = alpha_c
-        self.shape = (256, 256)  # shape of image
-        decoder = DecoderWithAttention(attention_dim=attention_dim,
-                                       embed_dim=emb_dim,
-                                       decoder_dim=decoder_dim,
-                                       vocab_size=self.unique_tags,
-                                       dropout=dropout)
-        self.decoder_optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()),
-                                                  lr=decoder_lr)
-        encoder = Encoder()
-        self.encoder_optimizer = torch.optim.Adam(params=filter(lambda p: p.requires_grad, encoder.parameters()),
-                                                  lr=encoder_lr)
-
-        self.decoder = decoder.to(device)
-        self.encoder = encoder.to(device)
-        self.criterion = nn.CrossEntropyLoss().to(device)
-
-    def process_predictions(self, pred, true):
-        """
-        Convert model predictions in one-hot encoding
-        :param pred: predicted captions
-        :param true: true captions
-        :return: one-hot encoded predictions and true labels
-        """
-        predicted_overall, true_overall = [], []
-        for prediction in pred.cpu().data.numpy():
-            predicted_tags = np.zeros(self.unique_tags - 3)
-            predicted_idxs = np.argmax(prediction, axis=1)
-            for idx in predicted_idxs:
-                if idx < self.tag_to_index['start']:
-                    predicted_tags[idx] = 1
-            predicted_overall.append(predicted_tags)
-
-        for true in true.cpu().data.numpy():
-            true_tags = np.zeros(self.unique_tags - 3)
-            for idx in true:
-                if idx < self.tag_to_index['start']:
-                    true_tags[idx] = 1
-            true_overall.append(true_tags)
-
-        return predicted_overall, true_overall
-
-    def eval(self, predicted, true):
-        """
-        Computes precision and recall metrics
-        :param predicted: one hot encoded model predictions
-        :param true: one hot encoded true tags
-        :return: per class precision, per class recall, overall precision, overall recall
-        """
-        true, predicted = np.array(true), np.array(predicted)
-        precision, recall = 0, 0
-        precision_upper, recall_upper = 0, 0
-        overall_precision, overall_recall = [0, 0], [0, 0]
-        n = 0
-        for j in range(true.shape[1] - 3):
-            if np.sum(true[:, j]) > 0:
-                n += 1
-                recall += np.sum(true[:, j] * predicted[:, j]) / np.sum(true[:, j])
-                if np.sum(predicted[:, j]) > 0:
-                    precision += np.sum(true[:, j] * predicted[:, j]) / np.sum(predicted[:, j])
-                overall_recall[0] = overall_recall[0] + np.sum(true[:, j] * predicted[:, j])
-                overall_recall[1] = overall_recall[1] + np.sum(true[:, j])
-                overall_precision[0] = overall_precision[0] + np.sum(true[:, j] * predicted[:, j])
-                overall_precision[1] = overall_precision[1] + np.sum(predicted[:, j])
-
-        overall_precision = overall_precision[0] / overall_precision[1]
-        overall_recall = overall_recall[0] / overall_recall[1]
-
-        return precision / n, recall / n, overall_precision, overall_recall
-
-    def f1_score(self, predicted_overall, true_overall):
-        true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
-        macroF1, microF1, instanceF1 = 0, 0, 0
-
-        # macro
-        n = 0
-        for j in range(true_overall.shape[1] - 3):
-            if np.sum(true_overall[:, j]) > 0:
-                n += 1
-                val = 2 * np.sum(predicted_overall[:, j] * true_overall[:, j])
-                d = np.sum(predicted_overall[:, j]) + np.sum(true_overall[:, j])
-                val /= d
-                macroF1 += val
-
-        # micro
-        val1 = 2 * np.sum(predicted_overall * true_overall)
-        val2 = np.sum(predicted_overall) + np.sum(true_overall)
-        microF1 = val1 / val2
-
-        # instance f1
-        n = 0
-        for i in range(true_overall.shape[0]):
-            if np.sum(true_overall[i]) != 0:
-                n += 1
-                val = 2 * np.sum(true_overall[i] * predicted_overall[i])
-                d = np.sum(true_overall[i]) + np.sum(predicted_overall[i])
-                instanceF1 += val / d
-
-        return macroF1 / n, microF1, instanceF1 / n
-
-    def batch(self, data, batch_size=8):
-        """
-        :param data:
-        :param img_tag_mapping: dictionary of img-tags pairs
-        :return: numpy array of images,indexed captions, caption lengths
-        """
-        batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
-        b = 0
-        for im_path in data:
-            im = read_and_resize(f'{self.img_dir}/{im_path}.png', self.shape)
-            caps = [self.tag_to_index['start']]
-            for tag in data[im_path]:
-                caps.append(self.tag_to_index[tag])
-            caps.append(self.tag_to_index['end'])
-            while len(caps) < self.unique_tags:
-                caps.append(self.tag_to_index['pad'])
-
-            batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(data[im_path]) + 2)
-            b += 1
-            if b >= batch_size:
-                yield normalize(batch_IMGS).reshape((-1, 3, 256, 256)), np.array(batch_CAPS), np.array(
-                    batch_CAPLENS).reshape((-1, 1))
-                b = 0
-                batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
-        if len(batch_IMGS) != 0:
-            yield normalize(batch_IMGS).reshape((-1, 3, 256, 256)), np.array(batch_CAPS), np.array(
-                batch_CAPLENS).reshape((-1, 1))
-
-    def train_step(self, imgs, caps, caplens, training=True):
-        """
-
-        :param imgs:
-        :param caps:
-        :param caplens:
-        :param training:
-        :return:
-        """
-        global device
-        if training:
-            self.encoder.train()
-            self.decoder.train()
-        else:
-            self.decoder.eval()
-            self.encoder.eval()
-
-        imgs = torch.from_numpy(imgs).float().to(device)
-        caps = torch.from_numpy(caps).long().to(device)
-        caplens = torch.from_numpy(caplens).long().to(device)
-        # Forward prop.
-        imgs = self.encoder(imgs)
-        scores, caps_sorted, decode_lengths, alphas, sort_ind = self.decoder(imgs, caps, caplens)
-        # Since we decoded starting with <start>, the targets are all words after <start>, up to <end>
-        targets = caps_sorted[:, 1:]
-        targets_old = targets.clone()
-        scores_old = scores.clone()
-        # Remove timesteps that we didn't decode at, or are pads, pack_padded_sequence is an easy trick to do this
-        scores = pack_padded_sequence(scores, decode_lengths, batch_first=True)
-        targets = pack_padded_sequence(targets, decode_lengths, batch_first=True)
-
-        loss = self.criterion(scores.data, targets.data)
-        # Add doubly stochastic attention regularization
-        loss += self.alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
-
-        if training:
-            self.decoder_optimizer.zero_grad()
-            self.encoder_optimizer.zero_grad()
-            loss.backward()
-            self.decoder_optimizer.step()
-            self.encoder_optimizer.step()
-
-        predicted, true = self.process_predictions(scores_old, targets_old)
-        return loss.item(), predicted, true
-
-    def train_epoch(self, e, train_set, valid_set):
-        """
-
-        :param train_set:
-        :param valid_set:
-        :return:
-        """
-        T_loss, V_loss = [], []
-        T_predicted, T_true, V_predicted, V_true = [], [], [], []
-
-        # train step
-        for imgs, caps, caplens in self.batch(train_set):
-            train_out = self.train_step(imgs, caps, caplens, training=True)
-            T_loss.append(train_out[0])
-            for pred, true in zip(train_out[1], train_out[2]):
-                T_predicted.append(pred), T_true.append(true)
-
-        pre, rec, ovpre, ovrec = eval(T_predicted, T_true)
-        macroF1, microF1, instanceF1 = self.f1_score(T_predicted, T_true)
-        self.train_metrics.append((np.mean(T_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1))
-        ro = round
-        print(f'======================== epoch {e} ================================')
-        print(f'Tr: l {ro(np.mean(T_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec,3)} macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1}')
-
-        # valid step
-        for imgs, caps, caplens in self.batch(valid_set):
-            val_out = self.train_step(imgs, caps, caplens, training=False)
-            V_loss.append(val_out[0])
-            for pred, true in zip(val_out[1], val_out[2]):
-                V_predicted.append(pred), V_true.append(true)
-
-        pre, rec, ovpre, ovrec = eval(V_predicted, V_true)
-        macroF1, microF1, instanceF1 = self.f1_score(V_predicted, V_true)
-        self.valid_metrics.append((np.mean(V_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1))
-        print(f'Va: l {ro(np.mean(V_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec,3)} macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1}')
-
-        # # save model after each epoch
-        # torch.save(self.decoder,
-        #            f'/content/drive/My Drive/Colab Notebooks/THESIS/Image reports/Own_CNN_model/decoder_epoch{e}')
-        # torch.save(self.encoder,
-        #            f'/content/drive/My Drive/Colab Notebooks/THESIS/Image reports/Own_CNN_model/encoder_epoch{e}')
-        #
-        # with open(f'/content/drive/My Drive/Colab Notebooks/THESIS/Image reports/Own_CNN_model/train_metrics_epoch{e}',
-        #           'wb') as f:
-        #     pickle.dump(self.train_metrics, f)
-        # with open(f'/content/drive/My Drive/Colab Notebooks/THESIS/Image reports/Own_CNN_model/valid_metrics_epoch{e}',
-        #           'wb') as f:
-        #     pickle.dump(self.valid_metrics, f)
-
-    def train(self, eposhs):
-        self.train_metrics, self.valid_metrics = [], []
-        train_set, valid_set, test_set = prepare_data(self.img_tag_mapping)
-        for epoch in range(eposhs):
-            self.train_epoch(epoch, train_set, valid_set)
+    print("\nDECAYING learning rate.")
+    for param_group in optimizer.param_groups:
+        param_group['lr'] = param_group['lr'] * shrink_factor
+    print("The new learning rate is %f\n" % (optimizer.param_groups[0]['lr'],))

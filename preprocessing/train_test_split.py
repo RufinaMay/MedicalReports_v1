@@ -1,11 +1,13 @@
 import numpy as np
 import pickle
 from collections import Counter
-import pandas as pd
 from skmultilearn.model_selection import iterative_train_test_split
 from skmultilearn.model_selection.measures import get_combination_wise_output_matrix
 import scipy.sparse as sp
 from matplotlib import pyplot as plt
+import pandas as pd
+
+from utils.constants import MIN_SAMPLES, PATH_TAG_TO_INDEX
 
 
 def sparse_to_nornal(X_data, y_data, idx_to_img, idx_to_tag):
@@ -66,14 +68,12 @@ def draw_distribution(train, valid, test):
     plt.title('Valid set distribution')
     plt.show()
 
-
 def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickle', draw_distrib=True, save=True, test_size=0.25, valid_size=0.15):
     with open(img_tag_path, 'rb') as f:
         IMG_TAG_MAPPING = pickle.load(f)
     with open(tag_to_idx_path, 'rb') as f:
         TAG_TO_INDEX = pickle.load(f)
     UNIQ_TAGS = len(TAG_TO_INDEX)
-    print(f'unique tags {UNIQ_TAGS}')
     idx_to_tag = {TAG_TO_INDEX[t]: t for t in TAG_TO_INDEX}
     X, y = [], []
     img_to_idx = {img: i + 1 for i, img in enumerate(IMG_TAG_MAPPING)}
@@ -103,6 +103,21 @@ def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickl
 
     if draw_distrib:
         draw_distribution(train, valid, test)
+
+    # filter tags that occur very less
+    tag_occurrences = Counter()
+    for img in train:
+        for tag in train[img]:
+            tag_occurrences[tag] += 1
+
+    TAG_TO_INDEX = {}
+    for tag in tag_occurrences:
+        if tag_occurrences[tag] >= MIN_SAMPLES:
+            TAG_TO_INDEX[tag] = len(TAG_TO_INDEX)
+
+    with open(PATH_TAG_TO_INDEX, 'wb') as f:
+        pickle.dump(TAG_TO_INDEX, f)
+    print(f'Number of tags after filtering {len(TAG_TO_INDEX)}')
 
     if save:
         with open('train_set.pickle', 'wb') as f:
