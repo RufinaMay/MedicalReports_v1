@@ -7,7 +7,7 @@ from preprocessing.chest_xray_extractor import process_all_reports
 from preprocessing.train_test_split import run_split
 from models.mlc.attention_LSTM import Encoder, DecoderWithAttention, Attention
 from utils.utils import apply_hierarchy, batch, f1_score, eval
-from models.mlc.attention_LSTM import train_step, train_epoch, train
+from models.mlc.attention_LSTM import train_step, train_epoch, train, save_models
 
 # get all data and save to disk
 IMG_REPORT, IMG_TAG, TAG_VOCAB, WORD_VOCAB, TAG_IMAGESNUMB = process_all_reports('data/chest_reports/ecgen-radiology')

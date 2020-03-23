@@ -12,6 +12,7 @@ from sklearn.metrics import label_ranking_average_precision_score, precision_sco
 from sklearn.metrics import hamming_loss, roc_curve
 import torchvision
 import os
+from tqdm import tqdm
 
 from utils.constants import alpha_c, IMG_DIR, BATCH_SIZE
 
@@ -506,7 +507,11 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
             epochs_since_improvement = 0
         else:
             epochs_since_improvement += 1
-    return np.array(train_metrics), np.array(valid_metrics), test_metrics, encoder, decoder
+    valid_metrics = np.array(valid_metrics)
+    train_metrics = np.array(train_metrics)
+    valid_metrics = valid_metrics.reshape(valid_metrics.shape[0], -1)
+    train_metrics = train_metrics.reshape(train_metrics.shape[0], -1)
+    return train_metrics, valid_metrics, test_metrics, encoder, decoder
 
 
 def save_models(encoder, decoder, ENCODER_NAME, include_negatives):
@@ -529,3 +534,6 @@ def save_models(encoder, decoder, ENCODER_NAME, include_negatives):
 
     torch.save(decoder, os.path.join(dir_name, decoder_name))
     torch.save(encoder, os.path.join(dir_name, encoder_name))
+
+def save_metrics():
+    pass
