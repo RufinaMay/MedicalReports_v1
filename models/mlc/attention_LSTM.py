@@ -477,11 +477,13 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
 def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
           encoder_optimizer, criterion, device, include_negatives=True):
   epochs_since_improvement = 0
-  test_metrics = []
+  train_metrics,valid_metrics, test_metrics = [], [], []
   best_loss = 100
   for epoch in range(start_epoch, end_epoch):
-    recent_loss, train_metrics,valid_metrics, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
+    recent_loss, train_metrics_out,valid_metrics_out, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
                 encoder_optimizer, criterion, device)
+    train_metrics.append(train_metrics_out)
+    valid_metrics.append(valid_metrics_out)
     if epochs_since_improvement == 20:
         break
     if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
@@ -493,4 +495,4 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
       epochs_since_improvement = 0
     else:
       epochs_since_improvement += 1
-  return train_metrics,valid_metrics, test_metrics, encoder, decoder
+  return np.array(train_metrics),np.array(valid_metrics), test_metrics, encoder, decoder
