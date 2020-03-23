@@ -594,7 +594,7 @@ def extract_attention_weights(imgs, caps, caplens, encoder, decoder, device):
     caps = torch.from_numpy(caps).long().to(device)
     caplens = torch.from_numpy(caplens).long().to(device)
     imgs = encoder(imgs)
-    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens)
+    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens, device)
     targets = caps_sorted[:, 1:]
     targets_old = targets.clone()
     scores_old = scores.clone()
