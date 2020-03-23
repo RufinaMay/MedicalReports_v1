@@ -238,7 +238,7 @@ def analyze_mistakes(true, predicted, predicted_scores, train_set, tag_to_index,
     if make_plots:
         # 10 best plots
         print('10 best predictions of the model')
-        for tag_stats in tags_scores_occurences[:11]:
+        for tag_stats in tags_scores_occurences[-11:]:
             tag_name, tag_id, auc = tag_stats[0], tag_stats[1], tag_stats[2]
             fpr, tpr, thresholds = roc_curve(true[:, tag_id], predicted_scores[:, tag_id])
             plt.plot(fpr, tpr, label=f'{tag_name}: {auc}')
@@ -247,7 +247,7 @@ def analyze_mistakes(true, predicted, predicted_scores, train_set, tag_to_index,
         plt.show()
         # 10 worst plots
         print('10 worst predictions of the model')
-        for tag_stats in tags_scores_occurences[-11:]:
+        for tag_stats in tags_scores_occurences[:11]:
             tag_name, tag_id, auc = tag_stats[0], tag_stats[1], tag_stats[2]
             fpr, tpr, thresholds = roc_curve(true[:, tag_id], predicted_scores[:, tag_id])
             plt.plot(fpr, tpr, label=f'{tag_name}: {auc}')
@@ -255,6 +255,9 @@ def analyze_mistakes(true, predicted, predicted_scores, train_set, tag_to_index,
         plt.legend()
         plt.show()
 
+        idx = np.argsort(occurences)
+        occurences = occurences[idx]
+        scores = scores[idx]
         print('Score vs Number of samples')
         plt.plot(occurences, scores)
         plt.ylabel('AUC score')
