@@ -561,7 +561,7 @@ def save_metrics(train_metrics, valid_metrics, test_metrics, ENCODER_NAME, inclu
         pickle.dump(test_metrics, f)
 
 
-def prediction_step(encoder, decoder, device, imgs, caps, caplens):
+def prediction_step(encoder, decoder, device, imgs, caps, caplens, tag_to_index, UNIQUE_TAGS):
     decoder.eval()
     encoder.eval()
 
@@ -572,14 +572,14 @@ def prediction_step(encoder, decoder, device, imgs, caps, caplens):
     scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens, device)
     targets = caps_sorted[:, 1:]
 
-    predicted, true, predicted_scores = process_predictions(scores, targets)
+    predicted, true, predicted_scores = process_predictions(scores, targets, tag_to_index, UNIQUE_TAGS)
     return true, predicted, predicted_scores
 
 
 def prediction(encoder, decoder, device, test_set, tag_to_index, UNIQUE_TAGS):
     true, predicted, predicted_scores = [], [], []
     for imgs, caps, caplens in batch(test_set, tag_to_index, UNIQUE_TAGS):
-        test_out = prediction_step(encoder, decoder, device, imgs, caps, caplens)
+        test_out = prediction_step(encoder, decoder, device, imgs, caps, caplens, tag_to_index, UNIQUE_TAGS)
         for t, p, ps in zip(test_out[0], test_out[1], test_out[2]):
             true.append(t), predicted.append(p), predicted_scores.append(ps)
 
