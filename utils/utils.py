@@ -255,9 +255,11 @@ def analyze_mistakes(true, predicted, predicted_scores, train_set, tag_to_index,
         plt.legend()
         plt.show()
 
+        occurences = np.array(occurences)
+        scores = np.array(scores)
         idx = np.argsort(occurences)
-        occurences = np.take_along_axis(np.array(occurences), idx, axis=0)
-        scores = np.take_along_axis(np.array(scores), idx, axis=0)
+        occurences = np.take_along_axis(occurences, idx, axis=0)
+        scores = np.take_along_axis(scores, idx, axis=0)
         print('Score vs Number of samples')
         plt.plot(occurences, scores)
         plt.ylabel('AUC score')
