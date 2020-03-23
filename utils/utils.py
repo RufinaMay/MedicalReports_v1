@@ -255,7 +255,7 @@ def analyze_mistakes(true, predicted, predicted_scores, train_set, tag_to_index,
         plt.legend()
         plt.show()
 
-        idx = np.argsort(occurences)
+        idx = np.argsort(occurences)[0]
         occurences = occurences[idx]
         scores = scores[idx]
         print('Score vs Number of samples')
