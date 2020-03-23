@@ -13,6 +13,9 @@ import torchvision
 import os
 import pickle
 from tqdm import tqdm
+from PIL import Image
+from matplotlib import pyplot as plt
+import skimage
 
 from utils.constants import alpha_c, IMG_DIR, BATCH_SIZE
 
@@ -573,11 +576,106 @@ def prediction_step(encoder, decoder, device, imgs, caps, caplens):
     return true, predicted, predicted_scores
 
 
-def prediction(encoder, decoder, device, test_set):
+def prediction(encoder, decoder, device, test_set, tag_to_index, UNIQUE_TAGS):
     true, predicted, predicted_scores = [], [], []
-    for imgs, caps, caplens in batch(test_set):
+    for imgs, caps, caplens in batch(test_set, tag_to_index, UNIQUE_TAGS):
         test_out = prediction_step(encoder, decoder, device, imgs, caps, caplens)
         for t, p, ps in zip(test_out[0], test_out[1], test_out[2]):
             true.append(t), predicted.append(p), predicted_scores.append(ps)
 
     return np.array(true), np.array(predicted), np.array(predicted_scores)
+
+
+def extract_attention_weights(imgs, caps, caplens, encoder, decoder, device):
+    decoder.eval()
+    encoder.eval()
+
+    imgs = imgs.to(device)
+    caps = torch.from_numpy(caps).long().to(device)
+    caplens = torch.from_numpy(caplens).long().to(device)
+    imgs = encoder(imgs)
+    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens)
+    targets = caps_sorted[:, 1:]
+    targets_old = targets.clone()
+    scores_old = scores.clone()
+    predicted, true, predicted_scores = process_predictions(scores_old, targets_old)
+    return predicted, true, alphas
+
+
+def visualize_attention_step(image_path, seq, alphas, rev_word_map, true, smooth=True):
+    """
+    Visualizes caption with weights at every word.
+    Adapted from paper authors' repo: https://github.com/kelvinxu/arctic-captions/blob/master/alpha_visualization.ipynb
+    :param image_path: path to image that has been captioned
+    :param seq: caption
+    :param alphas: weights
+    :param rev_word_map: reverse word mapping, i.e. ix2word
+    :param smooth: smooth weights?
+    """
+    image = Image.open(image_path)
+    plt.imshow(image)
+    plt.title('Original Image')
+    plt.xticks([]), plt.yticks([])
+    plt.show()
+
+    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
+
+    words = [rev_word_map[ind] for ind in seq]
+    print(f'True {[rev_word_map[ind] for ind in true]}')
+    print(f'Predictions {words}')
+
+    for t in range(len(words)):
+        plt.text(0, 1, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=12)
+        plt.imshow(image)
+        current_alpha = alphas[t, :]
+        if smooth:
+            alpha = skimage.transform.pyramid_expand(current_alpha.cpu().numpy(), upscale=24, sigma=8)
+        else:
+            alpha = skimage.transform.resize(current_alpha.cpu().numpy(), [14 * 24, 14 * 24])
+        if t == 0:
+            plt.imshow(alpha, alpha=0)
+        else:
+            plt.imshow(alpha, alpha=0.8)
+        plt.axis('off')
+        plt.show()
+
+
+def visualize_attention(tag_to_index, img_tag_mapping, UNIQUE_TAGS, encoder, decoder, device):
+    rev_word_map = {v: k for k, v in tag_to_index.items()}
+    ii = 0
+
+    def specisl_batch(img_tag_mapping, UNIQUE_TAGS):
+        batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
+        b = 0
+        for im_path in img_tag_mapping:
+            im = read_and_resize(f'{IMG_DIR}/{im_path}.png')
+            caps = [tag_to_index['start']]
+            for tag in img_tag_mapping[im_path]:
+                if tag in tag_to_index:
+                    caps.append(tag_to_index[tag])
+            caps.append(tag_to_index['end'])
+            while len(caps) < UNIQUE_TAGS:
+                caps.append(tag_to_index['pad'])
+
+            batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(img_tag_mapping[im_path]) + 2)
+            if len(batch_IMGS) != 0:
+                yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1)), im_path
+
+    for imgs, caps, caplens, img_path in batch(img_tag_mapping, UNIQUE_TAGS):
+        ii += 1
+        if ii > 50:
+            break
+        predicted, true, alphas = extract_attention_weights(imgs, caps, caplens, encoder, decoder, device)
+        predicted = predicted[0]
+        true = true[0]
+        seq = [tag_to_index['start']]
+        for i in range(len(predicted)):
+            if predicted[i] == 1:
+                seq.append(i)
+        truth = []
+        for i in range(len(true)):
+            if true[i] == 1:
+                truth.append(i)
+        alphas = alphas.view(-1, 14, 14)
+        alphas = alphas.detach()
+        visualize_attention_step(f'{IMG_DIR}/{img_path}.png', seq, alphas, rev_word_map, truth)
