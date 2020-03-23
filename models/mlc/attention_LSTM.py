@@ -474,7 +474,8 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     test_metrics = [pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc]
     return np.mean(V_loss), train_metrics, valid_metrics, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer
 
-def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion, device, include_negatives=True):
+def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
+          encoder_optimizer, criterion, device, include_negatives=True):
   epochs_since_improvement = 0
   test_metrics = []
   best_loss = 100
