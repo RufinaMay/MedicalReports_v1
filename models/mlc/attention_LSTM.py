@@ -11,6 +11,7 @@ from sklearn.metrics import label_ranking_average_precision_score, precision_sco
     roc_auc_score
 from sklearn.metrics import hamming_loss, roc_curve
 import torchvision
+import os
 
 from utils.constants import alpha_c, IMG_DIR, BATCH_SIZE
 
@@ -445,8 +446,8 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     if verbose:
         print(f'============================= epoch {e} =========================================')
         print(
-            f'Tr: l {ro(np.mean(T_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
-        macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
+            f'Tr: l {ro(np.mean(T_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ovrec} '
+            f'macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
 
     # valid step
     for imgs, caps, caplens in batch(valid_set, tag_to_index, UNIQUE_TAGS):
@@ -463,8 +464,8 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     valid_metrics.append((np.mean(V_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
     if verbose:
         print(
-            f'Va: l {ro(np.mean(V_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
-        macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
+            f'Va: l {ro(np.mean(V_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ovrec} '
+            f'macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
 
     # test set performance
     Test_predicted, Test_true, Test_pred_scores = [], [], []
@@ -478,27 +479,53 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     ham_loss = hamming_loss(np.array(Test_true), np.array(Test_predicted))
     auc = roc_auc_score(Test_true, Test_pred_scores)
     test_metrics = [pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc]
-    return np.mean(V_loss), train_metrics, valid_metrics, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer
+    return np.mean(
+        V_loss), train_metrics, valid_metrics, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer
 
-def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
+
+def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder,
+          decoder_optimizer,
           encoder_optimizer, criterion, device, include_negatives=True):
-  epochs_since_improvement = 0
-  train_metrics,valid_metrics, test_metrics = [], [], []
-  best_loss = 100
-  for epoch in range(start_epoch, end_epoch):
-    recent_loss, train_metrics_out,valid_metrics_out, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
-                encoder_optimizer, criterion, device, include_negatives)
-    train_metrics.append(train_metrics_out)
-    valid_metrics.append(valid_metrics_out)
-    if epochs_since_improvement == 20:
-        break
-    if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
-        adjust_learning_rate(decoder_optimizer, 0.8)
-        adjust_learning_rate(encoder_optimizer, 0.8)
+    epochs_since_improvement = 0
+    train_metrics, valid_metrics, test_metrics = [], [], []
+    best_loss = 100
+    for epoch in range(start_epoch, end_epoch):
+        recent_loss, train_metrics_out, valid_metrics_out, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(
+            epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
+            encoder_optimizer, criterion, device, include_negatives)
+        train_metrics.append(train_metrics_out)
+        valid_metrics.append(valid_metrics_out)
+        if epochs_since_improvement == 20:
+            break
+        if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
+            adjust_learning_rate(decoder_optimizer, 0.8)
+            adjust_learning_rate(encoder_optimizer, 0.8)
 
-    if recent_loss<best_loss:
-      best_loss = recent_loss
-      epochs_since_improvement = 0
+        if recent_loss < best_loss:
+            best_loss = recent_loss
+            epochs_since_improvement = 0
+        else:
+            epochs_since_improvement += 1
+    return np.array(train_metrics), np.array(valid_metrics), test_metrics, encoder, decoder
+
+
+def save_models(encoder, decoder, ENCODER_NAME, include_negatives):
+    # save models
+    dir_name = f'{ENCODER_NAME}_results'
+    if include_negatives:
+        dir_name = 'NegativeSampling_' + dir_name
     else:
-      epochs_since_improvement += 1
-  return np.array(train_metrics),np.array(valid_metrics), test_metrics, encoder, decoder
+        dir_name = 'NoNegativeSampling_' + dir_name
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+    decoder_name = f'{ENCODER_NAME}_decoder'
+    encoder_name = f'{ENCODER_NAME}_encoder'
+    if include_negatives:
+        decoder_name = 'NegativeSampling_' + decoder_name
+        encoder_name = 'NegativeSampling_' + encoder_name
+    else:
+        decoder_name = 'NoNegativeSampling_' + decoder_name
+        encoder_name = 'NoNegativeSampling_' + encoder_name
+
+    torch.save(decoder, os.path.join(dir_name, decoder_name))
+    torch.save(encoder, os.path.join(dir_name, encoder_name))
