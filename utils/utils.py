@@ -1,7 +1,7 @@
 import cv2
 from matplotlib import pyplot as plt
 import numpy as np
-from sklearn.manifold import TSNE
+from sklearn.metrics import roc_auc_score, roc_curve
 from collections import Counter
 import torchvision.transforms as transforms
 import torch
@@ -214,5 +214,52 @@ def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
     if len(batch_IMGS) != 0:
         yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
 
-def analize_mistakes():
-    pass
+
+def analyze_mistakes(true, predicted, predicted_scores, train_set, tag_to_index, make_plots=True):
+    number_of_tags = Counter()
+    for img in train_set:
+        for label in train_set[img]:
+            number_of_tags[label] += 1
+
+    scores, occurences = [], []
+    index_to_tag = {tag_to_index[k]: k for k in tag_to_index}
+    tags_scores_occurences = []
+    for j in range(predicted.shape[1]):
+        score = roc_auc_score(true[:, j], predicted_scores[:, j])
+        tag_id = j
+        tag_name = index_to_tag[j]
+        occurrence = number_of_tags[index_to_tag[j]]
+        tags_scores_occurences.append((tag_name, tag_id, score, occurrence))
+        scores.append(score)
+        occurences.append(occurrence)
+
+    tags_scores_occurences = sorted(tags_scores_occurences, key=lambda x: x[2])
+
+    if make_plots:
+        # 10 best plots
+        print('10 best predictions of the model')
+        for tag_stats in tags_scores_occurences[:11]:
+            tag_name, tag_id, auc = tag_stats[0], tag_stats[1], tag_stats[2]
+            fpr, tpr, thresholds = roc_curve(true[:, tag_id], predicted_scores[:, tag_id])
+            plt.plot(fpr, tpr, label=f'{tag_name}: {auc}')
+        plt.title('10 best predictions')
+        plt.legend()
+        plt.show()
+        # 10 worst plots
+        print('10 worst predictions of the model')
+        for tag_stats in tags_scores_occurences[-11:]:
+            tag_name, tag_id, auc = tag_stats[0], tag_stats[1], tag_stats[2]
+            fpr, tpr, thresholds = roc_curve(true[:, tag_id], predicted_scores[:, tag_id])
+            plt.plot(fpr, tpr, label=f'{tag_name}: {auc}')
+        plt.title('10 worst predictions')
+        plt.legend()
+        plt.show()
+
+        print('Score vs Number of samples')
+        plt.plot(occurences, scores)
+        plt.ylabel('AUC score')
+        plt.xlabel('Number of samples')
+        plt.title('Score vs Number of samples')
+        plt.show()
+
+    return tags_scores_occurences

@@ -535,7 +535,8 @@ def save_models(encoder, decoder, ENCODER_NAME, include_negatives):
     torch.save(decoder, os.path.join(dir_name, decoder_name))
     torch.save(encoder, os.path.join(dir_name, encoder_name))
 
-def save_metrics(train_metrics,valid_metrics, test_metrics, ENCODER_NAME, include_negatives):
+
+def save_metrics(train_metrics, valid_metrics, test_metrics, ENCODER_NAME, include_negatives):
     dir_name = f'{ENCODER_NAME}_results'
     if include_negatives:
         dir_name = 'NegativeSampling_' + dir_name
@@ -555,3 +556,28 @@ def save_metrics(train_metrics,valid_metrics, test_metrics, ENCODER_NAME, includ
     file_name = 'test_metrics.pickle'
     with open(os.path.join(dir_name, file_name)) as f:
         pickle.dump(test_metrics, f)
+
+
+def prediction_step(encoder, decoder, device, imgs, caps, caplens):
+    decoder.eval()
+    encoder.eval()
+
+    imgs = imgs.to(device)
+    caps = torch.from_numpy(caps).long().to(device)
+    caplens = torch.from_numpy(caplens).long().to(device)
+    imgs = encoder(imgs)
+    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens)
+    targets = caps_sorted[:, 1:]
+
+    predicted, true, predicted_scores = process_predictions(scores, targets)
+    return true, predicted, predicted_scores
+
+
+def prediction(encoder, decoder, test_set):
+    true, predicted, predicted_scores = [], [], []
+    for imgs, caps, caplens in batch(test_set):
+        test_out = prediction_step(encoder, decoder, imgs, caps, caplens)
+        for t, p, ps in zip(test_out[0], test_out[1], test_out[2]):
+            true.append(t), predicted.append(p), predicted_scores.append(ps)
+
+    return np.array(true), np.array(predicted), np.array(predicted_scores)
