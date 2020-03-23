@@ -586,7 +586,7 @@ def prediction(encoder, decoder, device, test_set, tag_to_index, UNIQUE_TAGS):
     return np.array(true), np.array(predicted), np.array(predicted_scores)
 
 
-def extract_attention_weights(imgs, caps, caplens, encoder, decoder, device):
+def extract_attention_weights(imgs, caps, caplens, encoder, decoder, device, tag_to_index, UNIQUE_TAGS):
     decoder.eval()
     encoder.eval()
 
@@ -598,7 +598,7 @@ def extract_attention_weights(imgs, caps, caplens, encoder, decoder, device):
     targets = caps_sorted[:, 1:]
     targets_old = targets.clone()
     scores_old = scores.clone()
-    predicted, true, predicted_scores = process_predictions(scores_old, targets_old)
+    predicted, true, predicted_scores = process_predictions(scores_old, targets_old, tag_to_index, UNIQUE_TAGS)
     return predicted, true, alphas
 
 
@@ -665,7 +665,7 @@ def visualize_attention(tag_to_index, img_tag_mapping, UNIQUE_TAGS, encoder, dec
         ii += 1
         if ii > 50:
             break
-        predicted, true, alphas = extract_attention_weights(imgs, caps, caplens, encoder, decoder, device)
+        predicted, true, alphas = extract_attention_weights(imgs, caps, caplens, encoder, decoder, device, tag_to_index, UNIQUE_TAGS)
         predicted = predicted[0]
         true = true[0]
         seq = [tag_to_index['start']]
