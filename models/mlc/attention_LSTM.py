@@ -418,7 +418,7 @@ def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder
 
 def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
                 encoder_optimizer, criterion, device, verbose = True):
-    global train_metrics, valid_metrics
+    train_metrics, valid_metrics = [], []
     T_loss, V_loss = [], []
     T_predicted, T_true, T_pred_scores, V_predicted, V_true, V_pred_scores = [], [], [], [], [], []
     # train step
