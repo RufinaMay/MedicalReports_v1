@@ -414,3 +414,62 @@ def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder
 
     predicted, true, predicted_scores = process_predictions(scores_old, targets_old, tag_to_index, UNIQUE_TAGS)
     return loss.item(), predicted, true, predicted_scores, encoder, decoder, decoder_optimizer, encoder_optimizer
+
+
+def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
+                encoder_optimizer, criterion, device, verbose = True):
+    global train_metrics, valid_metrics
+    T_loss, V_loss = [], []
+    T_predicted, T_true, T_pred_scores, V_predicted, V_true, V_pred_scores = [], [], [], [], [], []
+    # train step
+    for imgs, caps, caplens in batch(train_set, tag_to_index, UNIQUE_TAGS):
+        train_out = train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion,
+                               device, tag_to_index, UNIQUE_TAGS, training=True)
+        encoder, decoder, decoder_optimizer, encoder_optimizer = train_out[4], train_out[5], train_out[6], train_out[7]
+        T_loss.append(train_out[0])
+        for pred, true, pred_scores in zip(train_out[1], train_out[2], train_out[3]):
+            T_predicted.append(pred), T_true.append(true), T_pred_scores.append(pred_scores)
+
+    pre, rec, ovpre, ovrec = eval(T_predicted, T_true)
+    macroF1, microF1, instanceF1 = f1_score(T_predicted, T_true)
+    ham_loss = hamming_loss(np.array(T_true), np.array(T_predicted))
+    auc = roc_auc_score(T_true, T_pred_scores)
+    train_metrics.append((np.mean(T_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
+    ro = round
+    if verbose:
+        print(f'============================= epoch {e} =========================================')
+        print(
+            f'Tr: l {ro(np.mean(T_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
+        macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
+
+    # valid step
+    for imgs, caps, caplens in batch(valid_set, tag_to_index, UNIQUE_TAGS):
+        val_out = train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion,
+                             device, tag_to_index, UNIQUE_TAGS, training=False)
+        V_loss.append(val_out[0])
+        for pred, true, pred_scores in zip(val_out[1], val_out[2], val_out[3]):
+            V_predicted.append(pred), V_true.append(true), V_pred_scores.append(pred_scores)
+
+    pre, rec, ovpre, ovrec = eval(V_predicted, V_true)
+    macroF1, microF1, instanceF1 = f1_score(V_predicted, V_true)
+    ham_loss = hamming_loss(np.array(V_true), np.array(V_predicted))
+    auc = roc_auc_score(V_true, V_pred_scores)
+    valid_metrics.append((np.mean(V_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
+    if verbose:
+        print(
+            f'Va: l {ro(np.mean(V_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
+        macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
+
+    # test set performance
+    Test_predicted, Test_true, Test_pred_scores = [], [], []
+    for imgs, caps, caplens in batch(test_set, tag_to_index, UNIQUE_TAGS):
+        test_out = train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion,
+                              device, tag_to_index, UNIQUE_TAGS, training=False)
+        for pred, true, pred_scores in zip(test_out[1], test_out[2], test_out[3]):
+            Test_predicted.append(pred), Test_true.append(true), Test_pred_scores.append(pred_scores)
+    pre, rec, ovpre, ovrec = eval(Test_predicted, Test_true)
+    macroF1, microF1, instanceF1 = f1_score(Test_predicted, Test_true)
+    ham_loss = hamming_loss(np.array(Test_true), np.array(Test_predicted))
+    auc = roc_auc_score(Test_true, Test_pred_scores)
+    test_metrics = [pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc]
+    return np.mean(V_loss), train_metrics, valid_metrics, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer
