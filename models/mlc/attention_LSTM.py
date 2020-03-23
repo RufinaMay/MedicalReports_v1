@@ -352,7 +352,7 @@ def read_and_resize(filename):
     return transform(imgbgr)
 
 
-def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
+def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS, include_negatives=False):
     batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
     b = 0
     for im_path in img_tag_mapping:
@@ -362,10 +362,16 @@ def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
             if tag in tag_to_index:
                 caps.append(tag_to_index[tag])
         caps.append(tag_to_index['end'])
+
+        include = True
+        if not include_negatives and len(caps) <= 2:
+            include = False
+
         while len(caps) < UNIQUE_TAGS:
             caps.append(tag_to_index['pad'])
 
-        batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(img_tag_mapping[im_path]) + 2)
+        if include:
+            batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(img_tag_mapping[im_path]) + 2)
         b += 1
         if b >= BATCH_SIZE:
             yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
@@ -417,12 +423,12 @@ def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder
 
 
 def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
-                encoder_optimizer, criterion, device, verbose=True):
+                encoder_optimizer, criterion, device, verbose=True, include_negatives=True):
     train_metrics, valid_metrics = [], []
     T_loss, V_loss = [], []
     T_predicted, T_true, T_pred_scores, V_predicted, V_true, V_pred_scores = [], [], [], [], [], []
     # train step
-    for imgs, caps, caplens in batch(train_set, tag_to_index, UNIQUE_TAGS):
+    for imgs, caps, caplens in batch(train_set, tag_to_index, UNIQUE_TAGS, include_negatives):
         train_out = train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion,
                                device, tag_to_index, UNIQUE_TAGS, training=True)
         encoder, decoder, decoder_optimizer, encoder_optimizer = train_out[4], train_out[5], train_out[6], train_out[7]
@@ -481,7 +487,7 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
   best_loss = 100
   for epoch in range(start_epoch, end_epoch):
     recent_loss, train_metrics_out,valid_metrics_out, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
-                encoder_optimizer, criterion, device)
+                encoder_optimizer, criterion, device, include_negatives)
     train_metrics.append(train_metrics_out)
     valid_metrics.append(valid_metrics_out)
     if epochs_since_improvement == 20:
