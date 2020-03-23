@@ -473,3 +473,23 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     auc = roc_auc_score(Test_true, Test_pred_scores)
     test_metrics = [pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc]
     return np.mean(V_loss), train_metrics, valid_metrics, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer
+
+def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion, device, include_negatives=True):
+  epochs_since_improvement = 0
+  test_metrics = []
+  best_loss = 100
+  for epoch in range(start_epoch, end_epoch):
+    recent_loss, train_metrics,valid_metrics, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
+                encoder_optimizer, criterion, device)
+    if epochs_since_improvement == 20:
+        break
+    if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
+        adjust_learning_rate(decoder_optimizer, 0.8)
+        adjust_learning_rate(encoder_optimizer, 0.8)
+
+    if recent_loss<best_loss:
+      best_loss = recent_loss
+      epochs_since_improvement = 0
+    else:
+      epochs_since_improvement += 1
+  return test_metrics, encoder, decoder
