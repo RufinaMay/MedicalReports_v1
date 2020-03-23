@@ -569,7 +569,7 @@ def prediction_step(encoder, decoder, device, imgs, caps, caplens):
     caps = torch.from_numpy(caps).long().to(device)
     caplens = torch.from_numpy(caplens).long().to(device)
     imgs = encoder(imgs)
-    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens)
+    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens, device)
     targets = caps_sorted[:, 1:]
 
     predicted, true, predicted_scores = process_predictions(scores, targets)
