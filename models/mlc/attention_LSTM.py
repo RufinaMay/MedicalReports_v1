@@ -621,6 +621,7 @@ def visualize_attention_step(image_path, seq, alphas, rev_word_map, true, smooth
     image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
+    words = words[1:]
     print(f'True {[rev_word_map[ind] for ind in true]}')
     print(f'Predictions {words}')
 
@@ -677,5 +678,6 @@ def visualize_attention(tag_to_index, img_tag_mapping, UNIQUE_TAGS, encoder, dec
             if true[i] == 1:
                 truth.append(i)
         alphas = alphas.view(-1, 14, 14)
+        print(alphas.shape)
         alphas = alphas.detach()
         visualize_attention_step(f'{IMG_DIR}/{img_path}.png', seq, alphas, rev_word_map, truth)
