@@ -2,6 +2,7 @@ import pickle
 from collections import Counter
 import numpy as np
 from matplotlib import pyplot as plt
+from models.mlc.attention_LSTM import visualize_attention
 
 from preprocessing.chest_xray_extractor import process_all_reports
 from preprocessing.train_test_split import run_split

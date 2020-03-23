@@ -661,7 +661,7 @@ def visualize_attention(tag_to_index, img_tag_mapping, UNIQUE_TAGS, encoder, dec
             if len(batch_IMGS) != 0:
                 yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1)), im_path
 
-    for imgs, caps, caplens, img_path in batch(img_tag_mapping, UNIQUE_TAGS):
+    for imgs, caps, caplens, img_path in specisl_batch(img_tag_mapping, UNIQUE_TAGS):
         ii += 1
         if ii > 50:
             break
