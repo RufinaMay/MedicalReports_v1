@@ -573,10 +573,10 @@ def prediction_step(encoder, decoder, device, imgs, caps, caplens):
     return true, predicted, predicted_scores
 
 
-def prediction(encoder, decoder, test_set):
+def prediction(encoder, decoder, device, test_set):
     true, predicted, predicted_scores = [], [], []
     for imgs, caps, caplens in batch(test_set):
-        test_out = prediction_step(encoder, decoder, imgs, caps, caplens)
+        test_out = prediction_step(encoder, decoder, device, imgs, caps, caplens)
         for t, p, ps in zip(test_out[0], test_out[1], test_out[2]):
             true.append(t), predicted.append(p), predicted_scores.append(ps)
 
