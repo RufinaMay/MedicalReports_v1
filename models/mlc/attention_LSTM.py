@@ -15,7 +15,7 @@ import pickle
 from tqdm import tqdm
 from PIL import Image
 from matplotlib import pyplot as plt
-import skimage
+import skimage.transform
 
 from utils.constants import alpha_c, IMG_DIR, BATCH_SIZE
 
