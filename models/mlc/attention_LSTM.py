@@ -417,7 +417,7 @@ def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder
 
 
 def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
-                encoder_optimizer, criterion, device, verbose = True):
+                encoder_optimizer, criterion, device, verbose=True):
     train_metrics, valid_metrics = [], []
     T_loss, V_loss = [], []
     T_predicted, T_true, T_pred_scores, V_predicted, V_true, V_pred_scores = [], [], [], [], [], []
@@ -493,4 +493,4 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
       epochs_since_improvement = 0
     else:
       epochs_since_improvement += 1
-  return test_metrics, encoder, decoder
+  return train_metrics,valid_metrics, test_metrics, encoder, decoder
