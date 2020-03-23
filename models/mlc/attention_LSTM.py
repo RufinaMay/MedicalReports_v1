@@ -377,8 +377,8 @@ def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
         # yield normalize(batch_IMGS).reshape((-1,3,600,600)), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1,1))
 
 
-def train_step(imgs, caps, caplens, encoder, decoder, device, criterion, decoder_optimizer, encoder_optimizer,
-               training=True):
+def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion, device,
+               tag_to_index, UNIQUE_TAGS, training=True):
     if training:
         encoder.train()
         decoder.train()
@@ -386,18 +386,13 @@ def train_step(imgs, caps, caplens, encoder, decoder, device, criterion, decoder
         decoder.eval()
         encoder.eval()
 
-    imgs = imgs.to(device)  # torch.from_numpy(imgs).float().to(device)
+    imgs = imgs.to(device)
     caps = torch.from_numpy(caps).long().to(device)
     caplens = torch.from_numpy(caplens).long().to(device)
-    # normalization transformations
-    # normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-    #                                    std=[0.229, 0.224, 0.225])
-    # transform=transforms.Compose([normalize])
-    # imgs = transform(torch.FloatTensor(imgs))
 
     # Forward prop.
     imgs = encoder(imgs)
-    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens)
+    scores, caps_sorted, decode_lengths, alphas, sort_ind = decoder(imgs, caps, caplens, device)
     # Since we decoded starting with <start>, the targets are all words after <start>, up to <end>
     targets = caps_sorted[:, 1:]
     targets_old = targets.clone()
@@ -417,93 +412,5 @@ def train_step(imgs, caps, caplens, encoder, decoder, device, criterion, decoder
         decoder_optimizer.step()
         encoder_optimizer.step()
 
-    # Keep track of metrics
-    # top5 = accuracy(scores.data, targets.data, 5)
-    # top1 = top1_accuracy(scores.data, targets.data)
-    predicted, true, predicted_scores = process_predictions(scores_old, targets_old)
-    return loss.item(), predicted, true, predicted_scores
-
-
-def train_epoch(e, train_set, valid_set, test_set):
-    global train_metrics, valid_metrics
-    global train_true_labels, train_pred_scores, valid_true_labels, valid_pred_scores, test_true_labesl, test_predicted_scores
-    T_loss, V_loss = [], []
-    T_predicted, T_true, T_pred_scores, V_predicted, V_true, V_pred_scores = [], [], [], [], [], []
-    # train step
-    for imgs, caps, caplens in batch(train_set):
-        train_out = train_step(imgs, caps, caplens, training=True)
-        T_loss.append(train_out[0])
-        for pred, true, pred_scores in zip(train_out[1], train_out[2], train_out[3]):
-            T_predicted.append(pred), T_true.append(true), T_pred_scores.append(pred_scores)
-
-    pre, rec, ovpre, ovrec = eval(T_predicted, T_true)
-    macroF1, microF1, instanceF1 = f1_score(T_predicted, T_true)
-    ham_loss = hamming_loss(np.array(T_true), np.array(T_predicted))
-    one_err = one_error(T_true, T_pred_scores)
-    rank_err = ranking_loss(T_true, T_pred_scores)
-    auc = roc_auc_score(T_true, T_pred_scores)
-    train_true_labels, train_pred_scores = T_true, T_pred_scores
-    train_metrics.append(
-        (np.mean(T_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
-    ro = round
-
-    print(f'============================= epoch {e} =========================================')
-    print(
-        f'Tr: l {ro(np.mean(T_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
-    macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} one err {one_err} rank err {rank_err} auc {auc}')
-
-    # valid step
-    for imgs, caps, caplens in batch(valid_set):
-        val_out = train_step(imgs, caps, caplens, training=False)
-        V_loss.append(val_out[0])
-        for pred, true, pred_scores in zip(val_out[1], val_out[2], val_out[3]):
-            V_predicted.append(pred), V_true.append(true), V_pred_scores.append(pred_scores)
-
-    pre, rec, ovpre, ovrec = eval(V_predicted, V_true)
-    macroF1, microF1, instanceF1 = f1_score(V_predicted, V_true)
-    ham_loss = hamming_loss(np.array(V_true), np.array(V_predicted))
-    one_err = one_error(V_true, V_pred_scores)
-    rank_err = ranking_loss(V_true, V_pred_scores)
-    auc = roc_auc_score(V_true, V_pred_scores)
-    valid_true_labels, valid_pred_scores = V_true, V_pred_scores
-    valid_metrics.append(
-        (np.mean(V_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
-    print(
-        f'Va: l {ro(np.mean(V_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
-    macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} one err {one_err} rank err {rank_err} auc {auc}')
-
-    # test set performance
-    Test_predicted, Test_true, Test_pred_scores = [], [], []
-    for imgs, caps, caplens in batch(test_set):
-        test_out = train_step(imgs, caps, caplens, training=False)
-        for pred, true, pred_scores in zip(test_out[1], test_out[2], test_out[3]):
-            Test_predicted.append(pred), Test_true.append(true), Test_pred_scores.append(pred_scores)
-    pre, rec, ovpre, ovrec = eval(Test_predicted, Test_true)
-    macroF1, microF1, instanceF1 = f1_score(Test_predicted, Test_true)
-    ham_loss = hamming_loss(np.array(Test_true), np.array(Test_predicted))
-    one_err = one_error(Test_true, Test_pred_scores)
-    rank_err = ranking_loss(Test_true, Test_pred_scores)
-    auc = roc_auc_score(Test_true, Test_pred_scores)
-    test_true_labesl, test_predicted_scores = Test_true, Test_pred_scores
-    test_metrics = [pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc]
-    return np.mean(V_loss), test_metrics
-
-
-def train(start_epoch, end_epoch, train_set, valid_set, test_set, decoder_optimizer, encoder_optimizer):
-    global epochs_since_improvement
-    best_loss = 100
-    for epoch in range(start_epoch, end_epoch):
-        recent_loss, test_metrics = train_epoch(epoch, train_set, valid_set, test_set)
-
-        if epochs_since_improvement == 20:
-            break
-        if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
-            adjust_learning_rate(decoder_optimizer, 0.8)
-            adjust_learning_rate(encoder_optimizer, 0.8)
-
-        if recent_loss < best_loss:
-            best_loss = recent_loss
-            epochs_since_improvement = 0
-        else:
-            epochs_since_improvement += 1
-    return test_metrics
+    predicted, true, predicted_scores = process_predictions(scores_old, targets_old, tag_to_index, UNIQUE_TAGS)
+    return loss.item(), predicted, true, predicted_scores, encoder, decoder, decoder_optimizer, encoder_optimizer
