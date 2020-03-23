@@ -213,3 +213,6 @@ def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
             batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
     if len(batch_IMGS) != 0:
         yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
+
+def analize_mistakes():
+    pass

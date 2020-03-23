@@ -1,4 +1,3 @@
-import pandas as pd
 import torch
 import torch.optim
 from torch import nn
@@ -12,6 +11,7 @@ from sklearn.metrics import label_ranking_average_precision_score, precision_sco
 from sklearn.metrics import hamming_loss, roc_curve
 import torchvision
 import os
+import pickle
 from tqdm import tqdm
 
 from utils.constants import alpha_c, IMG_DIR, BATCH_SIZE
@@ -535,5 +535,23 @@ def save_models(encoder, decoder, ENCODER_NAME, include_negatives):
     torch.save(decoder, os.path.join(dir_name, decoder_name))
     torch.save(encoder, os.path.join(dir_name, encoder_name))
 
-def save_metrics():
-    pass
+def save_metrics(train_metrics,valid_metrics, test_metrics, ENCODER_NAME, include_negatives):
+    dir_name = f'{ENCODER_NAME}_results'
+    if include_negatives:
+        dir_name = 'NegativeSampling_' + dir_name
+    else:
+        dir_name = 'NoNegativeSampling_' + dir_name
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
+    file_name = 'train_metrics.pickle'
+    with open(os.path.join(dir_name, file_name)) as f:
+        pickle.dump(train_metrics, f)
+
+    file_name = 'valid_metrics.pickle'
+    with open(os.path.join(dir_name, file_name)) as f:
+        pickle.dump(valid_metrics, f)
+
+    file_name = 'test_metrics.pickle'
+    with open(os.path.join(dir_name, file_name)) as f:
+        pickle.dump(test_metrics, f)
