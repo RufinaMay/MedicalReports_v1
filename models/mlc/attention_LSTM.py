@@ -3,12 +3,11 @@ import torch.optim
 from torch import nn
 from torch.nn.utils.rnn import pack_padded_sequence
 import torchvision.transforms as transforms
-import torch.nn.functional as F
 import cv2
 import numpy as np
 from sklearn.metrics import label_ranking_average_precision_score, precision_score, recall_score, classification_report, \
     roc_auc_score
-from sklearn.metrics import hamming_loss, roc_curve
+from sklearn.metrics import hamming_loss
 import torchvision
 import os
 import pickle

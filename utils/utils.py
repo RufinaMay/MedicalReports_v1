@@ -192,27 +192,27 @@ def f1_score(predicted_overall, true_overall):
     return macroF1 / n, microF1, instanceF1 / n
 
 
-def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
-    batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
-    b = 0
-    for im_path in img_tag_mapping:
-        im = read_and_resize(f'{IMG_DIR}/{im_path}.png')
-        caps = [tag_to_index['start']]
-        for tag in img_tag_mapping[im_path]:
-            if tag in tag_to_index:
-                caps.append(tag_to_index[tag])
-        caps.append(tag_to_index['end'])
-        while len(caps) < UNIQUE_TAGS:
-            caps.append(tag_to_index['pad'])
-
-        batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(img_tag_mapping[im_path]) + 2)
-        b += 1
-        if b >= BATCH_SIZE:
-            yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
-            b = 0
-            batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
-    if len(batch_IMGS) != 0:
-        yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
+# def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
+#     batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
+#     b = 0
+#     for im_path in img_tag_mapping:
+#         im = read_and_resize(f'{IMG_DIR}/{im_path}.png')
+#         caps = [tag_to_index['start']]
+#         for tag in img_tag_mapping[im_path]:
+#             if tag in tag_to_index:
+#                 caps.append(tag_to_index[tag])
+#         caps.append(tag_to_index['end'])
+#         while len(caps) < UNIQUE_TAGS:
+#             caps.append(tag_to_index['pad'])
+#
+#         batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(img_tag_mapping[im_path]) + 2)
+#         b += 1
+#         if b >= BATCH_SIZE:
+#             yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
+#             b = 0
+#             batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
+#     if len(batch_IMGS) != 0:
+#         yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
 
 
 def analyze_mistakes(true, predicted, predicted_scores, train_set, tag_to_index, make_plots=True):
