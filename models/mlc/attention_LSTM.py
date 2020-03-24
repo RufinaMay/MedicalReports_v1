@@ -549,15 +549,15 @@ def save_metrics(train_metrics, valid_metrics, test_metrics, ENCODER_NAME, inclu
         os.makedirs(dir_name)
 
     file_name = 'train_metrics.pickle'
-    with open(os.path.join(dir_name, file_name)) as f:
+    with open(os.path.join(dir_name, file_name), 'wb') as f:
         pickle.dump(train_metrics, f)
 
     file_name = 'valid_metrics.pickle'
-    with open(os.path.join(dir_name, file_name)) as f:
+    with open(os.path.join(dir_name, file_name), 'wb') as f:
         pickle.dump(valid_metrics, f)
 
     file_name = 'test_metrics.pickle'
-    with open(os.path.join(dir_name, file_name)) as f:
+    with open(os.path.join(dir_name, file_name), 'wb') as f:
         pickle.dump(test_metrics, f)
 
 
