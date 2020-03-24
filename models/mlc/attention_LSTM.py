@@ -633,10 +633,7 @@ def visualize_attention_step(image_path, seq, alphas, rev_word_map, true, smooth
             alpha = skimage.transform.pyramid_expand(current_alpha.cpu().numpy(), upscale=24, sigma=8)
         else:
             alpha = skimage.transform.resize(current_alpha.cpu().numpy(), [14 * 24, 14 * 24])
-        if t == 0:
-            plt.imshow(alpha, alpha=0)
-        else:
-            plt.imshow(alpha, alpha=0.8)
+        plt.imshow(alpha, alpha=0.8)
         plt.axis('off')
         plt.show()
 
