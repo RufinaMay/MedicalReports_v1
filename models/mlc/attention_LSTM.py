@@ -489,14 +489,14 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
 
 def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder,
           decoder_optimizer,
-          encoder_optimizer, criterion, device, include_negatives=True):
+          encoder_optimizer, criterion, device, include_negatives=True, verbose=True):
     epochs_since_improvement = 0
     train_metrics, valid_metrics, test_metrics = [], [], []
     best_loss = 100
     for epoch in range(start_epoch, end_epoch):
         recent_loss, train_metrics_out, valid_metrics_out, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(
             epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
-            encoder_optimizer, criterion, device, include_negatives)
+            encoder_optimizer, criterion, device, include_negatives=include_negatives, verbose=verbose)
         train_metrics.append(train_metrics_out)
         valid_metrics.append(valid_metrics_out)
         if epochs_since_improvement == 20:
