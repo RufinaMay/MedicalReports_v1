@@ -260,6 +260,11 @@ def process_predictions(train_pred, y_train, tag_to_index, UNIQUE_TAGS):
 
 
 def eval(predicted_overall, true_overall):
+    overall_precision = precision_score(true_overall, predicted_overall, average='macro')
+    overall_recall = precision_score(true_overall, predicted_overall, average='macro')
+    precision = precision_score(true_overall, predicted_overall, average='micro')
+    recall = precision_score(true_overall, predicted_overall, average='micro')
+
     true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
     precision, recall = 0, 0
     precision_upper, recall_upper = 0, 0
@@ -475,7 +480,7 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     Test_predicted, Test_true, Test_pred_scores = [], [], []
     for imgs, caps, caplens in batch(test_set, tag_to_index, UNIQUE_TAGS):
         test_out = train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion,
-                              device, tag_to_index, UNIQUE_TAGS, training=False,attention=attention)
+                              device, tag_to_index, UNIQUE_TAGS, training=False, attention=attention)
         for pred, true, pred_scores in zip(test_out[1], test_out[2], test_out[3]):
             Test_predicted.append(pred), Test_true.append(true), Test_pred_scores.append(pred_scores)
     pre, rec, ovpre, ovrec = eval(Test_predicted, Test_true)
@@ -496,7 +501,8 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
     for epoch in range(start_epoch, end_epoch):
         recent_loss, train_metrics_out, valid_metrics_out, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(
             epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
-            encoder_optimizer, criterion, device, include_negatives=include_negatives, verbose=verbose, attention=attention)
+            encoder_optimizer, criterion, device, include_negatives=include_negatives, verbose=verbose,
+            attention=attention)
         train_metrics.append(train_metrics_out)
         valid_metrics.append(valid_metrics_out)
         if epochs_since_improvement == 20:
@@ -663,7 +669,8 @@ def visualize_attention(tag_to_index, img_tag_mapping, UNIQUE_TAGS, encoder, dec
         ii += 1
         if ii > 50:
             break
-        predicted, true, alphas = extract_attention_weights(imgs, caps, caplens, encoder, decoder, device, tag_to_index, UNIQUE_TAGS)
+        predicted, true, alphas = extract_attention_weights(imgs, caps, caplens, encoder, decoder, device, tag_to_index,
+                                                            UNIQUE_TAGS)
         predicted = predicted[0]
         true = true[0]
         seq = [tag_to_index['start']]
