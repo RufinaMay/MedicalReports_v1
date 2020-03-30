@@ -388,7 +388,7 @@ def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS, include_negatives=False):
 
 
 def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion, device,
-               tag_to_index, UNIQUE_TAGS, training=True):
+               tag_to_index, UNIQUE_TAGS, training=True, attention=True):
     if training:
         encoder.train()
         decoder.train()
@@ -413,7 +413,8 @@ def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder
 
     loss = criterion(scores.data, targets.data)
     # Add doubly stochastic attention regularization
-    loss += alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
+    if attention:
+        loss += alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
 
     if training:
         decoder_optimizer.zero_grad()
@@ -427,14 +428,14 @@ def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder
 
 
 def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
-                encoder_optimizer, criterion, device, verbose=True, include_negatives=True):
+                encoder_optimizer, criterion, device, verbose=True, include_negatives=True, attention=True):
     train_metrics, valid_metrics = [], []
     T_loss, V_loss = [], []
     T_predicted, T_true, T_pred_scores, V_predicted, V_true, V_pred_scores = [], [], [], [], [], []
     # train step
     for imgs, caps, caplens in batch(train_set, tag_to_index, UNIQUE_TAGS, include_negatives):
         train_out = train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion,
-                               device, tag_to_index, UNIQUE_TAGS, training=True)
+                               device, tag_to_index, UNIQUE_TAGS, training=True, attention=attention)
         encoder, decoder, decoder_optimizer, encoder_optimizer = train_out[4], train_out[5], train_out[6], train_out[7]
         T_loss.append(train_out[0])
         for pred, true, pred_scores in zip(train_out[1], train_out[2], train_out[3]):
@@ -488,14 +489,14 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
 
 def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder,
           decoder_optimizer,
-          encoder_optimizer, criterion, device, include_negatives=True, verbose=True):
+          encoder_optimizer, criterion, device, include_negatives=True, verbose=True, attention=True):
     epochs_since_improvement = 0
     train_metrics, valid_metrics, test_metrics = [], [], []
     best_loss = 100
     for epoch in range(start_epoch, end_epoch):
         recent_loss, train_metrics_out, valid_metrics_out, test_metrics, encoder, decoder, decoder_optimizer, encoder_optimizer = train_epoch(
             epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, encoder, decoder, decoder_optimizer,
-            encoder_optimizer, criterion, device, include_negatives=include_negatives, verbose=verbose)
+            encoder_optimizer, criterion, device, include_negatives=include_negatives, verbose=verbose, attention=attention)
         train_metrics.append(train_metrics_out)
         valid_metrics.append(valid_metrics_out)
         if epochs_since_improvement == 20:
