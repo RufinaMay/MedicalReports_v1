@@ -457,7 +457,7 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     # valid step
     for imgs, caps, caplens in batch(valid_set, tag_to_index, UNIQUE_TAGS):
         val_out = train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion,
-                             device, tag_to_index, UNIQUE_TAGS, training=False)
+                             device, tag_to_index, UNIQUE_TAGS, training=False, attention=attention)
         V_loss.append(val_out[0])
         for pred, true, pred_scores in zip(val_out[1], val_out[2], val_out[3]):
             V_predicted.append(pred), V_true.append(true), V_pred_scores.append(pred_scores)
@@ -476,7 +476,7 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     Test_predicted, Test_true, Test_pred_scores = [], [], []
     for imgs, caps, caplens in batch(test_set, tag_to_index, UNIQUE_TAGS):
         test_out = train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder_optimizer, criterion,
-                              device, tag_to_index, UNIQUE_TAGS, training=False)
+                              device, tag_to_index, UNIQUE_TAGS, training=False,attention=attention)
         for pred, true, pred_scores in zip(test_out[1], test_out[2], test_out[3]):
             Test_predicted.append(pred), Test_true.append(true), Test_pred_scores.append(pred_scores)
     pre, rec, ovpre, ovrec = eval(Test_predicted, Test_true)
