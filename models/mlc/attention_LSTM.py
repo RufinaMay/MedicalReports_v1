@@ -265,26 +265,27 @@ def eval(predicted_overall, true_overall):
     precision = precision_score(true_overall, predicted_overall, average='micro')
     recall = precision_score(true_overall, predicted_overall, average='micro')
 
-    true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
-    precision, recall = 0, 0
-    precision_upper, recall_upper = 0, 0
-    overall_precision, overall_recall = [0, 0], [0, 0]
-    n = 0
-    for j in range(true_overall.shape[1] - 3):
-        if np.sum(true_overall[:, j]) > 0:
-            n += 1
-            recall += np.sum(true_overall[:, j] * predicted_overall[:, j]) / np.sum(true_overall[:, j])
-            if np.sum(predicted_overall[:, j]) > 0:
-                precision += np.sum(true_overall[:, j] * predicted_overall[:, j]) / np.sum(predicted_overall[:, j])
-            overall_recall[0] = overall_recall[0] + np.sum(true_overall[:, j] * predicted_overall[:, j])
-            overall_recall[1] = overall_recall[1] + np.sum(true_overall[:, j])
-            overall_precision[0] = overall_precision[0] + np.sum(true_overall[:, j] * predicted_overall[:, j])
-            overall_precision[1] = overall_precision[1] + np.sum(predicted_overall[:, j])
-
-    overall_precision = overall_precision[0] / overall_precision[1]
-    overall_recall = overall_recall[0] / overall_recall[1]
-
-    return precision / n, recall / n, overall_precision, overall_recall
+    return precision, recall, overall_precision, overall_recall
+    # true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
+    #     # precision, recall = 0, 0
+    #     # precision_upper, recall_upper = 0, 0
+    #     # overall_precision, overall_recall = [0, 0], [0, 0]
+    #     # n = 0
+    #     # for j in range(true_overall.shape[1] - 3):
+    #     #     if np.sum(true_overall[:, j]) > 0:
+    #     #         n += 1
+    #     #         recall += np.sum(true_overall[:, j] * predicted_overall[:, j]) / np.sum(true_overall[:, j])
+    #     #         if np.sum(predicted_overall[:, j]) > 0:
+    #     #             precision += np.sum(true_overall[:, j] * predicted_overall[:, j]) / np.sum(predicted_overall[:, j])
+    #     #         overall_recall[0] = overall_recall[0] + np.sum(true_overall[:, j] * predicted_overall[:, j])
+    #     #         overall_recall[1] = overall_recall[1] + np.sum(true_overall[:, j])
+    #     #         overall_precision[0] = overall_precision[0] + np.sum(true_overall[:, j] * predicted_overall[:, j])
+    #     #         overall_precision[1] = overall_precision[1] + np.sum(predicted_overall[:, j])
+    #     #
+    #     # overall_precision = overall_precision[0] / overall_precision[1]
+    #     # overall_recall = overall_recall[0] / overall_recall[1]
+    #     #
+    #     # return precision / n, recall / n, overall_precision, overall_recall
 
 
 def f1_score(predicted_overall, true_overall):
