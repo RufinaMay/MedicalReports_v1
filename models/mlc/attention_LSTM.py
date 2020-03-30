@@ -38,7 +38,7 @@ class Encoder(nn.Module):
             vgg = torchvision.models.vgg16(pretrained=True)
             self.cnn_encoder = vgg.features
         if encoder_name == 'resnet':
-            resnet = torchvision.models.resnet101(pretrained=True)
+            resnet = torchvision.models.resnet50(pretrained=True)
             modules = list(resnet.children())[:-2]
             self.cnn_encoder = nn.Sequential(*modules)
         if encoder_name == 'googlenet':
@@ -327,7 +327,7 @@ def f1_score(predicted_overall, true_overall):
             d = np.sum(true_overall[i]) + np.sum(predicted_overall[i])
             instanceF1 += val / d
     if n==0:
-        n==1
+        n=1
     return macroF1 / n, microF1, instanceF1 / n
 
 
