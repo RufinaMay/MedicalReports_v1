@@ -414,6 +414,7 @@ def train_step(imgs, caps, caplens, encoder, decoder, decoder_optimizer, encoder
     loss = criterion(scores.data, targets.data)
     # Add doubly stochastic attention regularization
     if attention:
+        print(attention)
         loss += alpha_c * ((1. - alphas.sum(dim=1)) ** 2).mean()
 
     if training:
