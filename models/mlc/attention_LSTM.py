@@ -260,6 +260,7 @@ def process_predictions(train_pred, y_train, tag_to_index, UNIQUE_TAGS):
 
 
 def eval(predicted_overall, true_overall):
+    true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
     overall_precision = precision_score(true_overall, predicted_overall, average='macro')
     overall_recall = precision_score(true_overall, predicted_overall, average='macro')
     precision = precision_score(true_overall, predicted_overall, average='micro')
@@ -290,33 +291,39 @@ def eval(predicted_overall, true_overall):
 
 def f1_score(predicted_overall, true_overall):
     true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
-    macroF1, microF1, instanceF1 = 0, 0, 0
+    macroF1 = f1_score(true_overall, predicted_overall, average='macro')
+    microF1 = f1_score(true_overall, predicted_overall, average='micro')
+    instanceF1 = f1_score(true_overall, predicted_overall, average='samples')
 
-    # macro
-    n = 0
-    for j in range(true_overall.shape[1] - 3):
-        if np.sum(true_overall[:, j]) > 0:
-            n += 1
-            val = 2 * np.sum(predicted_overall[:, j] * true_overall[:, j])
-            d = np.sum(predicted_overall[:, j]) + np.sum(true_overall[:, j])
-            val /= d
-            macroF1 += val
-
-    # micro
-    val1 = 2 * np.sum(predicted_overall * true_overall)
-    val2 = np.sum(predicted_overall) + np.sum(true_overall)
-    microF1 = val1 / val2
-
-    # instance f1
-    n = 0
-    for i in range(true_overall.shape[0]):
-        if np.sum(true_overall[i]) != 0:
-            n += 1
-            val = 2 * np.sum(true_overall[i] * predicted_overall[i])
-            d = np.sum(true_overall[i]) + np.sum(predicted_overall[i])
-            instanceF1 += val / d
-
-    return macroF1 / n, microF1, instanceF1 / n
+    return macroF1, microF1, instanceF1
+    # true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
+    # macroF1, microF1, instanceF1 = 0, 0, 0
+    #
+    # # macro
+    # n = 0
+    # for j in range(true_overall.shape[1] - 3):
+    #     if np.sum(true_overall[:, j]) > 0:
+    #         n += 1
+    #         val = 2 * np.sum(predicted_overall[:, j] * true_overall[:, j])
+    #         d = np.sum(predicted_overall[:, j]) + np.sum(true_overall[:, j])
+    #         val /= d
+    #         macroF1 += val
+    #
+    # # micro
+    # val1 = 2 * np.sum(predicted_overall * true_overall)
+    # val2 = np.sum(predicted_overall) + np.sum(true_overall)
+    # microF1 = val1 / val2
+    #
+    # # instance f1
+    # n = 0
+    # for i in range(true_overall.shape[0]):
+    #     if np.sum(true_overall[i]) != 0:
+    #         n += 1
+    #         val = 2 * np.sum(true_overall[i] * predicted_overall[i])
+    #         d = np.sum(true_overall[i]) + np.sum(predicted_overall[i])
+    #         instanceF1 += val / d
+    #
+    # return macroF1 / n, microF1, instanceF1 / n
 
 
 def one_error(y_train, predicted_scores):
