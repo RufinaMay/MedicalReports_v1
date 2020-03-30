@@ -47,6 +47,9 @@ class Encoder(nn.Module):
         if encoder_name == 'mnasnet':  # encoder_dim=1280
             mnasnet = torchvision.models.mnasnet1_0(pretrained=True)
             self.cnn_encoder = mnasnet.layers
+        if encoder_name == 'resnext':
+            resnext = torchvision.models.resnext101_32x8d(pretrained=True)
+            self.cnn_encoder = list(resnet.children())[:-2]
 
         # Resize image to fixed size to allow input images of variable size
         self.adaptive_pool = nn.AdaptiveAvgPool2d((encoded_image_size, encoded_image_size))
@@ -290,40 +293,42 @@ def eval(predicted_overall, true_overall):
 
 
 def f1_score(predicted_overall, true_overall):
-    true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
-    macroF1 = f1_score(true_overall, predicted_overall, average='macro')
-    microF1 = f1_score(true_overall, predicted_overall, average='micro')
-    instanceF1 = f1_score(true_overall, predicted_overall, average='samples')
-
-    return macroF1, microF1, instanceF1
     # true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
-    # macroF1, microF1, instanceF1 = 0, 0, 0
+    # # calculate column wise
     #
-    # # macro
-    # n = 0
-    # for j in range(true_overall.shape[1] - 3):
-    #     if np.sum(true_overall[:, j]) > 0:
-    #         n += 1
-    #         val = 2 * np.sum(predicted_overall[:, j] * true_overall[:, j])
-    #         d = np.sum(predicted_overall[:, j]) + np.sum(true_overall[:, j])
-    #         val /= d
-    #         macroF1 += val
+    # macroF1 = f1_score(true_overall, predicted_overall, average='macro')
+    # microF1 = f1_score(true_overall, predicted_overall, average='micro')
+    # instanceF1 = f1_score(true_overall, predicted_overall, average='samples')
     #
-    # # micro
-    # val1 = 2 * np.sum(predicted_overall * true_overall)
-    # val2 = np.sum(predicted_overall) + np.sum(true_overall)
-    # microF1 = val1 / val2
-    #
-    # # instance f1
-    # n = 0
-    # for i in range(true_overall.shape[0]):
-    #     if np.sum(true_overall[i]) != 0:
-    #         n += 1
-    #         val = 2 * np.sum(true_overall[i] * predicted_overall[i])
-    #         d = np.sum(true_overall[i]) + np.sum(predicted_overall[i])
-    #         instanceF1 += val / d
-    #
-    # return macroF1 / n, microF1, instanceF1 / n
+    # return macroF1, microF1, instanceF1
+    true_overall, predicted_overall = np.array(true_overall), np.array(predicted_overall)
+    macroF1, microF1, instanceF1 = 0, 0, 0
+    # macro
+    n = 0
+    for j in range(true_overall.shape[1] - 3):
+        if np.sum(true_overall[:, j]) > 0:
+            n += 1
+            val = 2 * np.sum(predicted_overall[:, j] * true_overall[:, j])
+            d = np.sum(predicted_overall[:, j]) + np.sum(true_overall[:, j])
+            val /= d
+            macroF1 += val
+
+    # micro
+    val1 = 2 * np.sum(predicted_overall * true_overall)
+    val2 = np.sum(predicted_overall) + np.sum(true_overall)
+    microF1 = val1 / val2
+
+    # instance f1
+    n = 0
+    for i in range(true_overall.shape[0]):
+        if np.sum(true_overall[i]) != 0:
+            n += 1
+            val = 2 * np.sum(true_overall[i] * predicted_overall[i])
+            d = np.sum(true_overall[i]) + np.sum(predicted_overall[i])
+            instanceF1 += val / d
+    if n==0:
+        n==1
+    return macroF1 / n, microF1, instanceF1 / n
 
 
 def one_error(y_train, predicted_scores):
