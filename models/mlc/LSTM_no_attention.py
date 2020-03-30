@@ -106,4 +106,5 @@ class Decoder(nn.Module):
             preds = self.fc(self.dropout(h))  # (batch_size_t, vocab_size)
             predictions[:batch_size_t, t, :] = preds
 
-        return predictions, encoded_captions, decode_lengths, sort_ind
+        # alphas are equal to none as we arent using attentions
+        return predictions, encoded_captions, decode_lengths, None, sort_ind
