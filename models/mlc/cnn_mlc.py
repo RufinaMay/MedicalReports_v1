@@ -129,7 +129,7 @@ def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS, include_negatives=False):
         if b >= BATCH_SIZE:
             yield torch.stack(batch_IMGS), np.array(batch_TAGS)
             b = 0
-            batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
+            batch_IMGS, batch_TAGS = [], []
     if len(batch_IMGS) != 0:
         yield torch.stack(batch_IMGS), np.array(batch_TAGS)
 
