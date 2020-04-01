@@ -104,7 +104,7 @@ class CNNModel(nn.Module):
         for p in self.cnn_encoder.parameters():
             p.requires_grad = True
         # If fine-tuning, only fine-tune convolutional blocks 2 through 4
-        for c in list(self.resnet.children())[5:]:
+        for c in list(self.cnn_encoder.children())[5:]:
             for p in c.parameters():
                 p.requires_grad = fine_tune
 
