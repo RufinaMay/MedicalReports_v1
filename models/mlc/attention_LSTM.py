@@ -486,8 +486,8 @@ def train_epoch(e, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, en
     valid_metrics.append((np.mean(V_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
     if verbose:
         print(
-            f'Va: l {ro(np.mean(V_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ovrec} '
-            f'macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
+            f'Va: l {np.mean(V_loss)} pre {pre} rec {rec} overpre {ovpre} overrec {ovrec} macroF1 {macroF1} '
+            f'microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
 
     # test set performance
     Test_predicted, Test_true, Test_pred_scores = [], [], []

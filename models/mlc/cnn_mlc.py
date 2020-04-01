@@ -101,7 +101,7 @@ class CNNModel(nn.Module):
         Allow or prevent the computation of gradients for convolutional blocks 2 through 4 of the encoder.
         :param fine_tune: Allow?
         """
-        for p in self.resnet.parameters():
+        for p in self.cnn_encoder.parameters():
             p.requires_grad = True
         # If fine-tuning, only fine-tune convolutional blocks 2 through 4
         for c in list(self.resnet.children())[5:]:
