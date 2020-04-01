@@ -153,7 +153,7 @@ def train_step(x, y, model, device, optimizer, UNIQUE_TAGS, loss_name, training=
         model.train()
     else:
         model.eval()
-    x, y = torch.from_numpy(x).float().to(device), torch.from_numpy(y).float().to(device)
+    x, y = x.to(device), torch.from_numpy(y).float().to(device)
     output = model(x)
     if loss_name == 'focal':
         loss = FocalLoss().forward(output, y)
