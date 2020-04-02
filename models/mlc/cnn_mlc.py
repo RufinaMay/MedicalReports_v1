@@ -229,11 +229,12 @@ def train_epoch(e, train_set, valid_set, test_set, model, tag_to_index, UNIQUE_T
 
     return np.mean(V_loss), train_metrics, valid_metrics, test_metrics, model
 
+
 def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, model, optimizer,
           loss_name, device, include_negatives=True, verbose=True):
     epochs_since_improvement = 0
     train_metrics, valid_metrics, test_metrics = [], [], []
-    best_loss = 100
+    best_loss = 1000
     for epoch in range(start_epoch, end_epoch):
         recent_loss, train_metrics_out, valid_metrics_out, test_metrics, model = train_epoch(
             epoch, train_set, valid_set, test_set, model, tag_to_index, UNIQUE_TAGS, train_metrics, valid_metrics,
@@ -250,9 +251,4 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
             epochs_since_improvement = 0
         else:
             epochs_since_improvement += 1
-    valid_metrics = np.array(valid_metrics)
-    train_metrics = np.array(train_metrics)
-    valid_metrics = valid_metrics.reshape(valid_metrics.shape[0], -1)
-    train_metrics = train_metrics.reshape(train_metrics.shape[0], -1)
     return train_metrics, valid_metrics, test_metrics, model
-
