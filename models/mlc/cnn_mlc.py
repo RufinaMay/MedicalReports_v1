@@ -56,9 +56,10 @@ class FocalLoss(nn.Module):
 
 
 class CNNModel(nn.Module):
-    def __init__(self, encoder_name, encoded_image_size=14):
+    def __init__(self, encoder_name, encoder_dim, UNIQUE_TAGS, encoded_image_size=14):
         super(CNNModel, self).__init__()
         self.enc_image_size = encoded_image_size
+        self.encoder_dim = encoder_dim
 
         if encoder_name == 'densenet':
             densenet = torch.hub.load('pytorch/vision:v0.5.0', 'densenet121', pretrained=True)
@@ -81,7 +82,7 @@ class CNNModel(nn.Module):
             self.cnn_encoder = mnasnet.layers
 
         self.adaptive_pool = nn.AdaptiveAvgPool2d((encoded_image_size, encoded_image_size))
-        self.fc = nn.Linear(100352, 128)
+        self.fc = nn.Linear(encoder_dim * encoded_image_size * encoded_image_size, UNIQUE_TAGS)
         self.fine_tune()
 
     def forward(self, images):
@@ -92,7 +93,7 @@ class CNNModel(nn.Module):
         """
         out = self.cnn_encoder(images)  # (batch_size, 2048, image_size/32, image_size/32)
         out = self.adaptive_pool(out)  # (batch_size, 2048, encoded_image_size, encoded_image_size)
-        out = out.view(-1, 100352)
+        out = out.view(-1, self.encoder_dim * self.enc_image_size * self.enc_image_size)
         out = torch.sigmoid(self.fc(out))
         return out
 
@@ -194,8 +195,8 @@ def train_epoch(e, train_set, valid_set, test_set, model, tag_to_index, UNIQUE_T
         ro = round
         print(f'============================= epoch {e} =========================================')
         print(
-            f'Tr: l {ro(np.mean(T_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} overrec {ro(ovrec, 3)}\
-            macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {train_metrics}')
+            f'Tr: l {np.mean(T_loss)} pre {pre} rec {rec} overpre {ovpre} overrec {ovrec}'
+            f'macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {train_metrics}')
 
     # valid step
     for imgs, caps in batch(valid_set, tag_to_index, UNIQUE_TAGS, include_negatives=False):
@@ -211,8 +212,8 @@ def train_epoch(e, train_set, valid_set, test_set, model, tag_to_index, UNIQUE_T
     valid_metrics.append((np.mean(V_loss), pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc))
     if verbose:
         print(
-            f'Va: l {ro(np.mean(V_loss), 3)} pre {ro(pre, 3)} rec {ro(rec, 3)} overpre {ro(ovpre, 3)} '
-            f'overrec {ro(ovrec, 3)} macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} '
+            f'Va: l {np.mean(V_loss)} pre {pre} rec {rec} overpre {ovpre} '
+            f'overrec {ovrec} macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} '
             f'ham loss {ham_loss} auc {auc} ')
 
     # test set performance
@@ -228,7 +229,6 @@ def train_epoch(e, train_set, valid_set, test_set, model, tag_to_index, UNIQUE_T
     test_metrics = [pre, rec, ovpre, ovrec, macroF1, microF1, instanceF1, ham_loss, auc]
 
     return np.mean(V_loss), train_metrics, valid_metrics, test_metrics, model
-
 
 def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, UNIQUE_TAGS, model, optimizer,
           loss_name, device, include_negatives=True, verbose=True):
@@ -256,3 +256,4 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
     valid_metrics = valid_metrics.reshape(valid_metrics.shape[0], -1)
     train_metrics = train_metrics.reshape(train_metrics.shape[0], -1)
     return train_metrics, valid_metrics, test_metrics, model
+
