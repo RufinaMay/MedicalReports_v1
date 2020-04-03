@@ -253,3 +253,32 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
     valid_metrics = np.array(valid_metrics)
 
     return train_metrics, valid_metrics, test_metrics, model
+
+
+def prediction_step(x, y, model, device, UNIQUE_TAGS):
+    model.eval()
+    x, y = x.to(device), torch.from_numpy(y).float().to(device)
+    output = model(x)
+
+    predicted, true = process_predictions(output, y, UNIQUE_TAGS)
+    predicted_scores = output
+    return predicted, true, predicted_scores.cpu().data.numpy()
+
+
+def prediction(model, device, test_set, tag_to_index, UNIQUE_TAGS):
+    """
+    TODO: add check if test_set is just one image
+    :param model:
+    :param device:
+    :param test_set:
+    :param tag_to_index:
+    :param UNIQUE_TAGS:
+    :return:
+    """
+    true, predicted, predicted_scores = [], [], []
+    for x, y in batch(test_set, tag_to_index, UNIQUE_TAGS, include_negatives=False):
+        test_out = prediction_step(x, y, model, device, UNIQUE_TAGS)
+        for t, p, ps in zip(test_out[0], test_out[1], test_out[2]):
+            true.append(t), predicted.append(p), predicted_scores.append(ps)
+
+    return np.array(true), np.array(predicted), np.array(predicted_scores)
