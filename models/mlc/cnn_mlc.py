@@ -262,7 +262,7 @@ def prediction_step(x, y, model, device, UNIQUE_TAGS):
 
     predicted, true = process_predictions(output, y, UNIQUE_TAGS)
     predicted_scores = output
-    return predicted, true, predicted_scores.cpu().data.numpy()
+    return true, predicted, predicted_scores.cpu().data.numpy()
 
 
 def prediction(model, device, test_set, tag_to_index, UNIQUE_TAGS):
