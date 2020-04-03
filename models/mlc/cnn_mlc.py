@@ -195,7 +195,7 @@ def train_epoch(e, train_set, valid_set, test_set, model, tag_to_index, UNIQUE_T
         print(f'============================= epoch {e} =========================================')
         print(
             f'Tr: l {np.mean(T_loss)} pre {pre} rec {rec} overpre {ovpre} overrec {ovrec}'
-            f'macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {train_metrics}')
+            f'macroF1 {macroF1} microF1 {microF1} instanceF1 {instanceF1} ham loss {ham_loss} auc {auc}')
 
     # valid step
     for imgs, caps in batch(valid_set, tag_to_index, UNIQUE_TAGS, include_negatives=False):
@@ -236,11 +236,9 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
     train_metrics, valid_metrics, test_metrics = [], [], []
     best_loss = 1000
     for epoch in range(start_epoch, end_epoch):
-        recent_loss, train_metrics_out, valid_metrics_out, test_metrics, model = train_epoch(
+        recent_loss, train_metrics, valid_metrics, test_metrics, model = train_epoch(
             epoch, train_set, valid_set, test_set, model, tag_to_index, UNIQUE_TAGS, train_metrics, valid_metrics,
             device, optimizer, loss_name, include_negatives=include_negatives, verbose=verbose)
-        train_metrics.append(train_metrics_out)
-        valid_metrics.append(valid_metrics_out)
         if epochs_since_improvement == 20:
             break
         if epochs_since_improvement > 0 and epochs_since_improvement % 5 == 0:
