@@ -326,8 +326,8 @@ def f1_score(predicted_overall, true_overall):
             val = 2 * np.sum(true_overall[i] * predicted_overall[i])
             d = np.sum(true_overall[i]) + np.sum(predicted_overall[i])
             instanceF1 += val / d
-    if n==0:
-        n=1
+    if n == 0:
+        n = 1
     return macroF1 / n, microF1, instanceF1 / n
 
 
@@ -534,50 +534,6 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
     valid_metrics = valid_metrics.reshape(valid_metrics.shape[0], -1)
     train_metrics = train_metrics.reshape(train_metrics.shape[0], -1)
     return train_metrics, valid_metrics, test_metrics, encoder, decoder
-
-
-def save_models(encoder, decoder, ENCODER_NAME, include_negatives):
-    # save models
-    dir_name = f'{ENCODER_NAME}_results'
-    if include_negatives:
-        dir_name = 'NegativeSampling_' + dir_name
-    else:
-        dir_name = 'NoNegativeSampling_' + dir_name
-    if not os.path.exists(dir_name):
-        os.makedirs(dir_name)
-    decoder_name = f'{ENCODER_NAME}_decoder'
-    encoder_name = f'{ENCODER_NAME}_encoder'
-    if include_negatives:
-        decoder_name = 'NegativeSampling_' + decoder_name
-        encoder_name = 'NegativeSampling_' + encoder_name
-    else:
-        decoder_name = 'NoNegativeSampling_' + decoder_name
-        encoder_name = 'NoNegativeSampling_' + encoder_name
-
-    torch.save(decoder, os.path.join(dir_name, decoder_name))
-    torch.save(encoder, os.path.join(dir_name, encoder_name))
-
-
-def save_metrics(train_metrics, valid_metrics, test_metrics, ENCODER_NAME, include_negatives):
-    dir_name = f'{ENCODER_NAME}_results'
-    if include_negatives:
-        dir_name = 'NegativeSampling_' + dir_name
-    else:
-        dir_name = 'NoNegativeSampling_' + dir_name
-    if not os.path.exists(dir_name):
-        os.makedirs(dir_name)
-
-    file_name = 'train_metrics.pickle'
-    with open(os.path.join(dir_name, file_name), 'wb') as f:
-        pickle.dump(train_metrics, f)
-
-    file_name = 'valid_metrics.pickle'
-    with open(os.path.join(dir_name, file_name), 'wb') as f:
-        pickle.dump(valid_metrics, f)
-
-    file_name = 'test_metrics.pickle'
-    with open(os.path.join(dir_name, file_name), 'wb') as f:
-        pickle.dump(test_metrics, f)
 
 
 def prediction_step(encoder, decoder, device, imgs, caps, caplens, tag_to_index, UNIQUE_TAGS):

@@ -5,6 +5,8 @@ from sklearn.metrics import roc_auc_score, roc_curve
 from collections import Counter
 import torchvision.transforms as transforms
 import torch
+import os
+import pickle
 
 from utils.constants import BATCH_SIZE, IMG_DIR
 
@@ -192,27 +194,58 @@ def f1_score(predicted_overall, true_overall):
     return macroF1 / n, microF1, instanceF1 / n
 
 
-# def batch(img_tag_mapping, tag_to_index, UNIQUE_TAGS):
-#     batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
-#     b = 0
-#     for im_path in img_tag_mapping:
-#         im = read_and_resize(f'{IMG_DIR}/{im_path}.png')
-#         caps = [tag_to_index['start']]
-#         for tag in img_tag_mapping[im_path]:
-#             if tag in tag_to_index:
-#                 caps.append(tag_to_index[tag])
-#         caps.append(tag_to_index['end'])
-#         while len(caps) < UNIQUE_TAGS:
-#             caps.append(tag_to_index['pad'])
-#
-#         batch_IMGS.append(im), batch_CAPS.append(caps), batch_CAPLENS.append(len(img_tag_mapping[im_path]) + 2)
-#         b += 1
-#         if b >= BATCH_SIZE:
-#             yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
-#             b = 0
-#             batch_IMGS, batch_CAPS, batch_CAPLENS = [], [], []
-#     if len(batch_IMGS) != 0:
-#         yield torch.stack(batch_IMGS), np.array(batch_CAPS), np.array(batch_CAPLENS).reshape((-1, 1))
+def save_models(ENCODER_NAME, include_negatives, encoder=None, decoder=None, model=None):
+    # save models
+    dir_name = f'{ENCODER_NAME}_results'
+    if include_negatives:
+        dir_name = 'NegativeSampling_' + dir_name
+    else:
+        dir_name = 'NoNegativeSampling_' + dir_name
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+    decoder_name = f'{ENCODER_NAME}_decoder'
+    encoder_name = f'{ENCODER_NAME}_encoder'
+    model_name = f'{ENCODER_NAME}_cnn_model'
+    if include_negatives:
+        decoder_name = 'NegativeSampling_' + decoder_name
+        encoder_name = 'NegativeSampling_' + encoder_name
+        model_name = 'NegativeSampling_' + model_name
+    else:
+        decoder_name = 'NoNegativeSampling_' + decoder_name
+        encoder_name = 'NoNegativeSampling_' + encoder_name
+        model_name = 'NoNegativeSampling_' + model_name
+
+    if decoder is not None:
+        torch.save(decoder, os.path.join(dir_name, decoder_name))
+    if encoder is not None:
+        torch.save(encoder, os.path.join(dir_name, encoder_name))
+    if model is not None:
+        torch.save(model, os.path.join(dir_name, model_name))
+
+
+def save_metrics(ENCODER_NAME, include_negatives, train_metrics=None, valid_metrics=None, test_metrics=None):
+    dir_name = f'{ENCODER_NAME}_results'
+    if include_negatives:
+        dir_name = 'NegativeSampling_' + dir_name
+    else:
+        dir_name = 'NoNegativeSampling_' + dir_name
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
+    if train_metrics is not None:
+        file_name = 'train_metrics.pickle'
+        with open(os.path.join(dir_name, file_name), 'wb') as f:
+            pickle.dump(train_metrics, f)
+
+    if valid_metrics is not None:
+        file_name = 'valid_metrics.pickle'
+        with open(os.path.join(dir_name, file_name), 'wb') as f:
+            pickle.dump(valid_metrics, f)
+
+    if test_metrics is not None:
+        file_name = 'test_metrics.pickle'
+        with open(os.path.join(dir_name, file_name), 'wb') as f:
+            pickle.dump(test_metrics, f)
 
 
 def analyze_mistakes(true, predicted, predicted_scores, train_set, tag_to_index, make_plots=True):

@@ -251,5 +251,5 @@ def train(start_epoch, end_epoch, train_set, valid_set, test_set, tag_to_index, 
             epochs_since_improvement += 1
     train_metrics = np.array(train_metrics)
     valid_metrics = np.array(valid_metrics)
-    
+
     return train_metrics, valid_metrics, test_metrics, model
