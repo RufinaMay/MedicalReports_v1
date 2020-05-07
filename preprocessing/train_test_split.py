@@ -56,15 +56,15 @@ def draw_distribution(train, valid, test):
     left2 = np.take_along_axis(left2, idxs, axis=0)
     height2 = np.take_along_axis(height2, idxs, axis=0)
 
-    plt.bar(left1, height1, width=1.2, color=['red', 'green'])
+    plt.bar(left1, height1, width=1.2, color=['green'])
     plt.title('Train set distribution')
     plt.show()
 
-    plt.bar(left2, height2, width=1.2, color=['red', 'green'])
+    plt.bar(left2, height2, width=1.2, color=['green'])
     plt.title('Test set distribution')
     plt.show()
 
-    plt.bar(left3, height3, width=1.2, color=['red', 'green'])
+    plt.bar(left3, height3, width=1.2, color=['green'])
     plt.title('Valid set distribution')
     plt.show()
 
