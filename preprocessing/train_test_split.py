@@ -56,19 +56,24 @@ def draw_distribution(train, valid, test):
     left2 = np.take_along_axis(left2, idxs, axis=0)
     height2 = np.take_along_axis(height2, idxs, axis=0)
 
-    plt.bar(left1, height1, width=1.2, color=['green'])
-    plt.title('Train set distribution')
+    plt.bar(left1, height1, width=30, color=['green'])
+    plt.title('Data set distribution')
+    plt.xticks([])
     plt.show()
 
-    plt.bar(left2, height2, width=1.2, color=['green'])
+    plt.bar(left2, height2, width=30, color=['green'])
     plt.title('Test set distribution')
+    plt.xticks([])
     plt.show()
 
-    plt.bar(left3, height3, width=1.2, color=['green'])
+    plt.bar(left3, height3, width=30, color=['green'])
     plt.title('Valid set distribution')
+    plt.xticks([])
     plt.show()
 
-def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickle', draw_distrib=True, save=True, test_size=0.25, valid_size=0.15):
+
+def run_split(img_tag_path='IMG_TAG.pickle', tag_to_idx_path='TAG_TO_INDEX.pickle', draw_distrib=True, save=True,
+              test_size=0.25, valid_size=0.15):
     with open(img_tag_path, 'rb') as f:
         IMG_TAG_MAPPING = pickle.load(f)
     with open(tag_to_idx_path, 'rb') as f:
