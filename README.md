@@ -26,7 +26,31 @@ In this section we explain how decoder network works. Encoded image in passed to
 These are steps that encoded image input is going through while generating a labels characterizing the findings on the image. However the Attention module still remains secret machine, hence we are explaining it in the next section in more details.
 
 ### Attention
+  ![The pipeline of attention network.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/attention.png)
+Before going into details of attention network pipeline let's find out why do we need the attention network? We are adding attention mechanism at each time step of the decoder, so that decoder is able to "look" at different parts of the image at each time step. We can refer to attention mechanism as to the weighted average across encoded visual features, with the weights of the important features being greater. The weighted representation of the image is concatenated with the previously generated word at each time step to generate the next word. 
 
+Attention pays attention to particular areas or objects rather than treating the whole image equally. Attention mechanism should consider the labels generated thus far, and attend to the part of the image that describes next label.
+The Attention network is parameterized with fully connected network that computes weights. In this work we are using soft attention \cite{xu2015show}, where the weights of the pixels add up to 1, to avoid large numbers. If there are $M$ features in encoded image, then at each time step t:
+$$
+  \sum_{p=m}^{p=M}\alpha_{p,t} = 1
+$$
+where $\alpha_{p,t}$ is the $p$-s weight of attention network at time step $t$. The overall attention mechanism is presented in Figure \ref{fig_attention}. One can note that attention mechanism consists of three fully connected networks and data flows through the network in the following way: 
+
+- Previous Decoder Output (previously generated label, \textit{start} at the beginning) is passed to embedding layer of the model to obtain embedding of that unit.
+- Encoded input image and embeded tag are passed to two different identically defined fully connected networks.
+- The outputs of previous iteration are concatenated together and passed through ReLU activation function.
+- After that data goes to another one unit linear layer with SoftMax activation function to obtain a weighted representation of the image. Since we use "soft" attention we are applying SoftMax activation function so that sum of the weights is equal to 1.
+
+Attention network is applied at each time step of decoder tags generation process. 
+
+### Loss function
+As suggested in [Show, attend and tell: Neural image caption generation with visual attention](http://www.jmlr.org/proceedings/papers/v37/xuc15.pdf) we are including the Doubly Stochastic Attention Regularization that encourage the model to pay equal attention to every part of the image while predicting the labels, resulting in minimizing the following penalized negative log-likelihood: 
+$$
+    loss = -log(p(y|x))+\lambda\sum_i^{L}(1-\sum_t^Ca_{ti})^2
+$$
+
+### {Negative Sampling}
+In this work we refer to negative sampling as keeping images that have no labels associated with them. We explore the including and excluding the negative samples from the training set and see how it affects the resulting performance for models. We explore this with an assumption that including images that do not have any labels associated with them will help network to learn positive labels by showing them how this label does not look like. 
 
 ## Data set
 Indiana University Chest X-ray collection is used in this work. There are total 7,470 samples in the data set and 559 unique tags. Data was split on train, test and validation sets using stratified data split [On the stratification of multi-label data](https://link.springer.com/chapter/10.1007/978-3-642-23808-6_10). The data is stored in the following format [*image name*]-[*list of tags*], e.g. 'CXR960_IM-2451-4004': ['right', 'mild', 'scolioses'] and located in three following files:
