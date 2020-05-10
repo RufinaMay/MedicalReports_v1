@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec8f7b5d-fc42-44c9-b655-4593120c429a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/mlc/attention_LSTM.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/mlc/attention_LSTM.py" afterDir="false" />
+    <list default="true" id="ec8f7b5d-fc42-44c9-b655-4593120c429a" name="Default Changelist" comment="inference steps for cnn model">
+      <change beforePath="$PROJECT_DIR$/IMG_TAG.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/IMG_TAG.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TAG_TO_INDEX.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/TAG_TO_INDEX.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_set.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/test_set.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train_set.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/train_set.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/valid_set.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/valid_set.pickle" afterDir="false" />
     </list>
-    <list id="4958b362-dd74-4c71-b1f9-a5d9c477178e" name="Attention LSTM for multilabeling" comment="">
-      <change beforePath="$PROJECT_DIR$/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils.py" afterDir="false" />
+    <list id="1a47efbd-31d3-430a-9219-846d71069bac" name="attention LSTM" comment="" />
+    <list id="4958b362-dd74-4c71-b1f9-a5d9c477178e" name="Attention LSTM for multilabeling" comment="Attention LSTM for multilabeling">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <list id="97ba779b-8c83-4922-88ea-27ebb914b45e" name="t-SNE" comment="t-SNE" />
-    <list id="09521dff-dd25-45c3-afbf-57bec23048b4" name="t_SNE" comment="">
-      <change afterPath="$PROJECT_DIR$/models/autoencoder/autoencoder.pickle" afterDir="false" />
-    </list>
+    <list id="09521dff-dd25-45c3-afbf-57bec23048b4" name="t_SNE" comment="" />
     <ignored path="data/chest_images/CXR1000_IM-0003-1001.png" />
     <ignored path="data/chest_images/CXR1000_IM-0003-2001.png" />
     <ignored path="data/chest_images/CXR1000_IM-0003-3001.png" />
@@ -11448,39 +11451,12 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/preprocessing/chest_xray_extractor.py">
+        <entry file="file://$PROJECT_DIR$/preprocessing/train_test_split.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
+            <state relative-caret-position="125">
+              <caret line="56" column="55" lean-forward="true" selection-start-line="56" selection-start-column="55" selection-end-line="56" selection-end-column="55" />
               <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/models/mlc/attention_LSTM.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="433" column="14" selection-start-line="433" selection-start-column="14" selection-end-line="433" selection-end-column="14" />
-              <folding>
-                <element signature="e#0#12#0" expanded="true" />
-                <element signature="e#523#2157#0" />
-                <element signature="e#2290#3854#0" />
-                <element signature="e#3900#9750#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/mlc/mlc.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1104">
-              <caret line="69" column="20" selection-start-line="69" selection-start-column="20" selection-end-line="69" selection-end-column="20" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -11489,8 +11465,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="348">
-              <caret line="78" column="24" lean-forward="true" selection-start-line="78" selection-start-column="24" selection-end-line="78" selection-end-column="24" />
+            <state relative-caret-position="1952">
+              <caret line="132" column="32" selection-start-line="132" selection-start-column="32" selection-end-line="132" selection-end-column="32" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -11499,34 +11475,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/utils/evaluation_metrics.py">
+        <entry file="file://$PROJECT_DIR$/models/mlc/cnn_mlc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/utils/constants.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="20" column="36" selection-start-line="20" selection-start-column="36" selection-end-line="20" selection-end-column="36" />
+            <state relative-caret-position="3600">
+              <caret line="234" column="10" selection-start-line="234" selection-start-column="4" selection-end-line="234" selection-end-column="10" />
               <folding>
-                <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#0#20#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
-              <folding>
-                <element signature="e#12#30#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="221">
+              <caret line="19" column="11" lean-forward="true" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -11542,12 +11506,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+      <find>verbo</find>
+      <find>include</find>
+      <find>process_predictions</find>
+      <find>hamming_loss</find>
+      <find>f1_score</find>
+      <find>eval</find>
+      <find>auc</find>
+      <find>roc_auc_score</find>
+      <find>focal</find>
+      <find>attention</find>
+      <find>train_step</find>
+      <find>train_epoch</find>
       <find>print</find>
+      <find>return macroF1 / n, microF1, instanceF1 / n</find>
+      <find>adjust</find>
+      <find>resnet</find>
       <find>train</find>
-      <find>train_test_split</find>
-      <find>load_pretrained_embeddings</find>
-      <find>train_pred</find>
-      <find>tag_to_index</find>
+      <find>encoder</find>
+      <find>prediction</find>
+      <find>pred</find>
+      <find>predic</find>
+      <find>anal</find>
+      <find>read_</find>
+      <find>process</find>
+      <find>epochs</find>
+      <find>test_metr</find>
+      <find>batch</find>
+      <find>read</find>
+      <find>cpu</find>
+      <find>read_and_resize</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -11566,19 +11554,25 @@
         <option value="$PROJECT_DIR$/models/mlc/RNNmodel.py" />
         <option value="$PROJECT_DIR$/models/mlc/CheXpert_mlc.py" />
         <option value="$PROJECT_DIR$/preprocessing/CheXpert_extractor.py" />
-        <option value="$PROJECT_DIR$/utils/constants.py" />
-        <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/preprocessing/chest_xray_extractor.py" />
         <option value="$PROJECT_DIR$/models/mlc/mlc.py" />
-        <option value="$PROJECT_DIR$/utils/utils.py" />
+        <option value="$PROJECT_DIR$/utils/skmultilearn_example.py" />
+        <option value="$PROJECT_DIR$/preprocessing/chest_xray_extractor.py" />
+        <option value="$PROJECT_DIR$/models/mlc/LSTN_no_attention.py" />
+        <option value="$PROJECT_DIR$/models/mlc/LSTM_no_attention.py" />
         <option value="$PROJECT_DIR$/models/mlc/attention_LSTM.py" />
+        <option value="$PROJECT_DIR$/utils/utils.py" />
+        <option value="$PROJECT_DIR$/models/mlc/cnn_mlc.py" />
+        <option value="$PROJECT_DIR$/models/mlc/autoencoder.py" />
+        <option value="$PROJECT_DIR$/utils/constants.py" />
+        <option value="$PROJECT_DIR$/preprocessing/train_test_split.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="15" />
+    <option name="x" value="525" />
     <option name="y" value="30" />
-    <option name="width" value="1890" />
+    <option name="width" value="1380" />
     <option name="height" value="960" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -11593,27 +11587,6 @@
             <path>
               <item name="MedicalReports_v1" type="b2602c69:ProjectViewProjectNode" />
               <item name="MedicalReports_v_1.0" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MedicalReports_v1" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MedicalReports_v_1.0" type="462c0819:PsiDirectoryNode" />
-              <item name="models" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MedicalReports_v1" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MedicalReports_v_1.0" type="462c0819:PsiDirectoryNode" />
-              <item name="models" type="462c0819:PsiDirectoryNode" />
-              <item name="mlc" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MedicalReports_v1" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MedicalReports_v_1.0" type="462c0819:PsiDirectoryNode" />
-              <item name="preprocessing" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MedicalReports_v1" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MedicalReports_v_1.0" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -11686,27 +11659,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="cnn_autoencoder" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="MedicalReports_v1" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/models/autoencoder" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/models/autoencoder/cnn_autoencoder.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="MedicalReports_v1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -11728,7 +11680,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="mlc" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="skmultilearn_example" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="MedicalReports_v1" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -11736,11 +11688,32 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/models/mlc" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/utils" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/models/mlc/mlc.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/skmultilearn_example.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="train_test_split" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="MedicalReports_v1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/preprocessing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/preprocessing/train_test_split.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -11753,9 +11726,9 @@
       <list>
         <item itemvalue="Python.main" />
         <item itemvalue="Python.chest_xray_extractor" />
+        <item itemvalue="Python.train_test_split" />
+        <item itemvalue="Python.skmultilearn_example" />
         <item itemvalue="Python.CheXpert_extractor" />
-        <item itemvalue="Python.mlc" />
-        <item itemvalue="Python.cnn_autoencoder" />
       </list>
     </recent_temporary>
   </component>
@@ -11768,373 +11741,383 @@
       <changelist id="97ba779b-8c83-4922-88ea-27ebb914b45e" name="t-SNE" comment="" />
       <changelist id="09521dff-dd25-45c3-afbf-57bec23048b4" name="t_SNE" comment="" />
       <changelist id="4958b362-dd74-4c71-b1f9-a5d9c477178e" name="Attention LSTM for multilabeling" comment="" />
+      <changelist id="1a47efbd-31d3-430a-9219-846d71069bac" name="attention LSTM" comment="" />
       <created>1571315160113</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571315160113</updated>
     </task>
-    <task id="LOCAL-00029" summary="multilabel classification change in loss and activation">
-      <created>1572345978566</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
+    <task id="LOCAL-00102" summary="train lstm">
+      <created>1584964501552</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
       <option name="project" value="LOCAL" />
-      <updated>1572345978566</updated>
+      <updated>1584964501552</updated>
     </task>
-    <task id="LOCAL-00030" summary="multilabel classification change in loss and activation">
-      <created>1572346358049</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
+    <task id="LOCAL-00103" summary="negative sampling">
+      <created>1584966001073</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
       <option name="project" value="LOCAL" />
-      <updated>1572346358049</updated>
+      <updated>1584966001073</updated>
     </task>
-    <task id="LOCAL-00031" summary="multilabel classification change in layers">
-      <created>1572349631162</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
+    <task id="LOCAL-00104" summary="save models">
+      <created>1584969626789</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
       <option name="project" value="LOCAL" />
-      <updated>1572349631163</updated>
+      <updated>1584969626789</updated>
     </task>
-    <task id="LOCAL-00032" summary="multilabel classification lr">
-      <created>1572354180962</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
+    <task id="LOCAL-00105" summary="train lstm changed">
+      <created>1584972158698</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
       <option name="project" value="LOCAL" />
-      <updated>1572354180962</updated>
+      <updated>1584972158698</updated>
     </task>
-    <task id="LOCAL-00033" summary="validation data">
-      <created>1572360924825</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
+    <task id="LOCAL-00106" summary="save function for lstm">
+      <created>1584975466844</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
       <option name="project" value="LOCAL" />
-      <updated>1572360924825</updated>
+      <updated>1584975466844</updated>
     </task>
-    <task id="LOCAL-00034" summary="accuracy">
-      <created>1572364761264</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
+    <task id="LOCAL-00107" summary="prediction after training and mistakes analysis">
+      <created>1584978681092</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
       <option name="project" value="LOCAL" />
-      <updated>1572364761264</updated>
+      <updated>1584978681092</updated>
     </task>
-    <task id="LOCAL-00035" summary="mlc architecture">
-      <created>1572427878827</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
+    <task id="LOCAL-00108" summary="fix mistakes in prediction">
+      <created>1584978865656</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
       <option name="project" value="LOCAL" />
-      <updated>1572427878827</updated>
+      <updated>1584978865656</updated>
     </task>
-    <task id="LOCAL-00036" summary="mlc tags normalization">
-      <created>1572430024833</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
+    <task id="LOCAL-00109" summary="fix mistakes in prediction and add attention visualizations">
+      <created>1584981545318</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
       <option name="project" value="LOCAL" />
-      <updated>1572430024833</updated>
+      <updated>1584981545318</updated>
     </task>
-    <task id="LOCAL-00037" summary="mlc tags normalization dropped">
-      <created>1574177483623</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
+    <task id="LOCAL-00110" summary="fix mistakes in prediction and add visualization of attention">
+      <created>1584982485771</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
       <option name="project" value="LOCAL" />
-      <updated>1574177483623</updated>
+      <updated>1584982485771</updated>
     </task>
-    <task id="LOCAL-00038" summary="mlc change in architecture">
-      <created>1574183877592</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
+    <task id="LOCAL-00111" summary="fix mistakes in prediction">
+      <created>1584984306975</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
       <option name="project" value="LOCAL" />
-      <updated>1574183877592</updated>
+      <updated>1584984306975</updated>
     </task>
-    <task id="LOCAL-00039" summary="mlc with validation">
-      <created>1574184175704</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
+    <task id="LOCAL-00112" summary="analysis of mistakes part">
+      <created>1584984776406</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
       <option name="project" value="LOCAL" />
-      <updated>1574184175705</updated>
+      <updated>1584984776407</updated>
     </task>
-    <task id="LOCAL-00040" summary="mlc validation">
-      <created>1574411207133</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
+    <task id="LOCAL-00113" summary="mistakes analysis">
+      <created>1584985244436</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
       <option name="project" value="LOCAL" />
-      <updated>1574411207133</updated>
+      <updated>1584985244436</updated>
     </task>
-    <task id="LOCAL-00041" summary="mlc dropout deleted">
-      <created>1574422453948</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
+    <task id="LOCAL-00114" summary="train lstm changed">
+      <created>1584986057597</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
       <option name="project" value="LOCAL" />
-      <updated>1574422453948</updated>
+      <updated>1584986057597</updated>
     </task>
-    <task id="LOCAL-00042" summary="mlc VGG16">
-      <created>1574527747521</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
+    <task id="LOCAL-00115" summary="train lstm changed">
+      <created>1584986604721</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
       <option name="project" value="LOCAL" />
-      <updated>1574527747521</updated>
+      <updated>1584986604721</updated>
     </task>
-    <task id="LOCAL-00043" summary="mlc VGG16">
-      <created>1574528877195</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
+    <task id="LOCAL-00116" summary="train lstm changed">
+      <created>1584987376666</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
       <option name="project" value="LOCAL" />
-      <updated>1574528877195</updated>
+      <updated>1584987376666</updated>
     </task>
-    <task id="LOCAL-00044" summary="mlc VGG16 input size">
-      <created>1574532598198</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
+    <task id="LOCAL-00117" summary="visualiza attention">
+      <created>1584988476110</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
       <option name="project" value="LOCAL" />
-      <updated>1574532598198</updated>
+      <updated>1584988476110</updated>
     </task>
-    <task id="LOCAL-00045" summary="mlc VGG16 input size">
-      <created>1574533292929</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
+    <task id="LOCAL-00118" summary="visualiza attebntion">
+      <created>1584989130825</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
       <option name="project" value="LOCAL" />
-      <updated>1574533292929</updated>
+      <updated>1584989130825</updated>
     </task>
-    <task id="LOCAL-00046" summary="mlc VGG16 input size">
-      <created>1574534007805</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
+    <task id="LOCAL-00119" summary="visualization error">
+      <created>1584989871913</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
       <option name="project" value="LOCAL" />
-      <updated>1574534007806</updated>
+      <updated>1584989871913</updated>
     </task>
-    <task id="LOCAL-00047" summary="random batches each epoch">
-      <created>1574601026717</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
+    <task id="LOCAL-00120" summary="visualize attention">
+      <created>1584991093186</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
       <option name="project" value="LOCAL" />
-      <updated>1574601026717</updated>
+      <updated>1584991093186</updated>
     </task>
-    <task id="LOCAL-00048" summary="RNN for MLC">
-      <created>1574609118525</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
+    <task id="LOCAL-00121" summary="visualization">
+      <created>1584992290845</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
       <option name="project" value="LOCAL" />
-      <updated>1574609118525</updated>
+      <updated>1584992290845</updated>
     </task>
-    <task id="LOCAL-00049" summary="RNN for MLC">
-      <created>1574609813109</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
+    <task id="LOCAL-00122" summary="mistakes in save file fixed">
+      <created>1585030781622</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
       <option name="project" value="LOCAL" />
-      <updated>1574609813109</updated>
+      <updated>1585030781622</updated>
     </task>
-    <task id="LOCAL-00050" summary="RNN for MLC">
-      <created>1574610031531</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
+    <task id="LOCAL-00123" summary="visualization mistakes fixed">
+      <created>1585031869772</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
       <option name="project" value="LOCAL" />
-      <updated>1574610031532</updated>
+      <updated>1585031869772</updated>
     </task>
-    <task id="LOCAL-00051" summary="RNN for MLC">
-      <created>1574610675543</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
+    <task id="LOCAL-00124" summary="train LSTM bugs fix and decoder without attention added">
+      <created>1585074746566</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
       <option name="project" value="LOCAL" />
-      <updated>1574610675543</updated>
+      <updated>1585074746566</updated>
     </task>
-    <task id="LOCAL-00052" summary="RNN for MLC">
-      <created>1574612100461</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
+    <task id="LOCAL-00125" summary="cnn model added">
+      <created>1585082303220</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
       <option name="project" value="LOCAL" />
-      <updated>1574612100461</updated>
+      <updated>1585082303220</updated>
     </task>
-    <task id="LOCAL-00053" summary="RNN for MLC">
-      <created>1574612598200</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
+    <task id="LOCAL-00126" summary="lstm without attention">
+      <created>1585573969375</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
       <option name="project" value="LOCAL" />
-      <updated>1574612598200</updated>
+      <updated>1585573969376</updated>
     </task>
-    <task id="LOCAL-00054" summary="RNN for MLC">
-      <created>1574613205031</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
+    <task id="LOCAL-00127" summary="lstm no attention">
+      <created>1585574755487</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
       <option name="project" value="LOCAL" />
-      <updated>1574613205031</updated>
+      <updated>1585574755487</updated>
     </task>
-    <task id="LOCAL-00055" summary="RNN for MLC">
-      <created>1574613496157</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
+    <task id="LOCAL-00128" summary="lstm no attention">
+      <created>1585575311221</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
       <option name="project" value="LOCAL" />
-      <updated>1574613496157</updated>
+      <updated>1585575311221</updated>
     </task>
-    <task id="LOCAL-00056" summary="RNN for MLC">
-      <created>1574620806680</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
+    <task id="LOCAL-00129" summary="lstm attention">
+      <created>1585576771757</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
       <option name="project" value="LOCAL" />
-      <updated>1574620806680</updated>
+      <updated>1585576771757</updated>
     </task>
-    <task id="LOCAL-00057" summary="RNN for MLC">
-      <created>1574624296338</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
+    <task id="LOCAL-00130" summary="lstm no attention">
+      <created>1585577915477</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
       <option name="project" value="LOCAL" />
-      <updated>1574624296338</updated>
+      <updated>1585577915477</updated>
     </task>
-    <task id="LOCAL-00058" summary="change in labels extraction">
-      <created>1574628168756</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
+    <task id="LOCAL-00131" summary="train lstm changed">
+      <created>1585579551108</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
       <option name="project" value="LOCAL" />
-      <updated>1574628168757</updated>
+      <updated>1585579551108</updated>
     </task>
-    <task id="LOCAL-00059" summary="change in labels extraction">
-      <created>1574628525586</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
+    <task id="LOCAL-00132" summary="metric updates">
+      <created>1585581388562</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
       <option name="project" value="LOCAL" />
-      <updated>1574628525586</updated>
+      <updated>1585581388563</updated>
     </task>
-    <task id="LOCAL-00060" summary="change in labels extraction">
-      <created>1574629225726</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
+    <task id="LOCAL-00133" summary="metrics">
+      <created>1585583549805</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
       <option name="project" value="LOCAL" />
-      <updated>1574629225727</updated>
+      <updated>1585583549805</updated>
     </task>
-    <task id="LOCAL-00061" summary="change in labels extraction">
-      <created>1574683944452</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
+    <task id="LOCAL-00134" summary="metrics changed">
+      <created>1585586089877</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
       <option name="project" value="LOCAL" />
-      <updated>1574683944452</updated>
+      <updated>1585586089877</updated>
     </task>
-    <task id="LOCAL-00062" summary="cutting in labels for indiana chest x ray">
-      <created>1574801820300</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
+    <task id="LOCAL-00135" summary="metrics">
+      <created>1585588752919</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
       <option name="project" value="LOCAL" />
-      <updated>1574801820301</updated>
+      <updated>1585588752919</updated>
     </task>
-    <task id="LOCAL-00063" summary="cutting in labels for indiana chest x ray to 124">
-      <created>1574803680506</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
+    <task id="LOCAL-00136" summary="lstm metrics">
+      <created>1585596914334</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
       <option name="project" value="LOCAL" />
-      <updated>1574803680507</updated>
+      <updated>1585596914334</updated>
     </task>
-    <task id="LOCAL-00064" summary="cutting in labels for indiana chest x ray to 23">
-      <created>1574853251117</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
+    <task id="LOCAL-00137" summary="cnn model changes in encoder">
+      <created>1585754551040</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
       <option name="project" value="LOCAL" />
-      <updated>1574853251118</updated>
+      <updated>1585754551042</updated>
     </task>
-    <task id="LOCAL-00065" summary="cutting in labels for indiana chest x ray to 6">
-      <created>1574870855605</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
+    <task id="LOCAL-00138" summary="cnn encoder">
+      <created>1585754999749</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
       <option name="project" value="LOCAL" />
-      <updated>1574870855606</updated>
+      <updated>1585754999749</updated>
     </task>
-    <task id="LOCAL-00066" summary="cutting in labels for indiana chest x ray to 23">
-      <created>1575016952859</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
+    <task id="LOCAL-00139" summary="cnn model">
+      <created>1585755274936</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
       <option name="project" value="LOCAL" />
-      <updated>1575016952860</updated>
+      <updated>1585755274936</updated>
     </task>
-    <task id="LOCAL-00067" summary="cutting in labels for indiana chest x ray to 6">
-      <created>1575028071135</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
+    <task id="LOCAL-00140" summary="cnn encoder">
+      <created>1585756801672</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
       <option name="project" value="LOCAL" />
-      <updated>1575028071135</updated>
+      <updated>1585756801672</updated>
     </task>
-    <task id="LOCAL-00068" summary="cutting in labels for indiana chest x ray to 23">
-      <created>1575030624343</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
+    <task id="LOCAL-00141" summary="cnn model">
+      <created>1585820876996</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
       <option name="project" value="LOCAL" />
-      <updated>1575030624343</updated>
+      <updated>1585820876996</updated>
     </task>
-    <task id="LOCAL-00069" summary="cutting in labels for indiana chest x ray to 124">
-      <created>1575034291482</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
+    <task id="LOCAL-00142" summary="cnn model">
+      <created>1585856747732</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
       <option name="project" value="LOCAL" />
-      <updated>1575034291482</updated>
+      <updated>1585856747741</updated>
     </task>
-    <task id="LOCAL-00070" summary="cutting in labels for indiana chest x ray to 559">
-      <created>1575040198238</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
+    <task id="LOCAL-00143" summary="mistakes in focal loss, changes in cnn model training pipeline">
+      <created>1585859035783</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
       <option name="project" value="LOCAL" />
-      <updated>1575040198238</updated>
+      <updated>1585859035783</updated>
     </task>
-    <task id="LOCAL-00071" summary="cutting in labels for indiana chest x ray to 6">
-      <created>1575046650272</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
+    <task id="LOCAL-00144" summary="cnn model training fixed">
+      <created>1585917795354</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
       <option name="project" value="LOCAL" />
-      <updated>1575046650272</updated>
+      <updated>1585917795355</updated>
     </task>
-    <task id="LOCAL-00072" summary="cutting in labels for indiana chest x ray to 124">
-      <created>1575050084279</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
+    <task id="LOCAL-00145" summary="train cnn model changes">
+      <created>1585919579701</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
       <option name="project" value="LOCAL" />
-      <updated>1575050084279</updated>
+      <updated>1585919579701</updated>
     </task>
-    <task id="LOCAL-00073" summary="cutting in labels for indiana chest x ray to 559">
-      <created>1575054532595</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
+    <task id="LOCAL-00146" summary="models saving">
+      <created>1585921096975</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
       <option name="project" value="LOCAL" />
-      <updated>1575054532596</updated>
+      <updated>1585921096975</updated>
     </task>
-    <task id="LOCAL-00074" summary="Attention LSTM for multilabeling">
-      <created>1576750466903</created>
-      <option name="number" value="00074" />
-      <option name="presentableId" value="LOCAL-00074" />
+    <task id="LOCAL-00147" summary="inference steps for cnn model">
+      <created>1585923509775</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
       <option name="project" value="LOCAL" />
-      <updated>1576750466904</updated>
+      <updated>1585923509776</updated>
     </task>
-    <task id="LOCAL-00075" summary="Attention LSTM for multilabeling">
-      <created>1576751860823</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
+    <task id="LOCAL-00148" summary="mistakes in prediction fix">
+      <created>1585926710609</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
       <option name="project" value="LOCAL" />
-      <updated>1576751860823</updated>
+      <updated>1585926710609</updated>
     </task>
-    <task id="LOCAL-00076" summary="Attention LSTM for multilabeling">
-      <created>1576753047146</created>
-      <option name="number" value="00076" />
-      <option name="presentableId" value="LOCAL-00076" />
+    <task id="LOCAL-00149" summary="draw distribution coloring">
+      <created>1588845358045</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
       <option name="project" value="LOCAL" />
-      <updated>1576753047146</updated>
+      <updated>1588845358046</updated>
     </task>
-    <task id="LOCAL-00077" summary="Attention LSTM for multilabeling">
-      <created>1576753607773</created>
-      <option name="number" value="00077" />
-      <option name="presentableId" value="LOCAL-00077" />
+    <task id="LOCAL-00150" summary="pretty printing">
+      <created>1589114995257</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
       <option name="project" value="LOCAL" />
-      <updated>1576753607773</updated>
+      <updated>1589114995258</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <option name="localTasksCounter" value="151" />
     <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="704" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22337043" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info id="Structure" order="0" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="1" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="2" visible="true" weight="0.19554849" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.28496504" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49920508" weight="0.22727273" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49920508" visible="true" weight="0.3006993" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3986014" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.07867133" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5007949" side_tool="true" weight="0.32867134" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="9" visible="true" weight="0.3216783" />
+      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49920508" weight="0.21678321" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49841017" weight="0.3216783" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50158983" side_tool="true" weight="0.20979021" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.13286713" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.36013985" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -12201,39 +12184,37 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="multilabel classification added" />
-    <MESSAGE value="multilabel classification" />
-    <MESSAGE value="multilabel classification change in loss and activation" />
-    <MESSAGE value="multilabel classification change in layers" />
-    <MESSAGE value="multilabel classification lr" />
-    <MESSAGE value="validation data" />
-    <MESSAGE value="accuracy" />
-    <MESSAGE value="mlc architecture" />
-    <MESSAGE value="mlc tags normalization" />
-    <MESSAGE value="mlc tags normalization dropped" />
-    <MESSAGE value="mlc change in architecture" />
-    <MESSAGE value="mlc with validation" />
-    <MESSAGE value="mlc validation" />
-    <MESSAGE value="mlc dropout deleted" />
-    <MESSAGE value="mlc VGG16" />
-    <MESSAGE value="mlc VGG16 input size" />
-    <MESSAGE value="random batches each epoch" />
-    <MESSAGE value="RNN for MLC" />
-    <MESSAGE value="change in labels extraction" />
-    <MESSAGE value="cutting in labels for indiana chest x ray" />
-    <MESSAGE value="cutting in labels for indiana chest x ray to 23" />
-    <MESSAGE value="cutting in labels for indiana chest x ray to 6" />
-    <MESSAGE value="cutting in labels for indiana chest x ray to 124" />
-    <MESSAGE value="cutting in labels for indiana chest x ray to 559" />
-    <MESSAGE value="Attention LSTM for multilabeling" />
-    <option name="LAST_COMMIT_MESSAGE" value="Attention LSTM for multilabeling" />
+    <MESSAGE value="visualize attention" />
+    <MESSAGE value="visualization" />
+    <MESSAGE value="mistakes in save file fixed" />
+    <MESSAGE value="visualization mistakes fixed" />
+    <MESSAGE value="train LSTM bugs fix and decoder without attention added" />
+    <MESSAGE value="cnn model added" />
+    <MESSAGE value="lstm without attention" />
+    <MESSAGE value="lstm attention" />
+    <MESSAGE value="lstm no attention" />
+    <MESSAGE value="train lstm changed" />
+    <MESSAGE value="metric updates" />
+    <MESSAGE value="metrics changed" />
+    <MESSAGE value="metrics" />
+    <MESSAGE value="lstm metrics" />
+    <MESSAGE value="cnn model changes in encoder" />
+    <MESSAGE value="cnn encoder" />
+    <MESSAGE value="cnn model" />
+    <MESSAGE value="mistakes in focal loss, changes in cnn model training pipeline" />
+    <MESSAGE value="cnn model training fixed" />
+    <MESSAGE value="train cnn model changes" />
+    <MESSAGE value="models saving" />
+    <MESSAGE value="inference steps for cnn model" />
+    <MESSAGE value="mistakes in prediction fix" />
+    <MESSAGE value="draw distribution coloring" />
+    <MESSAGE value="pretty printing" />
+    <option name="LAST_COMMIT_MESSAGE" value="pretty printing" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/preprocessing/data_extractor.py" />
     <entry file="file://$PROJECT_DIR$/models/generate_batches.py" />
-    <entry file="file://$PROJECT_DIR$/Pipfile">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Pipfile" />
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -12253,27 +12234,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/preprocessing/peir_extractor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1978">
-          <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
-          <folding>
-            <element signature="e#142#179#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/preprocessing/preprocessing.py" />
-    <entry file="file://$PROJECT_DIR$/models/autoencoder/cnn_autoencoder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1648">
-          <caret line="106" column="11" lean-forward="true" selection-start-line="106" selection-start-column="11" selection-end-line="106" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/models/autoencoder/cnn_autoencoder.py" />
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/sklearn/utils/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="84">
@@ -12310,47 +12272,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/mlc/CheXpert_mlc.py">
+    <entry file="file://$PROJECT_DIR$/models/mlc/CheXpert_mlc.py" />
+    <entry file="file://$PROJECT_DIR$/preprocessing/peir_extractor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+        <state relative-caret-position="-1655">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+          <folding>
+            <element signature="e#142#179#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/xml/dom/minidom.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TAG_TO_INDEX.pickle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/IMG_TAG.pickle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train_set.pickle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/skmultilearn_example.py" />
+    <entry file="file://$PROJECT_DIR$/models/mlc/mlc.py" />
     <entry file="file://$PROJECT_DIR$/preprocessing/chest_xray_extractor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="28" column="34" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
-          <folding>
-            <element signature="e#12#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/mlc/mlc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1104">
-          <caret line="69" column="20" selection-start-line="69" selection-start-column="20" selection-end-line="69" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="20" column="36" selection-start-line="20" selection-start-column="36" selection-end-line="20" selection-end-column="36" />
+        <state relative-caret-position="2256">
+          <caret line="148" column="14" selection-start-line="148" selection-start-column="14" selection-end-line="148" selection-end-column="14" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -12359,31 +12309,97 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/evaluation_metrics.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
+        <state relative-caret-position="272">
+          <caret line="17" column="28" selection-start-line="17" selection-start-column="28" selection-end-line="17" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/mlc/LSTM_no_attention.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1104">
+          <caret line="70" column="41" selection-start-line="70" selection-start-column="41" selection-end-line="70" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/chest_images/CXR1_1_IM-0001-3001.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/chest_reports/ecgen-radiology/1.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="112" column="39" lean-forward="true" selection-start-line="112" selection-start-column="20" selection-end-line="112" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/chest_images/CXR2_IM-0652-2001.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/chest_images/CXR8_IM-2333-1001.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/chest_images/CXR9_IM-2407-2001.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/chest_images/CXR2_IM-0652-1001.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/mlc/autoencoder.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/mlc/attention_LSTM.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="78" column="24" lean-forward="true" selection-start-line="78" selection-start-column="24" selection-end-line="78" selection-end-column="24" />
+        <state relative-caret-position="1952">
+          <caret line="132" column="32" selection-start-line="132" selection-start-column="32" selection-end-line="132" selection-end-column="32" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/mlc/attention_LSTM.py">
+    <entry file="file://$PROJECT_DIR$/models/mlc/cnn_mlc.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="433" column="14" selection-start-line="433" selection-start-column="14" selection-end-line="433" selection-end-column="14" />
+        <state relative-caret-position="3600">
+          <caret line="234" column="10" selection-start-line="234" selection-start-column="4" selection-end-line="234" selection-end-column="10" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
-            <element signature="e#523#2157#0" />
-            <element signature="e#2290#3854#0" />
-            <element signature="e#3900#9750#0" />
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="21" column="26" lean-forward="true" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/preprocessing/train_test_split.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="56" column="55" lean-forward="true" selection-start-line="56" selection-start-column="55" selection-end-line="56" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="19" column="11" lean-forward="true" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
         </state>
       </provider>
     </entry>
