@@ -31,6 +31,7 @@ Before going into details of attention network pipeline let's find out why do we
 
 Attention pays attention to particular areas or objects rather than treating the whole image equally. Attention mechanism should consider the labels generated thus far, and attend to the part of the image that describes next label.
 The Attention network is parameterized with fully connected network that computes weights. In this work we are using soft attention, where the weights of the pixels add up to 1, to avoid large numbers. If there are *M* features in encoded image, then at each time step t:
+
 ![formula](https://render.githubusercontent.com/render/math?math=\sum_{p=m}^{p=M}\alpha_{p,t}=1)
 
 where ![formula](https://render.githubusercontent.com/render/math?math=\alpha_{p,t})
