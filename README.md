@@ -30,11 +30,11 @@ These are steps that encoded image input is going through while generating a lab
 Before going into details of attention network pipeline let's find out why do we need the attention network? We are adding attention mechanism at each time step of the decoder, so that decoder is able to "look" at different parts of the image at each time step. We can refer to attention mechanism as to the weighted average across encoded visual features, with the weights of the important features being greater. The weighted representation of the image is concatenated with the previously generated word at each time step to generate the next word. 
 
 Attention pays attention to particular areas or objects rather than treating the whole image equally. Attention mechanism should consider the labels generated thus far, and attend to the part of the image that describes next label.
-The Attention network is parameterized with fully connected network that computes weights. In this work we are using soft attention \cite{xu2015show}, where the weights of the pixels add up to 1, to avoid large numbers. If there are $M$ features in encoded image, then at each time step t:
-$$
-  \sum_{p=m}^{p=M}\alpha_{p,t} = 1
-$$
-where $\alpha_{p,t}$ is the $p$-s weight of attention network at time step $t$. The overall attention mechanism is presented in Figure \ref{fig_attention}. One can note that attention mechanism consists of three fully connected networks and data flows through the network in the following way: 
+The Attention network is parameterized with fully connected network that computes weights. In this work we are using soft attention, where the weights of the pixels add up to 1, to avoid large numbers. If there are *M* features in encoded image, then at each time step t:
+![formula](https://render.githubusercontent.com/render/math?math=\sum_{p=m}^{p=M}\alpha_{p,t} = 1)
+
+where ![formula](https://render.githubusercontent.com/render/math?math=\alpha_{p,t})
+$\alpha_{p,t}$ is the $p$-s weight of attention network at time step $t$. The overall attention mechanism is presented in Figure \ref{fig_attention}. One can note that attention mechanism consists of three fully connected networks and data flows through the network in the following way: 
 
 - Previous Decoder Output (previously generated label, \textit{start} at the beginning) is passed to embedding layer of the model to obtain embedding of that unit.
 - Encoded input image and embeded tag are passed to two different identically defined fully connected networks.
