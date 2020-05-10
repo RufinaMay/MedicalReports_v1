@@ -49,7 +49,7 @@ As suggested in [Show, attend and tell: Neural image caption generation with vis
 
 ![formula](https://render.githubusercontent.com/render/math?math=loss=-log(p(y|x))+\lambda\sum_i^{L}(1-\sum_t^Ca_{ti})^2)
 
-### {Negative Sampling}
+### Negative Sampling
 In this work we refer to negative sampling as keeping images that have no labels associated with them. We explore the including and excluding the negative samples from the training set and see how it affects the resulting performance for models. We explore this with an assumption that including images that do not have any labels associated with them will help network to learn positive labels by showing them how this label does not look like. 
 
 ## Data set
