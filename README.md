@@ -34,9 +34,9 @@ The Attention network is parameterized with fully connected network that compute
 ![formula](https://render.githubusercontent.com/render/math?math=\sum_{p=m}^{p=M}\alpha_{p,t} = 1)
 
 where ![formula](https://render.githubusercontent.com/render/math?math=\alpha_{p,t})
-$\alpha_{p,t}$ is the $p$-s weight of attention network at time step $t$. The overall attention mechanism is presented in Figure \ref{fig_attention}. One can note that attention mechanism consists of three fully connected networks and data flows through the network in the following way: 
+is the *p*-s weight of attention network at time step *t*. The overall attention mechanism is presented in Figure above. One can note that attention mechanism consists of three fully connected networks and data flows through the network in the following way: 
 
-- Previous Decoder Output (previously generated label, \textit{start} at the beginning) is passed to embedding layer of the model to obtain embedding of that unit.
+- Previous Decoder Output (previously generated label, *start* at the beginning) is passed to embedding layer of the model to obtain embedding of that unit.
 - Encoded input image and embeded tag are passed to two different identically defined fully connected networks.
 - The outputs of previous iteration are concatenated together and passed through ReLU activation function.
 - After that data goes to another one unit linear layer with SoftMax activation function to obtain a weighted representation of the image. Since we use "soft" attention we are applying SoftMax activation function so that sum of the weights is equal to 1.
