@@ -17,20 +17,27 @@ The overall model design is presented in Figure above. One can note that the ove
   Our implementation of LSTM is based on  [Show Attent and Tell](https://arxiv.org/abs/1502.03044) and implemented by following functions.
 
 ![formula](https://render.githubusercontent.com/render/math?math=g_t=\sigma(W_g\cdot{a_t}%2B{b_g}))
+
 ![formula](https://render.githubusercontent.com/render/math?math=f_t=\sigma({W_f}{[h_{t-1},g_t,e_{m,t}]}%2B{b_f}))
+
 ![formula](https://render.githubusercontent.com/render/math?math=i_t=\sigma({W_i}{[h_{t-1},g_t,e_{m,t}]}%2B{b_i}))
+
 ![formula](https://render.githubusercontent.com/render/math?math=\hat{C_t}=tanh(W_c{[h_{t-1},g_t,e_{m,t}]}%2B{b_c}))
+
 ![formula](https://render.githubusercontent.com/render/math?math=\hat{C_t}=f_t*C_{t-1}%2B{i_t}*\hat{C_t})
+
 ![formula](https://render.githubusercontent.com/render/math?math=o_t=\sigma(W_o{[h_{t-1},g_t,e_{m,t}]}%2B{b_o}))
+
 ![formula](https://render.githubusercontent.com/render/math?math=h_t=o_t*tanh(C_t))
+
 ![formula](https://render.githubusercontent.com/render/math?math=a_t=attention([encoder(image),h_{t-1}]))
 
 
 Where *g_t* is attention gate, *f_t* is forget gate, *i_t* is an input gate, and *o_t* is output gate, $h_t$ is hidden state.Similarly, *W_g, W_f, W_i, W_c, W_o, b_g, b_f, b_i, b_c, b_o* are weight matrices and bias vectors respectively. *a_t* is attention weighted vector over encoded image and previous hidden state. Similarly,
-![formula](https://render.githubusercontent.com/render/math?math=e_{m,t}\in R^D)
+![formula](https://render.githubusercontent.com/render/math?math=e_{m,t}\in{R^D})
 
  is a embedding vector of ![formula](https://render.githubusercontent.com/render/math?math=m^{th}) tag from embedding matrix and
- ![formula](https://render.githubusercontent.com/render/math?math=E\in R^{D \times V})
+ ![formula](https://render.githubusercontent.com/render/math?math=E\in{R^{DxV}})
 
  where *D* is the embedding dimension and *V* is the size of the vocabulary. 
  
