@@ -17,9 +17,9 @@ The overall model design is presented in Figure above. One can note that the ove
   Our implementation of LSTM is based on  [Show Attent and Tell](https://arxiv.org/abs/1502.03044) and implemented by following functions.
 
 ![formula](https://render.githubusercontent.com/render/math?math=g_t=\sigma(W_g\cdot{a_t}%2B{b_g}))
-![formula](https://render.githubusercontent.com/render/math?math=f_t=\sigma({W_f}[h_{t-1},g_t,e_{m,t}]%2B{b_f}))
-![formula](https://render.githubusercontent.com/render/math?math=i_t=\sigma({W_i}[h_{t-1},g_t,e_{m,t}]%2B{b_i}))
-![formula](https://render.githubusercontent.com/render/math?math=\hat{C_t}=tanh(W_c [h_{t-1}, g_t, e_{m,t}]%2B{b_c}))
+![formula](https://render.githubusercontent.com/render/math?math=f_t=\sigma({W_f}{[h_{t-1},g_t,e_{m,t}]}%2B{b_f}))
+![formula](https://render.githubusercontent.com/render/math?math=i_t=\sigma({W_i}{[h_{t-1},g_t,e_{m,t}]}%2B{b_i}))
+![formula](https://render.githubusercontent.com/render/math?math=\hat{C_t}=tanh(W_c{[h_{t-1},g_t,e_{m,t}]}%2B{b_c}))
 ![formula](https://render.githubusercontent.com/render/math?math=\hat{C_t}=f_t*C_{t-1}%2B{i_t}*\hat{C_t})
 ![formula](https://render.githubusercontent.com/render/math?math=o_t=\sigma(W_o{[h_{t-1},g_t,e_{m,t}]}%2B{b_o}))
 ![formula](https://render.githubusercontent.com/render/math?math=h_t=o_t*tanh(C_t))
