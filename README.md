@@ -11,23 +11,32 @@ The overall model design is presented in Figure above. One can note that the ove
   ### Encoder
   To obtain the encoded representation of an image we are using CNN network. We are taking advantage of transfer learning in this case and using the CNN model developed for ImageNet competition, in particular DenseNet. We are taking all layers of the network besides fully connected classification layers and fine tune them together with the model training. 
   ### Decoder
-  ![The detailed pipeline of the decoder with attention network.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/decoder_overall.png)
-  ![The one time step's pipeline that data flow through in generating one label at this time step.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/decoder.png)
-  ![LSTM's hidden state and cell state initialization pipeline.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/hidden_state.png)
-    ![Gate module.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/gate.png)
+  
+  In proposed MLCNet architecture, decoder is parameterized recurrent neural network variant LSTM to predict  multiple-labels of X-ray image.
+  ![The internal architecture of single memory cell of LSTM network.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/decoder.png)
+  Our implementation of LSTM is based on \cite{xu2015show} and implemented by following functions.
 
-In this section we explain how decoder network works. Encoded image in passed to decoder network to word by word generate labels to the image. Each particular module is presented in Figure above with an explanation presented in this section. Decoder is parameterized with Recurrent Neural Network, in particular with Long short-term memory network (LSTM). But before LSTM module will be able to generate the output label there are few more steps to be done:
+![formula](https://render.githubusercontent.com/render/math?math=g_t=\sigma(W_g \cdot a_t+b_g))
+![formula](https://render.githubusercontent.com/render/math?math=f_t=\sigma(W_f [h_{t-1}, g_t, e_{m,t}] + b_f))
+![formula](https://render.githubusercontent.com/render/math?math=i_t=\sigma(W_i [h_{t-1}, g_t, e_{m,t}] + b_i))
+![formula](https://render.githubusercontent.com/render/math?math=\hat{C_t}=tanh(W_c [h_{t-1}, g_t, e_{m,t}] + b_c))
+![formula](https://render.githubusercontent.com/render/math?math=\hat{C_t}=f_t*C_{t-1}+i_t*\hat{C_t})
+![formula](https://render.githubusercontent.com/render/math?math=o_t=\sigma(W_o[h_{t-1}, g_t, e_{m,t}]+b_o))
+![formula](https://render.githubusercontent.com/render/math?math=h_t=o_t*tanh(C_t))
+![formula](https://render.githubusercontent.com/render/math?math=a_t=attention([encoder(image), h_{t-1}]))
 
-- First we initialize the lstm's hidden state and cell state to have initial values to start the process of decoding, demonstrated in Figure above (left lower). We use two different linear networks with same architecture to obtain the hidden state and cell state.
-- Encoder output is flattened and passed to attention network together with decoder hidden state to highlight important regions of an image.
-- Then we are obtaining a gating scalar by passing hidden state of the decoder to a fully connected layer with sigmoid at the end. Network pipeline to obtain the gating scalar is presented in Figure above (right lower).
-- Then we obtain the attention weighted encoding by multiplying the gating scalar with attention weights.
-- We obtain the embedding of previous decoder input (*start* at the beginning) to be passed to lstm unit.
-- All previously obtained variables are passed to lstm unit to obtain new hidden state and cell state.
-- New hidden state is passed to another fully connected layer to obtain the scores over vocabulary to predict the label.
 
-These are steps that encoded image input is going through while generating a labels characterizing the findings on the image. However the Attention module still remains secret machine, hence we are explaining it in the next section in more details.
+Where *g_t* is attention gate, *f_t* is forget gate, *i_t* is an input gate, and *o_t* is output gate, $h_t$ is hidden state.Similarly, *W_g, W_f, W_i, W_c, W_o, b_g, b_f, b_i, b_c, b_o* are weight matrices and bias vectors respectively. *a_t* is attention weighted vector over encoded image and previous hidden state. Similarly,
+![formula](https://render.githubusercontent.com/render/math?math=e_{m,t}\in R^D)
 
+ is a embedding vector of ![formula](https://render.githubusercontent.com/render/math?math=m^{th}) tag from embedding matrix and
+ ![formula](https://render.githubusercontent.com/render/math?math=E\in R^{D \times V})
+
+ where *D* is the embedding dimension and *V* is the size of the vocabulary. 
+ 
+ Visual feature encoder output is flattened and passed to LSTM hidden state with attention network together to highlight important regions of an image. An attention gate output is obtained by passing hidden state of LSTM to a fully connected layer with sigmoid activation function. The attention weighted encoding is obtained by multiplying the attention gate with attention weights. We obtain the embedding of previous decoder input to be passed to LSTM unit. All previously obtained variables are passed to LSTM unit to calculate the new hidden state and cell state. New hidden state is passed to another fully connected layer to obtain the scores over vocabulary for predicting the label.
+  
+  
 ### Attention
   ![The pipeline of attention network.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/attention.png)
 Before going into details of attention network pipeline let's find out why do we need the attention network? We are adding attention mechanism at each time step of the decoder, so that decoder is able to "look" at different parts of the image at each time step. We can refer to attention mechanism as to the weighted average across encoded visual features, with the weights of the important features being greater. The weighted representation of the image is concatenated with the previously generated word at each time step to generate the next word. 
