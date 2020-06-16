@@ -33,13 +33,8 @@ The overall model design is presented in Figure above. One can note that the ove
 ![formula](https://render.githubusercontent.com/render/math?math=a_t=attention([encoder(image),h_{t-1}]))
 
 
-Where *g_t* is attention gate, *f_t* is forget gate, *i_t* is an input gate, and *o_t* is output gate, $h_t$ is hidden state.Similarly, *W_g, W_f, W_i, W_c, W_o, b_g, b_f, b_i, b_c, b_o* are weight matrices and bias vectors respectively. *a_t* is attention weighted vector over encoded image and previous hidden state. Similarly,
-![formula](https://render.githubusercontent.com/render/math?math=e_{m,t}\in{R^D})
-
- is a embedding vector of ![formula](https://render.githubusercontent.com/render/math?math=m^{th}) tag from embedding matrix and
- ![formula](https://render.githubusercontent.com/render/math?math=E\in{R^{DxV}})
-
- where *D* is the embedding dimension and *V* is the size of the vocabulary. 
+Where *gt* is attention gate, *ft* is forget gate, *it* is an input gate, and *ot* is output gate, *ht* is hidden state.Similarly, *Wg, Wf, Wi, Wc, Wo, bg, bf, bi, bc, bo* are weight matrices and bias vectors respectively. *at* is attention weighted vector over encoded image and previous hidden state. Similarly,
+![formula](https://render.githubusercontent.com/render/math?math=e_{m,t}\in{R^D}) is a embedding vector of ![formula](https://render.githubusercontent.com/render/math?math=m^{th}) tag from embedding matrix and ![formula](https://render.githubusercontent.com/render/math?math=E\in{R^{DxV}}), where *D* is the embedding dimension and *V* is the size of the vocabulary. 
  
  Visual feature encoder output is flattened and passed to LSTM hidden state with attention network together to highlight important regions of an image. An attention gate output is obtained by passing hidden state of LSTM to a fully connected layer with sigmoid activation function. The attention weighted encoding is obtained by multiplying the attention gate with attention weights. We obtain the embedding of previous decoder input to be passed to LSTM unit. All previously obtained variables are passed to LSTM unit to calculate the new hidden state and cell state. New hidden state is passed to another fully connected layer to obtain the scores over vocabulary for predicting the label.
   
