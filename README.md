@@ -11,9 +11,10 @@ The overall model design is presented in Figure above. One can note that the ove
   ### Encoder
   To obtain the encoded representation of an image we are using CNN network. We are taking advantage of transfer learning in this case and using the CNN model developed for ImageNet competition, in particular DenseNet. We are taking all layers of the network besides fully connected classification layers and fine tune them together with the model training. 
   ### Decoder
-    ![The internal architecture of single memory cell of LSTM network.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/decoder.png)
-  
   In proposed MLCNet architecture, decoder is parameterized recurrent neural network variant LSTM to predict  multiple-labels of X-ray image. Our implementation of LSTM is based on  [Show Attent and Tell](https://arxiv.org/abs/1502.03044) and implemented by following functions.
+  
+  ![The internal architecture of single memory cell of LSTM network.](https://github.com/RufinaMay/MedicalReports_v1/raw/master/model_diagrams/decoder.png)
+  
 
 ![formula](https://render.githubusercontent.com/render/math?math=g_t=\sigma(W_g\cdot{a_t}%2B{b_g}))
 
@@ -57,7 +58,7 @@ The process of attention module is computed by the following equations:
 
 where *I* is the encoded image: ![formula](https://render.githubusercontent.com/render/math?math=I\in{R}^{size{x}size{x}dim})
 
-Similarly, encoder attention, decoder attention and full attention are parameterized by linear networks. The ![formula](https://render.githubusercontent.com/render/math?math=h_{t-1}) is decoder's hidden state at previous time step. The ![formula](https://render.githubusercontent.com/render/math?math=a_e\in{R}^{AD}), ![formula](https://render.githubusercontent.com/render/math?math=a_d\in{R}^{AD}),  where *AD* is the dimension of the attention. ![formula](https://render.githubusercontent.com/render/math?math=a_f\in{R}^{1}), ![formula](https://render.githubusercontent.com/render/math?math=\alpha\in{R}^{size{X}size{X}dim}). The attention that we are using in this work is referred as soft-attention, hence at each time step t:
+Similarly, encoder attention, decoder attention and full attention are parameterized by linear networks. The *h t-1* is decoder's hidden state at previous time step. The ![formula](https://render.githubusercontent.com/render/math?math=a_e\in{R}^{AD}), ![formula](https://render.githubusercontent.com/render/math?math=a_d\in{R}^{AD}),  where *AD* is the dimension of the attention. ![formula](https://render.githubusercontent.com/render/math?math=a_f\in{R}^{1}), ![formula](https://render.githubusercontent.com/render/math?math=\alpha\in{R}^{size{X}size{X}dim}). The attention that we are using in this work is referred as soft-attention, hence at each time step t:
 
 ![formula](https://render.githubusercontent.com/render/math?math=\sum_{p=1}^{p=ED}\alpha_{p,t}=1)
 
